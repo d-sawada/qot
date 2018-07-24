@@ -36,9 +36,17 @@ gem 'jbuilder', '~> 2.5'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
 
+# Devise is a flexible authentication solution for Rails based on Warden
+gem 'devise'
+
+# Ransack is a rewrite of MetaSearch
+gem 'ransack'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  # rspec-rails is a testing framework for Rails 3.x, 4.x and 5.x.
+  gem 'rspec-rails'
 end
 
 group :development do
@@ -48,6 +56,10 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+  # Bullet help you increase your application's performance by reducing the number of queries it makes
+  gem 'bullet'
+  # Gives letter_opener an interface for browsing sent emails.
+  gem 'letter_opener_web'
 end
 
 group :test do
