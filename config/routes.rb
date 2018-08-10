@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
-  devise_for :admins
+  
   mount RailsAdmin::Engine => '/system_admin', as: 'rails_admin'
+  mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
   devise_for :sys_admins, skip: :all
+  devise_for :admins, skip: :all
   devise_for :employee, skip: :all
 
   devise_scope :sys_admin do
@@ -11,6 +13,18 @@ Rails.application.routes.draw do
   end
 
   scope ':company_code' do
+
+    devise_scope :admin do
+      get    'admin/sign_in'  => 'admins/sessions#new',     as: 'new_admin_session'
+      post   'admin/sign_in'  => 'admins/sessions#create',  as: 'admin_session'
+      delete 'admin/sign_out' => 'admins/sessions#destroy', as: 'destroy_admin_session'
+      resource :passwords,     as: 'admin_password',     path: 'admin/password',     module: 'admin', except: [:index, :show]
+      resource :confirmations, as: 'admin_confirmation', path: 'admin/confirmation', module: 'admin', only: [:new, :create, :show]
+      resource :registrations, as: 'admin_registration', path: 'admin',              module: 'admin', except: [:index, :show], path_names: {new: 'sign_up'} do
+        get :cancel, on: :collection
+      end
+    end
+
     devise_scope :employee do
       get    'employee/sign_in'  => 'employees/sessions#new',     as: 'new_employee_session'
       post   'employee/sign_in'  => 'employees/sessions#create',  as: 'employee_session'
@@ -24,6 +38,4 @@ Rails.application.routes.draw do
 
     resources :employees
   end
-
-  mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
 end
