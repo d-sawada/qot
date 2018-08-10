@@ -42,6 +42,9 @@ gem 'devise'
 # Ransack is a rewrite of MetaSearch
 gem 'ransack'
 
+# RailsAdmin is a Rails engine that provides an easy-to-use interface for managing your data.
+gem 'rails_admin', '~> 1.3'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
