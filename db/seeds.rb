@@ -15,6 +15,6 @@ SysAdmin.create({email: "sys_admin@email.com", password: "password", password_co
 
 ga = Company.create({code: "ga0001", name: "GAtechnologies" })
 
-Admin.create({email: "admin1@email.com", password: "password", password_confirmation: "password" })
+ga.admins.create({email: "admin1@email.com", password: "password", password_confirmation: "password" })
 
 Employee.create({email: "emp1@email.com", password: "password", password_confirmation: "password" })
