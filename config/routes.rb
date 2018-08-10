@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :admins
   mount RailsAdmin::Engine => '/system_admin', as: 'rails_admin'
   devise_for :sys_admins, skip: :all
   devise_for :employee, skip: :all
