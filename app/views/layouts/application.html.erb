@@ -17,6 +17,10 @@
       <p class="alert alert-error"><%= alert %></p>
     <% end %>
 
+    <% if employee_signed_in? %>
+      <%= link_to '従業員Logout', destroy_employee_session_path, method: :delete %>
+    <% end %>
+
     <%= yield %>
   </body>
 </html>

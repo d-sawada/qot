@@ -7,4 +7,6 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 SysAdmin.delete_all
-SysAdmin.create({email: "sys_admin@email.com", password: "password", password_confimation: "password" })
+SysAdmin.create({email: "sys_admin@email.com", password: "password", password_confirmation: "password" })
+
+Company.create({code: "ga0001", name: "GAtechnologies" })
