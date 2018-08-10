@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  devise_for :employees
+  resources :employees
   mount RailsAdmin::Engine => '/system_admin', as: 'rails_admin'
   devise_for :sys_admins, skip: :all
 
