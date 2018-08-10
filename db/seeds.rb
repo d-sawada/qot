@@ -17,4 +17,4 @@ ga = Company.create({code: "ga0001", name: "GAtechnologies" })
 
 ga.admins.create({email: "admin1@email.com", password: "password", password_confirmation: "password" })
 
-Employee.create({email: "emp1@email.com", password: "password", password_confirmation: "password" })
+ga.employees.create({email: "emp1@email.com", password: "password", password_confirmation: "password" })

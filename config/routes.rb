@@ -18,9 +18,9 @@ Rails.application.routes.draw do
       get    'admin/sign_in'  => 'admins/sessions#new',     as: 'new_admin_session'
       post   'admin/sign_in'  => 'admins/sessions#create',  as: 'admin_session'
       delete 'admin/sign_out' => 'admins/sessions#destroy', as: 'destroy_admin_session'
-      resource :passwords,     as: 'admin_password',     path: 'admin/password',     module: 'admin', except: [:index, :show]
-      resource :confirmations, as: 'admin_confirmation', path: 'admin/confirmation', module: 'admin', only: [:new, :create, :show]
-      resource :registrations, as: 'admin_registration', path: 'admin',              module: 'admin', except: [:index, :show], path_names: {new: 'sign_up'} do
+      resource :passwords,     as: 'admin_password',     path: 'admin/password',     module: 'admins', except: [:index, :show]
+      resource :confirmations, as: 'admin_confirmation', path: 'admin/confirmation', module: 'admins', only: [:new, :create, :show]
+      resource :registrations, as: 'admin_registration', path: 'admin',              module: 'admins', except: [:index, :show], path_names: {new: 'sign_up'} do
         get :cancel, on: :collection
       end
     end
