@@ -3,7 +3,18 @@ class ApplicationController < ActionController::Base
 
   protected
   def set_company
-    @company_code = params[:company_code]
-    @company = Company.find_by(code: @company_code) if @company_code
+    @company_code = nil
+    @company = nil
+
+    if employee_signed_in?
+      @company_code = current_employee.company_code
+      @company = current_employee.company
+    end
+
+    if admin_signed_in?
+      @company_code = current_admin.company_code
+      @company = current_admin.company
+    end
+    
   end
 end
