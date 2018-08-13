@@ -1,20 +1,26 @@
 <h1>Employees</h1>
 
-<table>
-  <thead>
+<table id="all-emp-list">
+  <tbody>
     <tr>
       <th>Email</th>
-      <th colspan="3"></th>
+      <% @labels.each do |label| %>
+        <th><%= label.name %></th>
+      <% end %>
     </tr>
-  </thead>
-
-  <tbody>
     <% @employees.each do |employee| %>
       <tr>
         <td><%= employee.email %></td>
+        <% label_values = employee.employee_additional_values %>
+        <% @labels.each do |label| %>
+          <% value = label_values.find_by_name(label.name) %>
+          <td><%=  value.present? ? value.value : "--" %></td>
+        <% end %>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<br>
+<script>
+tableDragger(document.querySelector("#all-emp-list"));
+</script>

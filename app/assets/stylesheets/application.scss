@@ -13,3 +13,22 @@
  *= require_tree .
  *= require_self
  */
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+th, td {
+  border: solid 1px rgb(0, 0, 0);
+}
+
+.clearfix:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+.clearfix li {
+  float: left;
+  margin-right: 1rem;
+}

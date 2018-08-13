@@ -10,9 +10,12 @@ class Employees::RegistrationsController < Devise::RegistrationsController
   # end
 
   # POST /resource
-  # def create
-  #   super
-  # end
+  def create
+    super
+    params[:employee][:employee_additional_values].each do |name, value|
+      EmployeeAdditionalValue.create({employee_id: @employee.id, name: name, value: value})
+    end
+  end
 
   # GET /resource/edit
   # def edit
@@ -42,7 +45,8 @@ class Employees::RegistrationsController < Devise::RegistrationsController
 
   # If you have extra params to permit, append them to the sanitizer.
   def configure_sign_up_params
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:company_code])
+    labels = @company.employee_additional_labels.pluck(:name)
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:company_code, { employee_additional_values: []}])
   end
 
   # If you have extra params to permit, append them to the sanitizer.

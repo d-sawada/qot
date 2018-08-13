@@ -1,5 +1,7 @@
 {
   "name": "queen-of-time",
   "private": true,
-  "dependencies": {}
+  "dependencies": {
+    "table-dragger": "^1.0.2"
+  }
 }

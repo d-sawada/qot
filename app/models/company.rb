@@ -4,6 +4,7 @@ class Company < ApplicationRecord
 
   has_many :admins, primary_key: :code, foreign_key: :company_code, dependent: :destroy
   has_many :employees, primary_key: :code, foreign_key: :company_code, dependent: :destroy
+  has_many :employee_additional_labels, primary_key: :code, foreign_key: :company_code, dependent: :destroy
 
   rails_admin do
     edit do

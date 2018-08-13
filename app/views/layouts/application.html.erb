@@ -22,7 +22,15 @@
     <% end %>
 
     <% if admin_signed_in? %>
-      <%= link_to "管理者: #{current_admin.email} - Logout", "#{@company_code}/admin/sign_out", method: :delete %>
+      <ul class="clearfix">
+        <li><%= link_to "日リスト", employees_path %></li>
+        <li><%= link_to "月リスト", employees_path %></li>
+        <li><%= link_to "スケジュール", employees_path %></li>
+        <li><%= link_to "従業員追加", new_employee_registration_path %></li>
+        <li><%= link_to "設定", setting_path %></li>
+        <li><%= link_to "ログアウト", "#{@company_code}/admin/sign_out", method: :delete %></li>
+        <li><%= "管理者：#{current_admin.email}" %></li>
+      </ul>
     <% end %>
 
     <%= yield %>
