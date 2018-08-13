@@ -22,7 +22,7 @@
     <% end %>
 
     <% if admin_signed_in? %>
-      <%= link_to '管理者Logout', "#{@company_code}/admin/sign_out", method: :delete %>
+      <%= link_to "管理者: #{current_admin.email} - Logout", "#{@company_code}/admin/sign_out", method: :delete %>
     <% end %>
 
     <%= yield %>

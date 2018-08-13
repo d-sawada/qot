@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Devise::RegistrationsController < DeviseController
-  prepend_before_action :require_no_authentication, only: [:new, :create, :cancel]
+#   prepend_before_action :require_no_authentication, only: [:new, :create, :cancel]
   prepend_before_action :authenticate_scope!, only: [:edit, :update, :destroy]
   prepend_before_action :set_minimum_password_length, only: [:new, :edit]
 
@@ -106,7 +106,7 @@ class Devise::RegistrationsController < DeviseController
   # Signs in a user on sign up. You can overwrite this method in your own
   # RegistrationsController.
   def sign_up(resource_name, resource)
-    sign_in(resource_name, resource)
+    #  sign_in(resource_name, resource)
   end
 
   # The path used after sign up. You need to overwrite this method

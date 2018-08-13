@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  
+
   mount RailsAdmin::Engine => '/system_admin', as: 'rails_admin'
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
   devise_for :sys_admins, skip: :all
@@ -23,6 +23,11 @@ Rails.application.routes.draw do
     end
   end
 
+  scope :admin do
+    resources :admins, only: [:index]
+    resources :employees, except: [:new, :create]
+  end
+
   devise_scope :employee do
     get    ':company_code/employee/sign_in'  => 'employees/sessions#new',     as: 'new_employee_session'
     post   ':company_code/employee/sign_in'  => 'employees/sessions#create',  as: 'employee_session'
@@ -33,6 +38,4 @@ Rails.application.routes.draw do
       get :cancel, on: :collection
     end
   end
-
-  resources :employees
 end
