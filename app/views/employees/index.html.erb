@@ -1,26 +1,36 @@
 <h1>Employees</h1>
 
+<%= form_with(id: "filter_form") do |f| %>
+  <%= f.select :filter_item, @all_labels %>に
+  <%= f.text_field :filter_value %>を含む
+  <%= f.submit "filter" %>
+<% end %>
+
 <table id="all-emp-list">
   <tbody>
     <tr>
-      <th>Email</th>
+      <th><%= sort_link(@q, :email, 'メールアドレス') %></th>
+      <% i = 1 %>
       <% @labels.each do |label| %>
         <th><%= label.name %></th>
+        <% i += 1 %>
       <% end %>
+      <th>削除</th>
     </tr>
     <% @employees.each do |employee| %>
       <tr>
         <td><%= employee.email %></td>
-        <% label_values = employee.employee_additional_values %>
+        <% i = 1 %>
         <% @labels.each do |label| %>
-          <% value = label_values.find_by_name(label.name) %>
-          <td><%=  value.present? ? value.value : "--" %></td>
+          <td><%=  employee.attributes["ex#{i}"] %></td>
+          <% i += 1 %>
         <% end %>
+        <td><%= link_to "削除", employee, method: :delete %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
 <script>
-tableDragger(document.querySelector("#all-emp-list"));
+  tableDragger(document.querySelector("#all-emp-list"));
 </script>

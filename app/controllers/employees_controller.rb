@@ -4,8 +4,18 @@ class EmployeesController < ApplicationController
   # GET /employees
   # GET /employees.json
   def index
-    @employees = Employee.all
     @labels = @company.employee_additional_labels
+    @all_labels = ["メールアドレス"] + @labels.pluck(:name)
+
+    q = '*'
+    i = 1
+    @labels.each do |label|
+      q += ", (SELECT \"employee_additional_values\".\"value\" FROM \"employee_additional_values\" WHERE \"employee_additional_values\".\"employee_id\" = \"employees\".\"id\" AND \"employee_additional_values\".\"employee_additional_label_id\" = #{label.id} ) AS \"ex#{i}\""
+      i += 1
+    end
+
+    @q = Employee.select(q).ransack(params[:q])
+    @employees = @q.result
   end
 
   # GET /employees/1

@@ -13,7 +13,7 @@ class Employees::RegistrationsController < Devise::RegistrationsController
   def create
     super
     params[:employee][:employee_additional_values].each do |name, value|
-      EmployeeAdditionalValue.create({employee_id: @employee.id, name: name, value: value})
+      EmployeeAdditionalValue.create({employee_id: @employee.id, employee_additional_label_id: @company.employee_additional_labels.find_by_name(name).id, value: value})
     end
   end
 

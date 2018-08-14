@@ -38,6 +38,6 @@ end
 (1..5).each do |i|
   employee = ga.employees.find_by_email("emp#{i}@email.com")
   labels.each do |label|
-    employee.employee_additional_values.create({name: label, value: infos[i-1][label]})
+    employee.employee_additional_values.create({employee_additional_label_id: EmployeeAdditionalLabel.find_by_name(label).id, value: infos[i-1][label]})
   end
 end
