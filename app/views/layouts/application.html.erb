@@ -17,10 +17,6 @@
       <p class="alert alert-error"><%= alert %></p>
     <% end %>
 
-    <% if employee_signed_in? %>
-      <%= link_to '従業員Logout', "#{@company_code}/employee/sign_out", method: :delete %>
-    <% end %>
-
     <% if admin_signed_in? %>
       <ul class="clearfix">
         <li><%= link_to "日リスト", employees_path %></li>
@@ -30,6 +26,14 @@
         <li><%= link_to "設定", setting_path %></li>
         <li><%= link_to "ログアウト", "#{@company_code}/admin/sign_out", method: :delete %></li>
         <li><%= "管理者：#{current_admin.email}" %></li>
+      </ul>
+    <% end %>
+
+    <% if employee_signed_in? %>
+      <ul class="clearfix">
+        <li><%= link_to "タイムカード", timecard_path %></li>
+        <li><%= link_to 'ログアウト', "#{@company_code}/employee/sign_out", method: :delete %></li>
+        <li>従業員：<%= current_employee.email %></li>
       </ul>
     <% end %>
 

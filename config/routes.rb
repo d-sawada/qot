@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
 
-  get 'employee_additional_labels/create'
   mount RailsAdmin::Engine => '/system_admin', as: 'rails_admin'
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
   devise_for :sys_admins, skip: :all
@@ -41,4 +40,7 @@ Rails.application.routes.draw do
       get :cancel, on: :collection
     end
   end
+
+  get 'timecard' => 'dayinfos#new', as: 'timecard'
+  put 'timecard' => 'dayinfos#put'
 end

@@ -5,7 +5,6 @@ class Employee < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable
 
   has_many :employee_additional_values, dependent: :destroy
+  has_many :dayinfos, dependent: :destroy
   belongs_to :company, primary_key: :code, foreign_key: :company_code
-
-  attr_accessor :ex1
 end

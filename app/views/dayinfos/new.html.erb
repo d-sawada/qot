@@ -1,0 +1,37 @@
+<br>
+<div id="clock_frame" class="clearfix">
+  <span id="clock_date">****/**/**(**)</span><br><br>
+  <span id="clock_time">**:**:**</span>
+</div>
+
+<%= form_with(id: "stamp_form", method: :put) do |f| %>
+  <%= f.submit "出勤" %>
+  <%= f.submit "退勤" %>
+<% end %>
+
+<div id="today_stamp">
+  <%= @today_stamp %>
+</div>
+
+<script>
+function clock() {
+  var weeks = new Array("日","月","火","水","木","金","土");
+  var now = new Date();
+  var y = now.getFullYear();
+  var mo = now.getMonth() + 1;
+  var d = now.getDate();
+  var w = weeks[now.getDay()];
+  var h = now.getHours();
+  var mi = now.getMinutes();
+  var s = now.getSeconds();
+
+  if (mo < 10) mo = "0" + mo;
+  if (d < 10)   d = "0" + d;
+  if (mi < 10) mi = "0" + mi;
+  if (s < 10)   s = "0" + s;
+
+  $("#clock_date").html(y + "/" + mo + "/" + d + "(" + w + ")");
+  $("#clock_time").html(h + ":" + mi + ":" + s);
+}
+setInterval(clock, 1000);
+</script>

@@ -22,6 +22,10 @@ ul {
 th, td {
   border: solid 1px rgb(0, 0, 0);
 }
+input:hover {
+  cursor: pointer;
+  opacity: 0.6;
+}
 
 .clearfix:after {
   content: "";
