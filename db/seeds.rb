@@ -10,11 +10,34 @@ SysAdmin.delete_all
 Company.delete_all
 Admin.delete_all
 Employee.delete_all
+EmployeeAdditionalLabel.delete_all
+EmployeeAdditionalValue.delete_all
 
 SysAdmin.create({email: "sys_admin@email.com", password: "password", password_confirmation: "password" })
-
 ga = Company.create({code: "ga0001", name: "GAtechnologies" })
-
 ga.admins.create({email: "admin1@email.com", password: "password", password_confirmation: "password" })
 
-ga.employees.create({email: "emp1@email.com", password: "password", password_confirmation: "password" })
+labels = %w(名前 所属 部署)
+
+labels.each do |label|
+  ga.employee_additional_labels.create({name: label})
+end
+
+infos = [
+  {"名前" => "emp1", "所属" => "本社", "部署" => "開発"},
+  {"名前" => "emp2", "所属" => "本社", "部署" => "営業"},
+  {"名前" => "emp3", "所属" => "本社", "部署" => "事務"},
+  {"名前" => "emp4", "所属" => "支社", "部署" => "開発"},
+  {"名前" => "emp5", "所属" => "支社", "部署" => "営業"}
+]
+
+(1..5).each do |i|
+  ga.employees.create({email: "emp#{i}@email.com", password: "password", password_confirmation: "password" })
+end
+
+(1..5).each do |i|
+  employee = ga.employees.find_by_email("emp#{i}@email.com")
+  labels.each do |label|
+    employee.employee_additional_values.create({name: label, value: infos[i-1][label]})
+  end
+end
