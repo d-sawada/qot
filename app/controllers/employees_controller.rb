@@ -5,28 +5,45 @@ class EmployeesController < ApplicationController
   # GET /employees.json
   def index
     @list_type = params[:list] || "day"
-    @today = Date.today.to_s.delete("-")
+    @today = Date.today.to_s
 
     #========== カラム ==========
-    @labels = @company.employee_additional_labels
-    @all_labels = ["メールアドレス"] + @labels.pluck(:name)
+    @add_labels = @company.employee_additional_labels
+    @all_labels = ["メールアドレス"] + @add_labels.pluck(:name)
 
     #========== 社員情報一覧 ==========
-    # employeeのカラムと追加社員情報カラムをselect
-    q = '*'
-    i = 1
-    @labels.each do |label|
-      q += ", (SELECT \"employee_additional_values\".\"value\" FROM \"employee_additional_values\" WHERE \"employee_additional_values\".\"employee_id\" = \"employees\".\"id\" AND \"employee_additional_values\".\"employee_additional_label_id\" = #{label.id} ) AS \"ex#{i}\""
-      i += 1
-    end
+    @employees = @company.employees.includes(:dayinfos).order(:id)
 
     if @list_type == "day"
-      @employees = Employee.select(q).left_joins(:dayinfos).references(:dayinfos)
-          .where("dayinfos.date = ? OR dayinfos.date is NULL", @today)
-    elsif @list_type == "month" || @list_type == "schedule"
-      @employees = Employee.select(q).preload(:dayinfos).references(:dayinfos)
-          #.where("(dayinfos.date >= ? AND dayinfos.date <= ?) OR dayinfos.date is NULL", @today.slice(0,6) + "01", @today.slice(0,6) + "31")
+      @dayinfos = @company.dayinfos.where("date = ?", @today).order(:employee_id)
     end
+    @all_labels << "削除"
+    #q = '*'
+    #i = 1
+    #@labels.each do |label|
+    #  q += ", (SELECT \"employee_additional_values\".\"value\" FROM \"employee_additional_values\" WHERE \"employee_additional_values\".\"employee_id\" = \"employees\".\"id\" AND \"employee_additional_values\".\"employee_additional_label_id\" = #{label.id} ) AS \"ex#{i}\""
+    #  i += 1
+    #end
+    #
+    #if @list_type == "day"
+    #  @employees = @company.employees.select(q).left_joins(:dayinfos).references(:dayinfos)
+    #      .where("dayinfos.date = ? OR dayinfos.date is NULL", @today)
+    #  @employee = @employees.zip([])
+    #elsif @list_type == "month" || @list_type == "schedule"
+    #  @employees = @company.employees.select(q).preload(:dayinfos)
+    #  @sum_works = []
+    #  @employees.each do |employee|
+    #    sum_work = 0
+    #    employee.dayinfos.each do |d|
+    #      if d.start.present? && d.end.present?
+    #        dif = d.end - d.start
+    #        sum_work += dif >= 0 ? dif : dif + 24 * 3600
+    #      end
+    #    end
+    #    @sum_works << (sum_work.to_f / 3600).round(1).to_s + "時間"
+    #  end
+    #  @employees = @employees.zip(@sum_works)
+    #end
   end
 
   # GET /employees/1
