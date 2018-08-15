@@ -12,14 +12,21 @@ class EmployeesController < ApplicationController
     @all_labels = ["メールアドレス"] + @labels.pluck(:name)
 
     #========== 社員情報一覧 ==========
+    # employeeのカラムと追加社員情報カラムをselect
     q = '*'
     i = 1
     @labels.each do |label|
       q += ", (SELECT \"employee_additional_values\".\"value\" FROM \"employee_additional_values\" WHERE \"employee_additional_values\".\"employee_id\" = \"employees\".\"id\" AND \"employee_additional_values\".\"employee_additional_label_id\" = #{label.id} ) AS \"ex#{i}\""
       i += 1
     end
-    @employees = Employee.select(q).left_joins(:dayinfos).references(:dayinfos).where("dayinfos.date = ? OR dayinfos.date is NULL", @today) if @list_type == "day"
-    @employees = Employee.select(q).includes(:dayinfos).references(:dayinfos).where("(dayinfos.date >= ? AND dayinfos.date <= ?) OR dayinfos.date is NULL", @today.slice(0,6) + "01", @today.slice(0,6) + "31") if @list_type == "month" || @list_type == "schedule"
+
+    if @list_type == "day"
+      @employees = Employee.select(q).left_joins(:dayinfos).references(:dayinfos)
+          .where("dayinfos.date = ? OR dayinfos.date is NULL", @today)
+    elsif @list_type == "month" || @list_type == "schedule"
+      @employees = Employee.select(q).preload(:dayinfos).references(:dayinfos)
+          #.where("(dayinfos.date >= ? AND dayinfos.date <= ?) OR dayinfos.date is NULL", @today.slice(0,6) + "01", @today.slice(0,6) + "31")
+    end
   end
 
   # GET /employees/1
