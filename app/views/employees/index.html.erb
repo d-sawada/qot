@@ -1,40 +1,25 @@
 <h1>Employees</h1>
 
 <% if false %>
-<%= form_with(id: "filter_form") do |f| %>
-  <%= f.select :filter_item, @all_labels %>に
-  <%= f.text_field :filter_value %>を含む
-  <%= f.submit "filter" %>
-<% end %>
+  <%= form_with(id: "filter_form") do |f| %>
+    <%= f.select :filter_item, @all_labels %>に
+    <%= f.text_field :filter_value %>を含む
+    <%= f.submit "filter" %>
+  <% end %>
 <% end %>
 
 <table id="all-emp-list">
   <tbody>
     <tr>
-      <th>メールアドレス</th>
-      <% for i in 0..@labels.length - 1 do %>
-        <th><%= @labels[i].name %></th>
+      <% @all_labels.each do |label| %>
+        <th><%= label %></th>
       <% end %>
-      <% if @list_type == "day" %>
-        <th>所定出勤</th>
-        <th>所定退勤</th>
-        <th>出勤打刻</th>
-        <th>退勤打刻</th>
-      <% end %>
-      <th>削除</th>
     </tr>
+
     <% @employees.each do |employee| %>
       <tr>
         <td><%= employee.email %></td>
-        <% for i in 1..@labels.length do %>
-          <td><%=  employee.attributes["ex#{i}"] %></td>
-        <% end %>
-        <% if @list_type == "day" %>
-          <td><%= employee["pre_start"].insert(2, ":") if employee["pre_start"].present? %></td>
-          <td><%= employee["pre_end"].insert(2, ":")   if employee["pre_end"].present? %></td>
-          <td><%= employee["start"].insert(2, ":")     if employee["start"].present? %></td>
-          <td><%= employee["end"].insert(2, ":")       if employee["end"].present? %></td>
-        <% end %>
+        
         <td><%= link_to "削除", "/employee?list=#{@list_type}", method: :delete %></td>
       </tr>
     <% end %>

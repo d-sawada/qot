@@ -39,12 +39,12 @@ ActiveRecord::Schema.define(version: 2018_08_14_074448) do
   end
 
   create_table "dayinfos", force: :cascade do |t|
-    t.string "date", null: false
-    t.string "start", default: "", null: false
-    t.string "end", default: "", null: false
-    t.string "pre_start", default: "", null: false
-    t.string "pre_end", default: "", null: false
     t.integer "employee_id", null: false
+    t.date "date", null: false
+    t.time "start"
+    t.time "end"
+    t.time "pre_start"
+    t.time "pre_end"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
