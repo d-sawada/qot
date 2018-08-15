@@ -1,18 +1,21 @@
 class DayinfosController < ApplicationController
   def new
-    @employee = current_employee
     @today = Date.today.to_s.delete("-")
-    @dayinfo = @employee.dayinfos.find_by_date(@today)
-    @today_stamp = "今日はまだ出勤していません" if @dayinfo.start.blank?
-    @today_stamp = "今日は#{@dayinfo.start.insert(2, ":")}に出勤しています" if @dayinfo.end.blank?
-    @today_stamp = "今日の打刻は#{@dayinfo.start.insert(2, ":")} - #{@dayinfo.end.insert(2, ":")}でした" if @dayinfo.end.present?
+    @dayinfo = @employee.dayinfos.find_by_date(@today) || @employee.dayinfos.new
+    if @dayinfo.start.blank?
+      @today_stamp = "今日はまだ出勤していません" if @dayinfo.start.blank?
+    elsif @dayinfo.end.blank?
+      @today_stamp = "今日は#{@dayinfo.start.insert(2, ":")}に出勤しています"
+    else
+      @today_stamp = "今日の打刻は#{@dayinfo.start.insert(2, ":")} - #{@dayinfo.end.insert(2, ":")}でした"
+    end
   end
   def put
-    if employee_signed_in?
+    if @employee.present?
       today = Date.today.to_s.delete("-")
-      dayinfo = current_employee.dayinfos.find_by_date(today)
+      dayinfo = @employee.dayinfos.find_by_date(today)
       if dayinfo.nil?
-        dayinfo = current_employee.dayinfos.new
+        dayinfo = @employee.dayinfos.new
         dayinfo.date = today
       end
       if params[:commit] == "出勤"
