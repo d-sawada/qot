@@ -6,5 +6,6 @@ class Employee < ApplicationRecord
 
   has_many :employee_additional_values, dependent: :destroy
   has_many :dayinfos, dependent: :destroy
+  has_many :requests, dependent: :destroy
   belongs_to :company, primary_key: :code, foreign_key: :company_code
 end

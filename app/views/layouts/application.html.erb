@@ -28,7 +28,8 @@
       <ul class="clearfix">
         <li><%= link_to "日リスト", employees_path(list: "day") %></li>
         <li><%= link_to "月リスト", employees_path(list: "month") %></li>
-        <li><%= link_to "スケジュール", employees_path(list: "schedule") %></li>
+        <!-- <li><%= link_to "スケジュール", employees_path(list: "schedule") %></li> -->
+        <li><%= link_to "申請一覧", requests_path %></li>
         <li><%= link_to "従業員追加", new_employee_registration_path %></li>
         <li><%= link_to "設定", setting_path %></li>
         <% if admin_signed_in? %>
@@ -44,7 +45,7 @@
         <% if employee_signed_in? %>
           <li><%= link_to 'ログアウト', "/#{@company_code}/employee/sign_out", method: :delete %></li>
         <% end %>
-        <li>従業員：<%= @employee.email %></li>
+        <li>従業員：<%= @employee.name %></li>
       </ul>
     <% end %>
 

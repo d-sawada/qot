@@ -43,4 +43,6 @@ Rails.application.routes.draw do
 
   get 'timecard' => 'dayinfos#new', as: 'timecard'
   put 'timecard' => 'dayinfos#put'
+
+  resources :requests, only: [:index, :new, :create, :show, :update]
 end
