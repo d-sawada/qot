@@ -1,67 +1,80 @@
 class EmployeesController < ApplicationController
   before_action :set_employee, only: [:show, :edit, :update, :destroy]
 
-  # GET /employees
-  # GET /employees.json
   def index
     @list_type = params[:list] || "day"
-    @today = Date.today.to_s
+    @target_day = params[:day] || Date.current.to_s
 
     #========== カラム ==========
+    @employee_labels = []#["メールアドレス"]
     @add_labels = @company.employee_additional_labels
-    @all_labels = ["メールアドレス"] + @add_labels.pluck(:name)
+    @all_labels = @employee_labels + @add_labels.pluck(:name)
 
     #========== 社員情報一覧 ==========
-    @employees = @company.employees.includes(:dayinfos).order(:id)
+    @employees = @company.employees.includes(:dayinfos, :employee_additional_values).order(:id)
+
+    @add_values = []
+    @employees.each do |employee|
+      add_value = {}
+      employee.employee_additional_values.each do |value|
+        add_value[value.employee_additional_label_id] = value.value
+      end
+      @add_values << add_value
+    end
 
     if @list_type == "day"
-      @dayinfos = @company.dayinfos.where("date = ?", @today).order(:employee_id)
+      @dayinfo_labels = ["所定出勤", "所定退勤", "出勤打刻", "退勤打刻"]
+      @all_labels += @dayinfo_labels
+      @all_dayinfos = []
+      @employees.each do |employee|
+        all_dayinfo = {}
+        employee.dayinfos.each do |d|
+          if d.date.to_s == @target_day
+            @dayinfo_labels.zip([d.pre_start, d.pre_end, d.start, d.end]).each { |key, val| all_dayinfo[key] = val.to_s.slice(11, 5) if val.present? }
+          end
+        end
+        @all_dayinfos << all_dayinfo
+      end
+    elsif @list_type == "month"
+      @monthinfo_labels = ["勤務日数", "所定時間", "出勤日数", "実働計"]
+      @all_labels += @monthinfo_labels
+      @all_monthinfos = []
+      @employees.each do |employee|
+        all_monthinfo = Hash[@monthinfo_labels.zip([0, 0, 0, 0])]
+        employee.dayinfos.each do |d|
+          if d.date.to_s.slice(0, 7) == @target_day.slice(0, 7)
+            if d.pre_start.present? && d.pre_end.present?
+              all_monthinfo["勤務日数"] += 1
+              all_monthinfo["所定時間"] += (d.pre_end - d.pre_start).to_i
+            end
+            if d.start.present? && d.end.present?
+              all_monthinfo["出勤日数"] += 1
+              all_monthinfo["実働計"] += (d.end - d.start).to_i
+            end
+          end
+        end
+        all_monthinfo["所定時間"] = (all_monthinfo["所定時間"]).to_hm
+        all_monthinfo["実働計"] = (all_monthinfo["実働計"]).to_hm
+        @all_monthinfos << all_monthinfo
+      end
+    elsif @list_type == "schedule"
+      day_num = Date.parse(@target_day).end_of_month.day.to_i
+      @days_labels = (1..day_num).to_a
+      @all_labels += @days_labels
     end
     @all_labels << "削除"
-    #q = '*'
-    #i = 1
-    #@labels.each do |label|
-    #  q += ", (SELECT \"employee_additional_values\".\"value\" FROM \"employee_additional_values\" WHERE \"employee_additional_values\".\"employee_id\" = \"employees\".\"id\" AND \"employee_additional_values\".\"employee_additional_label_id\" = #{label.id} ) AS \"ex#{i}\""
-    #  i += 1
-    #end
-    #
-    #if @list_type == "day"
-    #  @employees = @company.employees.select(q).left_joins(:dayinfos).references(:dayinfos)
-    #      .where("dayinfos.date = ? OR dayinfos.date is NULL", @today)
-    #  @employee = @employees.zip([])
-    #elsif @list_type == "month" || @list_type == "schedule"
-    #  @employees = @company.employees.select(q).preload(:dayinfos)
-    #  @sum_works = []
-    #  @employees.each do |employee|
-    #    sum_work = 0
-    #    employee.dayinfos.each do |d|
-    #      if d.start.present? && d.end.present?
-    #        dif = d.end - d.start
-    #        sum_work += dif >= 0 ? dif : dif + 24 * 3600
-    #      end
-    #    end
-    #    @sum_works << (sum_work.to_f / 3600).round(1).to_s + "時間"
-    #  end
-    #  @employees = @employees.zip(@sum_works)
-    #end
   end
 
-  # GET /employees/1
-  # GET /employees/1.json
   def show
   end
 
-  # GET /employees/new
   def new
     @employee = Employee.new
   end
 
-  # GET /employees/1/edit
   def edit
   end
 
-  # POST /employees
-  # POST /employees.json
   def create
     @employee = Employee.new(employee_params)
 
@@ -76,8 +89,6 @@ class EmployeesController < ApplicationController
     end
   end
 
-  # PATCH/PUT /employees/1
-  # PATCH/PUT /employees/1.json
   def update
     respond_to do |format|
       if @employee.update(employee_params)
@@ -90,8 +101,6 @@ class EmployeesController < ApplicationController
     end
   end
 
-  # DELETE /employees/1
-  # DELETE /employees/1.json
   def destroy
     @employee.destroy
     respond_to do |format|
@@ -101,12 +110,10 @@ class EmployeesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_employee
       @employee = Employee.find(params[:id])
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
     def employee_params
       params.require(:employee).permit(:email, :password, :password_confirmation)
     end
