@@ -5,4 +5,8 @@ class EmployeeAdditionalValue < ApplicationRecord
   validates :employee_id, presence: true
   validates :employee_additional_label_id, presence: true
   validates :value, length: { maximum: 255 }
+
+  def ex_key_id
+    self.employee_additional_label_id
+  end
 end
