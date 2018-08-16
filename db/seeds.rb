@@ -43,10 +43,12 @@ end
   end
   
   (1..5).each do |i|
-    s = rand(24 * 60 - 1)
-    e = rand(24 * 60 - s) + s + 1
-    ss = ("0" + (s / 60).to_s).slice(-2,2) + ":" + ("0" + (s % 60).to_s).slice(-2,2)
-    es = ("0" + (e / 60).to_s).slice(-2,2) + ":" + ("0" + (e % 60).to_s).slice(-2,2)
-    employee.dayinfos.create({date: "2018-08-1" + i.to_s, start: "2000-01-01 " + ss + ":00", end: "2000-01-01 " + es + ":00"})
+    #s = rand(24 * 60 - 1) 
+    #e = rand(24 * 60 - s) + s + 1
+    #ss = ("0" + (s / 60).to_s).slice(-2,2) + ":" + ("0" + (s % 60).to_s).slice(-2,2)
+    #es = ("0" + (e / 60).to_s).slice(-2,2) + ":" + ("0" + (e % 60).to_s).slice(-2,2)
+    ss = Time.current
+    es = Time.current + 3600
+    employee.dayinfos.create({date: "2018-08-1" + i.to_s, start: ss, end: es})
   end
 end
