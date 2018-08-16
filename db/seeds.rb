@@ -33,7 +33,7 @@ infos = [
 ]
 
 (1..5).each do |i|
-  ga.employees.create({email: "emp#{i}@email.com", password: "password", password_confirmation: "password" })
+  ga.employees.create({name: "emp#{i}", email: "emp#{i}@email.com", password: "password", password_confirmation: "password" })
 end
 
 (1..5).each do |i|
@@ -43,10 +43,6 @@ end
   end
   
   (1..5).each do |i|
-    #s = rand(24 * 60 - 1) 
-    #e = rand(24 * 60 - s) + s + 1
-    #ss = ("0" + (s / 60).to_s).slice(-2,2) + ":" + ("0" + (s % 60).to_s).slice(-2,2)
-    #es = ("0" + (e / 60).to_s).slice(-2,2) + ":" + ("0" + (e % 60).to_s).slice(-2,2)
     ss = Time.current
     es = Time.current + 3600
     employee.dayinfos.create({date: "2018-08-1" + i.to_s, start: ss, end: es})

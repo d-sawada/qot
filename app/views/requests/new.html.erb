@@ -1,0 +1,55 @@
+<%= form_with(model: @request, local: true) do |f| %>
+  <% if @request.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@request.errors.count, "error") %> prohibited this employee from being saved:</h2>
+
+      <ul>
+      <% @request.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= f.hidden_field :employee_id %>
+  <%= f.hidden_field :state %>
+  <%= f.hidden_field :date %>
+
+  <div class="field">
+    <%= f.label :employee_id %>
+    <%= Employee.find(params[:id]).name %>
+  </div>
+
+  <div class="field">
+    <%= f.label :date %>
+    <%= params[:date] %>
+  </div>
+
+  <div class="field">
+    <%= f.label :start %>
+    <%= f.text_field :start %>
+  </div>
+
+  <div class="field">
+    <%= f.label :end %>
+    <%= f.text_field :end %>
+  </div>
+
+  <% if employee_signed_in? %>
+    <div class="field">
+      <%= f.label :employee_comment %>
+      <%= f.text_area :employee_comment %>
+    </div>
+  <% end %>
+
+  <% if sys_admin_signed_in? || admin_signed_in? %>
+    <div class="field">
+      <%= f.label :admin_comment %>
+      <%= f.text_area :admin_comment %>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

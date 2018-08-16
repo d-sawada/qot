@@ -1,0 +1,22 @@
+<h1>申請一覧</h1>
+
+<table>
+  <tbody>
+    <tr>
+      <% @all_labels.each do |val| %>
+        <th><%= val %></th>
+      <% end %>
+    </tr>
+    <% @requests.each do |r| %>
+      <tr>
+        <% applyer = r.admin_id.present? ? Admin.find(r.admin_id).email : "本人" %>
+        <% d = r.employee.dayinfos.find_by_date(r.date) %>
+        <% d = d.present? ? [d.start.to_s.slice(11,5), d.end.to_s.slice(11,5)] : ["", ""] %>
+        <% [r.state, applyer, r.employee.name, r.date, d[0], d[1], r.start.to_s.slice(11,5), r.end.to_s.slice(11,5)].each do |val| %>
+          <td><%= val %></td>
+        <% end %>
+        <td><%= link_to "詳細", request_path(r) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

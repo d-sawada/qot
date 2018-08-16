@@ -6,7 +6,7 @@ class EmployeesController < ApplicationController
     @target_day = params[:day] || Date.current.to_s
 
     #========== カラム ==========
-    @employee_labels = []#["メールアドレス"]
+    @employee_labels = ["名前"]
     @add_labels = @company.employee_additional_labels
     @all_labels = @employee_labels + @add_labels.pluck(:name)
 
@@ -62,10 +62,25 @@ class EmployeesController < ApplicationController
       @days_labels = (1..day_num).to_a
       @all_labels += @days_labels
     end
-    @all_labels << "詳細" << "削除"
   end
 
   def show
+    @list_type = params[:list] || "day"
+    @target_day = params[:day] || Date.current.to_s
+    @date = Date.parse(@target_day)
+    @day_num = @date.end_of_month.day.to_i
+
+    @all_labels = []
+    if @list_type == "day"
+      d = @employee.dayinfos.where("date = ?", @target_day).first
+      @dayinfo = d.present? ? [d.pre_start, d.pre_end, d.start, d.end].map{|v| v.present? ? v.to_s.slice(11, 5) : ""}
+                                   : ["", "", "", ""]
+      @all_labels += ["所定出勤", "所定退勤", "出勤打刻", "退勤打刻"]
+    elsif @list_type == "month"
+      @dayinfos = Hash[*@employee.dayinfos.where("date >= ? AND date <= ?", @date.beginning_of_month.to_s, @date.end_of_month.to_s)
+          .map{ |d| [d.date.to_s.slice(-2, 2), [d.pre_start, d.pre_end, d.start, d.end].map{|v| v.to_s.slice(11, 5)}]}.flatten(1)]
+      @all_labels += ["日", "所定出勤", "所定退勤", "出勤打刻", "退勤打刻"]
+    end
   end
 
   def new
@@ -118,6 +133,6 @@ class EmployeesController < ApplicationController
     end
 
     def employee_params
-      params.require(:employee).permit(:email, :password, :password_confirmation)
+      params.require(:employee).permit(:name, :email, :password, :password_confirmation)
     end
 end
