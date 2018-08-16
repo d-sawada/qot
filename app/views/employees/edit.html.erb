@@ -1,6 +1,38 @@
-<h1>Editing Employee</h1>
+<h2>従業員Edit</h2>
 
-<%= render 'form', employee: @employee %>
+<%= form_for(@employee, url: employee_url, html: { method: :patch }) do |f| %>
 
-<%= link_to 'Show', @employee %> |
-<%= link_to 'Back', employees_path %>
+  <% @employee.company_code = @company_code %>
+  <%= f.hidden_field :company_code %>
+
+  <div class="field">
+    <%= f.label :email %>
+    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+  </div>
+
+  <div class="field">
+    <%= f.label :password %>
+    <% if @minimum_password_length %>
+      <em>(<%= @minimum_password_length %> characters minimum)</em>
+    <% end %><br />
+    <%= f.password_field :password, autocomplete: "off" %>
+  </div>
+
+  <div class="field">
+    <%= f.label :password_confirmation %>
+    <%= f.password_field :password_confirmation, autocomplete: "off" %>
+  </div>
+
+  <%= f.fields_for :employee_additional_values do |v| %>
+    <% @company.employee_additional_labels.each do |add_label| %>
+      <div class="field">
+        <%= v.label add_label.name %>
+        <%= v.text_field add_label.name, value: @default_values[add_label.name], autocomplete: add_label.name %>
+      </div>
+    <% end %>
+  <% end %>
+
+  <div class="actions">
+    <%= f.submit "Update" %>
+  </div>
+<% end %>

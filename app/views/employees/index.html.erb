@@ -1,9 +1,9 @@
 <% if @list_type == "day" %>
-  <h1><%= Date.parse(@target_day).strftime("%m月%d日") %></h1>
+  <h1><%= Date.parse(@target_day).strftime("%-m月%-d日") %></h1>
   <%= link_to "前の日", employees_path(list: "day", day: Date.parse(@target_day).yesterday.to_s)%>
   <%= link_to "次の日", employees_path(list: "day", day: Date.parse(@target_day).tomorrow.to_s)%>
 <% elsif @list_type == "month" || @list_type == "schedule" %>
-  <h1><%= Date.parse(@target_day).strftime("%m月") %></h1>
+  <h1><%= Date.parse(@target_day).strftime("%-m月") %></h1>
   <%= link_to "前の月", employees_path(list: "month", day: Date.parse(@target_day).prev_month.to_s)%>
   <%= link_to "次の月", employees_path(list: "month", day: Date.parse(@target_day).next_month.to_s)%>
 <% end %>
@@ -40,7 +40,8 @@
             <td><%= @all_monthinfos[i][label] %></td>
           <% end %>
         <% end %>
-        <td><%= link_to "削除", "/employee?list=#{@list_type}", method: :delete %></td>
+        <td><%= link_to "詳細", employee_url(@employees[i]) %></td>
+        <td><%= link_to "削除", employee_url(@employees[i], list: @list_type), method: :delete %></td>
       </tr>
     <% end %>
   </tbody>

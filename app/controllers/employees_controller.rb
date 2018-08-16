@@ -62,7 +62,7 @@ class EmployeesController < ApplicationController
       @days_labels = (1..day_num).to_a
       @all_labels += @days_labels
     end
-    @all_labels << "削除"
+    @all_labels << "詳細" << "削除"
   end
 
   def show
@@ -73,6 +73,8 @@ class EmployeesController < ApplicationController
   end
 
   def edit
+    @labels = @company.employee_additional_labels.map{ |label| [label.id, label.name] }.to_h
+    @default_values = @employee.employee_additional_values.map{ |val| [@labels[val.employee_additional_label_id], val.value] }.to_h
   end
 
   def create
@@ -92,10 +94,14 @@ class EmployeesController < ApplicationController
   def update
     respond_to do |format|
       if @employee.update(employee_params)
+        params[:employee][:employee_additional_values].each do |name, value|
+          @employee.employee_additional_values.find_by_employee_additional_label_id(@company.employee_additional_labels.find_by_name(name).id).update({value: value})
+          #EmployeeAdditionalValue.update({employee_id: @employee.id, employee_additional_label_id: @company.employee_additional_labels.find_by_name(name).id, value: value})
+        end
         format.html { redirect_to @employee, notice: 'Employee was successfully updated.' }
         format.json { render :show, status: :ok, location: @employee }
       else
-        format.html { render :edit }
+        format.html { redirect_to edit_employee_path(@employee)}
         format.json { render json: @employee.errors, status: :unprocessable_entity }
       end
     end
@@ -103,10 +109,7 @@ class EmployeesController < ApplicationController
 
   def destroy
     @employee.destroy
-    respond_to do |format|
-      format.html { redirect_to employees_url(list: params[:list]), notice: '従業員を削除しました.' }
-      format.json { head :no_content }
-    end
+    redirect_to employees_path(list: params[:list])
   end
 
   private
