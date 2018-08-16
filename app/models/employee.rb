@@ -8,4 +8,8 @@ class Employee < ApplicationRecord
   has_many :dayinfos, dependent: :destroy
   has_many :requests, dependent: :destroy
   belongs_to :company, primary_key: :code, foreign_key: :company_code
+
+  def ex_vals
+    self.employee_additional_values
+  end
 end
