@@ -18,18 +18,18 @@ SysAdmin.create({email: "sys_admin@email.com", password: "password", password_co
 ga = Company.create({code: "ga0001", name: "GAtechnologies" })
 ga.admins.create({email: "admin1@email.com", password: "password", password_confirmation: "password" })
 
-labels = %w(名前 所属 部署)
+labels = %w(所属 部署)
 
 labels.each do |label|
   ga.employee_additional_labels.create({name: label})
 end
 
 infos = [
-  {"名前" => "emp1", "所属" => "本社", "部署" => "開発"},
-  {"名前" => "emp2", "所属" => "本社", "部署" => "営業"},
-  {"名前" => "emp3", "所属" => "本社", "部署" => "事務"},
-  {"名前" => "emp4", "所属" => "支社", "部署" => "開発"},
-  {"名前" => "emp5", "所属" => "支社", "部署" => "営業"}
+  {"所属" => "本社", "部署" => "開発"},
+  {"所属" => "本社", "部署" => "営業"},
+  {"所属" => "本社", "部署" => "事務"},
+  {"所属" => "支社", "部署" => "開発"},
+  {"所属" => "支社", "部署" => "営業"}
 ]
 
 (1..5).each do |i|
