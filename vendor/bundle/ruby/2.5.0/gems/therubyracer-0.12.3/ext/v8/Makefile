@@ -12,12 +12,21 @@ NULLCMD = :
 #### Start of system configuration section. ####
 
 srcdir = .
+<<<<<<< HEAD
 topdir = /home/renne/.rbenv/versions/2.5.1/include/ruby-2.5.0
 hdrdir = $(topdir)
 arch_hdrdir = /home/renne/.rbenv/versions/2.5.1/include/ruby-2.5.0/x86_64-linux
 PATH_SEPARATOR = :
 VPATH = $(srcdir):$(arch_hdrdir)/ruby:$(hdrdir)/ruby
 prefix = $(DESTDIR)/home/renne/.rbenv/versions/2.5.1
+=======
+topdir = /Users/d_sawada/.rbenv/versions/2.5.1/include/ruby-2.5.0
+hdrdir = $(topdir)
+arch_hdrdir = /Users/d_sawada/.rbenv/versions/2.5.1/include/ruby-2.5.0/x86_64-darwin17
+PATH_SEPARATOR = :
+VPATH = $(srcdir):$(arch_hdrdir)/ruby:$(hdrdir)/ruby
+prefix = $(DESTDIR)/Users/d_sawada/.rbenv/versions/2.5.1
+>>>>>>> refs/remotes/origin/master
 rubysitearchprefix = $(rubylibprefix)/$(sitearch)
 rubyarchprefix = $(rubylibprefix)/$(arch)
 rubylibprefix = $(libdir)/$(RUBY_BASE_NAME)
@@ -31,8 +40,13 @@ rubyhdrdir = $(includedir)/$(RUBY_VERSION_NAME)
 vendorarchdir = $(vendorlibdir)/$(sitearch)
 vendorlibdir = $(vendordir)/$(ruby_version)
 vendordir = $(rubylibprefix)/vendor_ruby
+<<<<<<< HEAD
 sitearchdir = $(DESTDIR)./.gem.20180816-156-r6hel7
 sitelibdir = $(DESTDIR)./.gem.20180816-156-r6hel7
+=======
+sitearchdir = $(DESTDIR)./.gem.20180817-5359-qn9swl
+sitelibdir = $(DESTDIR)./.gem.20180817-5359-qn9swl
+>>>>>>> refs/remotes/origin/master
 sitedir = $(rubylibprefix)/site_ruby
 rubyarchdir = $(rubylibdir)/$(arch)
 rubylibdir = $(rubylibprefix)/$(ruby_version)
@@ -50,7 +64,11 @@ dvidir = $(docdir)
 htmldir = $(docdir)
 infodir = $(datarootdir)/info
 docdir = $(datarootdir)/doc/$(PACKAGE)
+<<<<<<< HEAD
 oldincludedir = $(DESTDIR)/usr/include
+=======
+oldincludedir = $(SDKROOT)/usr/include
+>>>>>>> refs/remotes/origin/master
 includedir = $(prefix)/include
 localstatedir = $(prefix)/var
 sharedstatedir = $(prefix)/com
@@ -63,12 +81,21 @@ bindir = $(exec_prefix)/bin
 archdir = $(rubyarchdir)
 
 
+<<<<<<< HEAD
 CC = gcc
 CXX = g++
 LIBRUBY = $(LIBRUBY_A)
 LIBRUBY_A = lib$(RUBY_SO_NAME)-static.a
 LIBRUBYARG_SHARED = -Wl,-rpath,$(libdir) -L$(libdir) 
 LIBRUBYARG_STATIC = -Wl,-rpath,$(libdir) -L$(libdir) -l$(RUBY_SO_NAME)-static
+=======
+CC = clang
+CXX = clang++
+LIBRUBY = $(LIBRUBY_A)
+LIBRUBY_A = lib$(RUBY_SO_NAME)-static.a
+LIBRUBYARG_SHARED = 
+LIBRUBYARG_STATIC = -l$(RUBY_SO_NAME)-static -framework Foundation
+>>>>>>> refs/remotes/origin/master
 empty =
 OUTFLAG = -o $(empty)
 COUTFLAG = -o $(empty)
@@ -79,6 +106,7 @@ cflags   = $(optflags) $(debugflags) $(warnflags)
 cxxflags = $(optflags) $(debugflags) $(warnflags)
 optflags = -O3
 debugflags = -ggdb3
+<<<<<<< HEAD
 warnflags = -Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wno-tautological-compare -Wno-parentheses-equality -Wno-constant-logical-operand -Wno-self-assign -Wunused-variable -Wimplicit-int -Wpointer-arith -Wwrite-strings   -Wdeprecated-declarations -Wno-packed-bitfield-compat -Wsuggest-attribute=noreturn -Wsuggest-attribute=format -Wno-maybe-uninitialized
 CCDLFLAGS = -fPIC
 CFLAGS   = $(CCDLFLAGS) $(cflags) $(ARCH_FLAG)
@@ -97,12 +125,36 @@ EXEEXT =
 
 RUBY_INSTALL_NAME = $(RUBY_BASE_NAME)
 RUBY_SO_NAME = ruby
+=======
+warnflags = -Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wno-tautological-compare -Wno-parentheses-equality -Wno-constant-logical-operand -Wno-self-assign -Wunused-variable -Wimplicit-int -Wpointer-arith -Wwrite-strings  -Wshorten-64-to-32  -Wdivision-by-zero -Wdeprecated-declarations -Wextra-tokens
+CCDLFLAGS = -fno-common
+CFLAGS   = $(CCDLFLAGS)  -O3 -Wno-error=shorten-64-to-32  -pipe $(ARCH_FLAG)
+INCFLAGS = -I. -I/Users/d_sawada/Source/rails/test--queen-of-time/vendor/bundle/ruby/2.5.0/gems/libv8-3.16.14.19-x86_64-darwin-17/vendor/v8/include -I$(arch_hdrdir) -I$(hdrdir)/ruby/backward -I$(hdrdir) -I$(srcdir)
+DEFS     = 
+CPPFLAGS =  -I/Users/d_sawada/.rbenv/versions/2.5.1/include  -D_XOPEN_SOURCE -D_DARWIN_C_SOURCE -D_DARWIN_UNLIMITED_SELECT -D_REENTRANT $(DEFS) $(cppflags) -Wall -g -rdynamic
+CXXFLAGS = $(CCDLFLAGS) $(cxxflags) $(ARCH_FLAG)
+ldflags  = /Users/d_sawada/Source/rails/test--queen-of-time/vendor/bundle/ruby/2.5.0/gems/libv8-3.16.14.19-x86_64-darwin-17/vendor/v8/out/x64.release/libv8_base.a /Users/d_sawada/Source/rails/test--queen-of-time/vendor/bundle/ruby/2.5.0/gems/libv8-3.16.14.19-x86_64-darwin-17/vendor/v8/out/x64.release/libv8_snapshot.a -L. -L/Users/d_sawada/.rbenv/versions/2.5.1/lib  -fstack-protector -L/usr/local/lib
+dldflags = -L/Users/d_sawada/.rbenv/versions/2.5.1/lib  -Wl,-undefined,dynamic_lookup -Wl,-multiply_defined,suppress 
+ARCH_FLAG = 
+DLDFLAGS = $(ldflags) $(dldflags) $(ARCH_FLAG)
+LDSHARED = $(CC) -dynamic -bundle
+LDSHAREDXX = $(CXX) -dynamic -bundle
+AR = libtool -static
+EXEEXT = 
+
+RUBY_INSTALL_NAME = $(RUBY_BASE_NAME)
+RUBY_SO_NAME = ruby.2.5.1
+>>>>>>> refs/remotes/origin/master
 RUBYW_INSTALL_NAME = 
 RUBY_VERSION_NAME = $(RUBY_BASE_NAME)-$(ruby_version)
 RUBYW_BASE_NAME = rubyw
 RUBY_BASE_NAME = ruby
 
+<<<<<<< HEAD
 arch = x86_64-linux
+=======
+arch = x86_64-darwin17
+>>>>>>> refs/remotes/origin/master
 sitearch = $(arch)
 ruby_version = 2.5.0
 ruby = $(bindir)/$(RUBY_BASE_NAME)
@@ -111,8 +163,13 @@ ruby_headers = $(hdrdir)/ruby.h $(hdrdir)/ruby/backward.h $(hdrdir)/ruby/ruby.h 
 
 RM = rm -f
 RM_RF = $(RUBY) -run -e rm -- -rf
+<<<<<<< HEAD
 RMDIRS = rmdir --ignore-fail-on-non-empty -p
 MAKEDIRS = /bin/mkdir -p
+=======
+RMDIRS = rmdir -p
+MAKEDIRS = mkdir -p
+>>>>>>> refs/remotes/origin/master
 INSTALL = /usr/bin/install -c
 INSTALL_PROG = $(INSTALL) -m 0755
 INSTALL_DATA = $(INSTALL) -m 644
@@ -123,7 +180,11 @@ TOUCH = exit >
 
 preload = 
 libpath = . $(libdir)
+<<<<<<< HEAD
 LIBPATH =  -L. -L$(libdir) -Wl,-rpath,$(libdir)
+=======
+LIBPATH =  -L. -L$(libdir)
+>>>>>>> refs/remotes/origin/master
 DEFFILE = 
 
 CLEANFILES = mkmf.log
@@ -134,7 +195,11 @@ extout =
 extout_prefix = 
 target_prefix = /v8
 LOCAL_LIBS = 
+<<<<<<< HEAD
 LIBS =  -lpthread  -lpthread -ldl -lcrypt -lm   -lc
+=======
+LIBS =  -lobjc -lpthread  -lpthread -ldl -lobjc 
+>>>>>>> refs/remotes/origin/master
 ORIG_SRCS = accessor.cc array.cc backref.cc constants.cc constraints.cc context.cc date.cc exception.cc external.cc function.cc gc.cc handles.cc heap.cc init.cc invocation.cc locker.cc message.cc object.cc primitive.cc rr.cc script.cc signature.cc stack.cc string.cc template.cc trycatch.cc v8.cc value.cc
 SRCS = $(ORIG_SRCS) 
 OBJS = accessor.o array.o backref.o constants.o constraints.o context.o date.o exception.o external.o function.o gc.o handles.o heap.o init.o invocation.o locker.o message.o object.o primitive.o rr.o script.o signature.o stack.o string.o template.o trycatch.o v8.o value.o
@@ -143,7 +208,11 @@ LOCAL_HDRS =
 TARGET = init
 TARGET_NAME = init
 TARGET_ENTRY = Init_$(TARGET_NAME)
+<<<<<<< HEAD
 DLLIB = $(TARGET).so
+=======
+DLLIB = $(TARGET).bundle
+>>>>>>> refs/remotes/origin/master
 EXTSTATIC = 
 STATIC_LIB = 
 
@@ -257,6 +326,10 @@ $(TARGET_SO): $(OBJS) Makefile
 	$(ECHO) linking shared-object v8/$(DLLIB)
 	-$(Q)$(RM) $(@)
 	$(Q) $(LDSHAREDXX) -o $@ $(OBJS) $(LIBPATH) $(DLDFLAGS) $(LOCAL_LIBS) $(LIBS)
+<<<<<<< HEAD
+=======
+	$(Q) $(POSTLINK)
+>>>>>>> refs/remotes/origin/master
 
 
 

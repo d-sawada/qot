@@ -12,6 +12,9 @@
 
 ActiveRecord::Schema.define(version: 2018_08_16_073947) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "admins", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -88,10 +91,12 @@ ActiveRecord::Schema.define(version: 2018_08_16_073947) do
     t.integer "admin_id"
     t.string "state", null: false
     t.string "date", null: false
+    t.time "prev_start"
+    t.time "prev_end"
     t.time "start"
     t.time "end"
-    t.text "employee_comment", limit: 255
-    t.text "admin_comment", limit: 255
+    t.text "employee_comment"
+    t.text "admin_comment"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
