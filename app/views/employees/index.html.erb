@@ -8,16 +8,18 @@
   <%= link_to "次の月", employees_path(list: "month", day: Date.parse(@tday).next_month.to_s)%>
 <% end %>
 
-<table id="all-emp-list">
-  <tbody>
+<table class="dragable">
+  <thead>
     <tr>
       <% @table_key.each do |key| %>
-        <th><%= key %></th>
+        <th class="case"><%= key %></th>
       <% end %>
     </tr>
-
-    <% @table_vals.each do |vals| %>
+  </thead>
+  <tbody>
+    <% @table_vals.zip(@link_tds).each do |vals, link_td| %>
       <tr>
+        <td><%= link_to link_td[:name], employee_path(id: link_td[:id], list: @list, day: @tday) %></td>
         <% vals.each do |val| %>
           <td><%= val %></td>
         <% end %>
@@ -25,7 +27,3 @@
     <% end %>
   </tbody>
 </table>
-
-<script>
-  tableDragger(document.querySelector("#all-emp-list"));
-</script>

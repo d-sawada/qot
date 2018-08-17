@@ -4,24 +4,27 @@ class EmployeesController < ApplicationController
   def index
     @list = params[:list] || "day"
     @tday = params[:day] || Date.current.to_s
-    emp_symkeys = [:name].zip(%w(名前))
+    emp_symkeys = [].zip(%w())#[:name].zip(%w(名前))
     ex_keys = @company.employee_additional_labels
 
     emps = @company.employees.includes(:dayinfos, :employee_additional_values).order(:id)
     ex_vals_hashs = emps.map{|emp| Hash[emp.ex_vals.map{|val| [val.ex_key_id, val.value]}] }
     ex_vals = ex_vals_hashs.map{|hashs| ex_keys.map{|key| hashs[key.id]}}
 
+    @link_tds = emps.map{|emp| {id: emp.id, name: emp.name}}
+    @table_key = ["名前"]
+
     if @list == "day"
       day_symkeys = [:pre_start, :pre_end, :start, :end].zip(%w(所定出勤 所定退勤 出勤打刻 退勤打刻))
       days = emps.map{|emp| emp.dayinfos.where("date = ?", @tday).first}
       day_vals = days.map{|day| day_symkeys.map{|sym, key| day.try(sym).to_hm}}
-      @table_key = emp_symkeys.map{|s,k| k} + ex_keys.pluck(:name) + day_symkeys.map{|s,k| k}
+      @table_key += emp_symkeys.map{|s,k| k} + ex_keys.pluck(:name) + day_symkeys.map{|sym,key| key}
       @table_vals = emps.zip(ex_vals, day_vals).map{|emp, val, day| emp_symkeys.map{|sym,key| emp[sym]} + val + day}
     elsif @list == "month"
       day_keys = %w(勤務日数 所定時間 出勤日数 実働計)
       dayss = emps.map{|emp| emp.dayinfos.where("date >= ? AND date <= ?", @tday.month_begin, @tday.month_end)}
       day_vals = dayss.map{|days| days.map{|day| day.totalization}.transpose}.map{|a1,a2,a3,a4| [a1.sum, a2.sum, a3.sum, a4.sum.to_hm]}
-      @table_key = emp_symkeys.map{|s,k| k} + ex_keys.pluck(:name) + day_keys
+      @table_key += emp_symkeys.map{|sym,key| key} + ex_keys.pluck(:name) + day_keys
       @table_vals = emps.zip(ex_vals, day_vals).map{|emp, val, day| emp_symkeys.map{|sym,key| emp[sym]} + val + day}
     elsif @list == "schedule"
 
@@ -29,21 +32,24 @@ class EmployeesController < ApplicationController
   end
 
   def show
-    @list_type = params[:list] || "day"
-    @target_day = params[:day] || Date.current.to_s
-    @date = Date.parse(@target_day)
-    @day_num = @date.end_of_month.day.to_i
+    @list = params[:list] || "day"
+    @tday = params[:day] || Date.current.to_s
+    @day_num = Date.parse(@tday).end_of_month.day.to_i
 
-    @all_labels = []
-    if @list_type == "day"
-      d = @employee.dayinfos.where("date = ?", @target_day).first
-      @dayinfo = d.present? ? [d.pre_start, d.pre_end, d.start, d.end].map{|v| v.present? ? v.to_s.slice(11, 5) : ""}
-                                   : ["", "", "", ""]
-      @all_labels += ["所定出勤", "所定退勤", "出勤打刻", "退勤打刻"]
-    elsif @list_type == "month"
-      @dayinfos = Hash[*@employee.dayinfos.where("date >= ? AND date <= ?", @date.beginning_of_month.to_s, @date.end_of_month.to_s)
-          .map{ |d| [d.date.to_s.slice(-2, 2), [d.pre_start, d.pre_end, d.start, d.end].map{|v| v.to_s.slice(11, 5)}]}.flatten(1)]
-      @all_labels += ["日", "所定出勤", "所定退勤", "出勤打刻", "退勤打刻"]
+    day_symkeys = [:pre_start, :pre_end, :start, :end].zip(%w(所定出勤 所定退勤 出勤打刻 退勤打刻))
+    if @list == "day"
+      day = @employee.dayinfos.where("date = ?", @tday).first
+      day_val = day.present? ? day_symkeys.map{|sym, key| day.try(sym).to_hm} : ["","","",""]
+      @table_key = day_symkeys.map{|sym,key| key}
+      @table_vals = [day_val]
+    elsif @list == "month"
+      days = @employee.dayinfos.where("date >= ? AND date <= ?", @tday.month_begin, @tday.month_end)
+      day_vals = days.map{|day| [day.date.day, day_symkeys.map{|sym,key| day.try(sym).to_hm}]}
+      @table_key = day_symkeys.map{|sym,key| key}
+      @table_vals = (1..@day_num).map{ ["","","",""] }
+      day_vals.each{|val| @table_vals[val[0]] = val[1]}
+    elsif @list == "schedule"
+
     end
   end
 
