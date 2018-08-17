@@ -1,7 +1,11 @@
 /*
- *= require_tree .
- *= require_self
- */
+*= require normilize
+*= require_tree .
+*= require_self
+*/
+
+// Custom bootstrap variables must be set or imported *before* bootstrap.
+@import "bootstrap";
 
 ul {
   margin: 0;
@@ -26,6 +30,16 @@ input:hover {
   margin-right: 1rem;
 }
 
-#app-logo {
+header {
+  height: 50px;
+  background-color: mediumpurple;
+}
+.header-left {
   float: left;
+}
+.header-right {
+  float: right;
+}
+a{
+  color: rgb(0, 73, 176);
 }
