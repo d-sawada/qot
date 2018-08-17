@@ -29,7 +29,9 @@
       </div>
       <div class="header-right">
         <div class="header-user"><%= @user_info %></div>
-        <div class="header-logout"><%= link_to "ログアウト", @logout_url, method: :delete %></div>
+        <% if signed_in? %>
+          <div class="header-logout"><%= link_to "ログアウト", @logout_url, method: :delete %></div>
+        <% end %>
       </div>
     </header>
 

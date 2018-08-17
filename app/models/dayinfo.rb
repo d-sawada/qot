@@ -4,15 +4,13 @@ class Dayinfo < ApplicationRecord
   validates :date, presence: true
   validates :employee_id, presence: true
 
-  before_save :times_trunc_sec
   before_create :times_trunc_sec
   before_update :times_trunc_sec
 
   def times_trunc_sec
-    self.pre_start = self.pre_start.trunc_sec
-    self.pre_end = self.pre_end.trunc_sec
-    self.start = self.start.trunc_sec
-    self.end = self.end.trunc_sec
+    [:pre_start, :pre_end, :start, :end].each do |sym|
+      self[sym] = Time.at(self[sym].to_i / 60 * 60) if self[sym].present?
+    end
   end
   def is_workday
     self.pre_start.present? && self.pre_end.present? ? 1 : 0
