@@ -1,14 +1,16 @@
+th, td {
+  min-width: 70px;
+  border: solid 1px rgb(0, 0, 0);
+  font-size: 1.6rem;
+}
 th {
-  color: rgb(21, 83, 255);
+  background-color: mediumpurple;
+  color: black;
+  text-align: center;
 }
 th:hover {
   cursor: pointer;
-}
-th.header span:after {
-  content: "　";
-  font-style: normal;
-  font-weight: normal;
-  text-decoration: inherit;
+  opacity: 0.6;
 }
 th.headerSortUp span:after {
   content: "▼";
@@ -21,4 +23,7 @@ th.headerSortDown span:after {
   font-style: normal;
   font-weight: normal;
   text-decoration: inherit;
+}
+td {
+  text-align: right;
 }
