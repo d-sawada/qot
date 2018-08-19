@@ -4,33 +4,36 @@
     <title>QueenOfTime</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
   <body>
     <header class="clearfix">
-      <div class="header-left">
-        <div class="app-logo">Queen of Time</div>
+      <div class="header-left clearfix">
+        <div class="app-logo d-none d-sm-block">Queen of Time</div>
         <ul class="header-list">
           <% if admin_signed_in? || sys_admin_signed_in? %>
-            <li><%= link_to "日リスト", employees_path(list: "day") %></li>
-            <li><%= link_to "月リスト", employees_path(list: "month") %></li>
-            <!-- <li><%= link_to "スケジュール", employees_path(list: "schedule") %></li> -->
-            <li><%= link_to "申請一覧", requests_path %></li>
-            <li><%= link_to "従業員追加", new_employee_registration_path %></li>
-            <li><%= link_to "設定", setting_path %></li>
+            <li><%= link_to image_tag("dayly.png"), employees_path(list: "day"), title: "日データ" %></li>
+            <li><%= link_to image_tag("monthly.png"), employees_path(list: "month"), title: "月データ" %></li>
+            <!-- <li><%= link_to image_tag(""), employees_path(list: "schedule"), title: "スケジュール" %></li> -->
+            <li><%= link_to "申請一覧", requests_path, title: "申請一覧" %></li>
+            <li><%= link_to image_tag("add_employee"), new_employee_registration_path, title: "社員追加" %></li>
+            <li><%= link_to image_tag("setting.png"), setting_path, title: "設定" %></li>
           <% end %>
           <% if employee_signed_in? || sys_admin_signed_in? %>
-            <li><%= link_to "タイムカード", timecard_path %></li>
+            <li><%= link_to image_tag("timecard"), timecard_path, title: "タイムカード" %></li>
           <% end %>
         </ul>
       </div>
       <div class="header-right">
-        <div class="header-user"><%= @user_info %></div>
+        <div class="header-user">
+          <p><%= @user_kind %></p>
+          <p><%= @user_identifer %></p>
+        </div>
         <% if signed_in? %>
-          <div class="header-logout"><%= link_to "ログアウト", @logout_url, method: :delete %></div>
+          <%= link_to "ログアウト", @logout_url, method: :delete, class: "header-logout" %>
         <% end %>
       </div>
     </header>

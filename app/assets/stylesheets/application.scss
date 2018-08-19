@@ -5,7 +5,6 @@
 */
 
 // Custom bootstrap variables must be set or imported *before* bootstrap.
-@import "bootstrap";
 
 ul {
   margin: 0;
@@ -20,6 +19,9 @@ input:hover {
   opacity: 0.6;
 }
 
+html {
+  font-size: 62.5%;
+}
 #contents {
   margin: 10px;
 }
@@ -31,19 +33,73 @@ input:hover {
 }
 .clearfix li {
   float: left;
-  margin-right: 1rem;
 }
 
 header {
-  height: 50px;
+  position: relative;
+  height: 40px;
   background-color: mediumpurple;
 }
 .header-left {
+  z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 390px;
+}
+.app-logo {
   float: left;
+  margin: 0 5px;
+  height: 40px;
+  width: 140px;
+  line-height: 40px;
+  text-align: center;
+  font-size: 2rem;
+}
+.header-list {
+  float: left;
+  background-color: mediumpurple;
+}
+.header-list li:hover {
+  background-color: rgb(138, 75, 255);
+}
+.header-list img {
+  height: 40px;
+  padding: 8px;
 }
 .header-right {
-  float: right;
+  z-index: 500;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.header-user {
+  float: left;
+  border-left: solid 1px black;
+}
+.header-user p {
+  margin: 0 10px;
+  padding: 0;
+  line-height: 20px;
+  text-align: center;
+}
+.header-logout {
+  float: left;
+  height: 40px;
+  width: 100px;
+  line-height: 40px;
+  text-align: center;
+  background-color: grey;
+  color: black;
+  border-left: solid 1px black;
+}
+.header-logout:hover {
+  text-decoration: none;
+  background-color: black;
+  color: grey;
 }
 a{
   color: rgb(0, 73, 176);
 }
+
+@import "bootstrap";

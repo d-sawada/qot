@@ -9,19 +9,22 @@ class ApplicationController < ActionController::Base
       @company_code = "ga0001"
       @company = Company.first
       @logout_url = destroy_sys_admin_session_path
-      @user_info = "システム管理者" + @sys_admin.email
+      @user_kind = "システム管理者"
+      @user_identifer = @sys_admin.email
     elsif admin_signed_in?
       @admin = current_admin
       @company_code = @admin.company_code
       @company = @admin.company
       @logout_url = destroy_admin_session_url(company_code: @company_code)
-      @user_info= "管理者" + @admin.email
+      @user_kind= "管理者"
+      @user_identifer = @admin.email
     elsif employee_signed_in?
       @employee = current_employee
       @company_code = @employee.company_code
       @company = @employee.company
       @logout_url = destroy_employee_session_path(company_code: @company_code)
-      @user_info = "従業員" + @employee.email
+      @user_kind = "従業員"
+      @user_identifer = @employee.email
     end
   end
 end
