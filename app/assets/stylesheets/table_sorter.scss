@@ -1,0 +1,24 @@
+th {
+  color: rgb(21, 83, 255);
+}
+th:hover {
+  cursor: pointer;
+}
+th.header span:after {
+  content: "　";
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+}
+th.headerSortUp span:after {
+  content: "▼";
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+}
+th.headerSortDown span:after {
+  content: "▲";
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+}
