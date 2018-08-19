@@ -1,7 +1,7 @@
 <br>
 <div id="clock_frame" class="clearfix">
-  <span id="clock_date">****/**/**(**)</span><br><br>
-  <span id="clock_time">**:**:**</span>
+  <span id="clock_date"><%= @now.strftime("%Y/%m/%d") + "(" + @wday[@now.wday] + ")"%></span><br><br>
+  <span id="clock_time"><%= @now.strftime("%H:%M:%S")%></span>
 </div>
 
 <%= form_with(id: "stamp_form", method: :put) do |f| %>
@@ -33,5 +33,5 @@ function clock() {
   $("#clock_date").html(y + "/" + mo + "/" + d + "(" + w + ")");
   $("#clock_time").html(h + ":" + mi + ":" + s);
 }
-setInterval(clock, 1000);
+setInterval(clock, 200);
 </script>

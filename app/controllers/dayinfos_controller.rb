@@ -1,6 +1,8 @@
 class DayinfosController < ApplicationController
   def new
-    @today = Date.today.to_s.delete("-")
+    @wday = %w(日 月 火 水 木 金 土)
+    @now = Time.now
+    @today = Date.today.to_s
     @dayinfo = @employee.dayinfos.find_by_date(@today) || @employee.dayinfos.new
     if @dayinfo.start.blank?
       @today_stamp = "今日はまだ出勤していません" if @dayinfo.start.blank?
