@@ -20,10 +20,10 @@
   <thead>
     <tr>
       <% if @list == "month" %>
-        <th class="num">日</th>
+        <th class="num">日<span/></th>
       <% end %>
       <% @table_key.each do |key| %>
-        <th class="case"><%= key %></th>
+        <th class="case"><%= key %><span/></th>
       <% end %>
     </tr>
   </thead>

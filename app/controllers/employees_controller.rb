@@ -46,8 +46,8 @@ class EmployeesController < ApplicationController
       days = @employee.dayinfos.where("date >= ? AND date <= ?", @tday.month_begin, @tday.month_end)
       day_vals = days.map{|day| [day.date.day, day_symkeys.map{|sym,key| day.try(sym).to_hm}]}
       @table_key = day_symkeys.map{|sym,key| key}
-      @table_vals = (1..@day_num).map{ ["","","",""] }
-      day_vals.each{|val| @table_vals[val[0]] = val[1]}
+      @table_vals = (1..@day_num).map{ @table_key.map{ "" } }
+      day_vals.each{|val| @table_vals[val[0]-1] = val[1]}
     elsif @list == "schedule"
 
     end
