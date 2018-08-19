@@ -1,9 +1,0 @@
-<li>
-  <%= employee_additional_label.name %>
-  <%= link_to "削除", employee_additional_label, method: :delete, remote: true, class: "removable" %>
-</li>
-<script>
-$(".removable").on("click", function() {
-  $(this).parent().hide();
-});
-</script>

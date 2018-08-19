@@ -10,12 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_16_073947) do
+ActiveRecord::Schema.define(version: 2018_08_20_033034) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "admins", force: :cascade do |t|
+    t.string "company_code", default: "", null: false
+    t.string "name", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -28,7 +30,6 @@ ActiveRecord::Schema.define(version: 2018_08_16_073947) do
     t.string "last_sign_in_ip"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "company_code", limit: 6, default: "", null: false
     t.index ["email"], name: "index_admins_on_email", unique: true
     t.index ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true
   end
@@ -44,30 +45,35 @@ ActiveRecord::Schema.define(version: 2018_08_16_073947) do
   create_table "dayinfos", force: :cascade do |t|
     t.integer "employee_id", null: false
     t.date "date", null: false
-    t.time "start"
-    t.time "end"
-    t.time "pre_start"
-    t.time "pre_end"
+    t.datetime "pre_start"
+    t.datetime "pre_end"
+    t.datetime "start"
+    t.datetime "end"
+    t.datetime "rest_start"
+    t.datetime "rest_end"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "employee_additional_labels", force: :cascade do |t|
-    t.string "company_code", limit: 6, null: false
-    t.string "name", limit: 8, null: false
+  create_table "emp_emp_statuses", force: :cascade do |t|
+    t.integer "company_id"
+    t.integer "employee_id"
+    t.integer "emp_status_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "employee_additional_values", force: :cascade do |t|
-    t.integer "employee_id", null: false
-    t.integer "employee_additional_label_id", null: false
-    t.string "value", limit: 255, default: "", null: false
+  create_table "emp_statuses", force: :cascade do |t|
+    t.string "company_code", null: false
+    t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "employees", force: :cascade do |t|
+    t.string "company_code", default: "", null: false
+    t.string "no", default: "", null: false
+    t.string "status"
     t.string "name", default: "", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -81,9 +87,15 @@ ActiveRecord::Schema.define(version: 2018_08_16_073947) do
     t.string "last_sign_in_ip"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "company_code", limit: 6, default: "", null: false
     t.index ["email"], name: "index_employees_on_email", unique: true
     t.index ["reset_password_token"], name: "index_employees_on_reset_password_token", unique: true
+  end
+
+  create_table "holidays", force: :cascade do |t|
+    t.integer "emp_status_id"
+    t.date "date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "requests", force: :cascade do |t|
@@ -91,10 +103,10 @@ ActiveRecord::Schema.define(version: 2018_08_16_073947) do
     t.integer "admin_id"
     t.string "state", null: false
     t.string "date", null: false
-    t.time "prev_start"
-    t.time "prev_end"
-    t.time "start"
-    t.time "end"
+    t.datetime "prev_start"
+    t.datetime "prev_end"
+    t.datetime "start"
+    t.datetime "end"
     t.text "employee_comment"
     t.text "admin_comment"
     t.datetime "created_at", null: false
