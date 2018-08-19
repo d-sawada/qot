@@ -16,7 +16,8 @@
 #= require turbolinks
 #= require_tree .
 
-$(document).on 'ready turbolinks:load', ->
+$(document).on 'turbolinks:load', ->
   tableDragger(document.querySelector(".dragable"), {
     onlyBody: false
   })
+  $(".dragable").tablesorter()
