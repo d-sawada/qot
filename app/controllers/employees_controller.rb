@@ -1,25 +1,25 @@
 class EmployeesController < ApplicationController
+  include EmployeesHelper
   before_action :set_employee, only: [:show, :edit, :update, :destroy]
 
   def index
     @list = params[:list] || "day"
-    @tday = params[:day] || Date.now.to_s
+    @tday = params[:day] || Date.current.to_s
     date = Date.parse(@tday)
 
-    emp_syms = [:no, :status, :name]
-    emp_keys = %w(社員No 雇用形態 名前)
-
     if @list == "day"
-      day_syms = [:pre_start, :pre_end, :start, :end, :pre_worktime, :over_worktime, :holiday_worktime]
-      day_keys = %w(所定出勤 所定退勤 出勤打刻 退勤打刻 所定 残業 休出)
-      @table_keys = emp_syms + day_syms
-      @table_syms = emp_keys + day_keys
-      @company.employees.left_joins(:dayinfos).references(:dayinfos).where(dayinfos: {date: date.current}).select("employees.*, dayinfos.*")
+      #@employees = @company.employees.select("employees.*, dayinfos.*").references(:dayinfos).left_joins(:dayinfos)
+      emp_syms = [:no, :status, :name]
+      day_syms = [:pre_start, :pre_end, :start, :end, :rest_start, :rest_end]
+      @employees = @company.employees
+      dayinfos = Hash[@company.dayinfos.where(dayinfos: {date: date}).map{|d| [d.employee_id, d]}]
+      @table_keys = employee_daily_keys
+      @table_rows = @employees.map do |emp|
+        dayinfo = dayinfos[emp.id] || Dayinfo.new
+        emp_syms.map{|sym| emp[sym]} + day_syms.map{|sym| dayinfo[sym].to_hm}
+      end
     elsif @list == "month"
-      @company.employees.left_joins(:dayinfos).references(:dayinfos).where("dayinfos.date between ? and ?", date.beginning_of_month, date.end_of_month)
-          .select("employees.*,
-                   sum(dayinfos.pre_end - dayinfos.pre_start) as pre_worktime_sum").group(:employee)
-      ga.employees.left_joins(:dayinfos).references(:dayinfos).where("dayinfos.date between ? and ?", Date.current.beginning_of_month, Date.current.end_of_month).select("employees.*, (select date from )), sum(dayinfos.pre_end - dayinfos.pre_start) as pre_worktime_sum, sum(dayinfos.end - dayinfos.start) as worktime_sum").group(:id)
+
     elsif @list == "schedule"
 
     end

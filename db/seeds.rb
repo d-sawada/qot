@@ -34,7 +34,7 @@ end
 Employee.delete_all
 EmpEmpStatus.delete_all
 (1..100).each do |i|
-  emp = ga.employees.create({no: "000#{i}", name: "従業員 #{i}", email: "emp#{i}@email.com", password: "password", password_confirmation: "password"})
+  emp = ga.employees.create({no: "000#{i}".slice(-4,4), name: "従業員 #{i}", email: "emp#{i}@email.com", password: "password", password_confirmation: "password"})
   EmpEmpStatus.create({employee_id: emp.id, emp_status_id: regular.id + (i <= 50 ? 0 : 1), company_id: ga.id})
 end
 
@@ -44,15 +44,15 @@ ga.employees.each do |emp|
     wd = DateTime.new(2018,8,i).wday
     if wd != 6 && wd != 0
       if wd == 1
-        s = DateTime.new(2018,8,i,9,0,0,0.375)
-        e = DateTime.new(2018,8,i,18,0,0,0.375)
-        ps = DateTime.new(2018,8,i,8,45,0,0.375)
-        pe = DateTime.new(2018,8,i,18,15,0,0.375)
+        s = DateTime.new(2018,8,i,8,45,0,0.375)
+        e = DateTime.new(2018,8,i,18,15,0,0.375)
+        ps = DateTime.new(2018,8,i,9,0,0,0.375)
+        pe = DateTime.new(2018,8,i,18,0,0,0.375)
       elsif
-        s = DateTime.new(2018,8,i,10,0,0,0.375)
-        e = DateTime.new(2018,8,i,19,0,0,0.375)
-        ps = DateTime.new(2018,8,i,9,45,0,0.375)
-        pe = DateTime.new(2018,8,i,19,15,0,0.375)
+        s = DateTime.new(2018,8,i,9,45,0,0.375)
+        e = DateTime.new(2018,8,i,19,15,0,0.375)
+        ps = DateTime.new(2018,8,i,10,0,0,0.375)
+        pe = DateTime.new(2018,8,i,19,0,0,0.375)
       end
       rs = DateTime.new(2018,8,i,13,0,0,0.375)
       re = DateTime.new(2018,8,i,14,0,0,0.375)

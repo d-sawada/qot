@@ -33,9 +33,14 @@ html {
   float: left;
 }
 
+body {
+  margin-top: 40px;
+}
 header {
-  position: relative;
+  position: fixed;
+  top: 0px;
   height: 40px;
+  width: 100%;
   background-color: mediumpurple;
 }
 .header-left {

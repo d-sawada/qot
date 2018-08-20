@@ -30,4 +30,8 @@ class String
   def month_end
     Date.parse(self).end_of_month.to_s
   end
+  def to_daily
+    date = Date.parse(self)
+    date.strftime("%Y年%-m月%-d日(") + %w(日 月 火 水 木 金 土)[date.wday] + ")"
+  end
 end

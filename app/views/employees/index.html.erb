@@ -1,9 +1,9 @@
 <% if @list == "day" %>
-  <h1><%= Date.parse(@tday).strftime("%Y年%-m月%-d日") %></h1>
+  <h1><%= @tday.to_daily %></h1>
   <%= link_to "前の日", employees_path(list: "day", day: Date.parse(@tday).yesterday.to_s)%>
   <%= link_to "次の日", employees_path(list: "day", day: Date.parse(@tday).tomorrow.to_s)%>
 <% elsif @list == "month" || @list == "schedule" %>
-  <h1><%= Date.parse(@tday).strftime("%Y年%-m月") %></h1>
+  <h1><%= @tday.to_daily %></h1>
   <%= link_to "前の月", employees_path(list: "month", day: Date.parse(@tday).prev_month.to_s)%>
   <%= link_to "次の月", employees_path(list: "month", day: Date.parse(@tday).next_month.to_s)%>
 <% end %>
@@ -11,19 +11,23 @@
 <table class="dragable">
   <thead>
     <tr>
-      <% @table_key.each do |key| %>
-        <th class="case"><%= key %><span/></th>
+      <% @table_keys.each do |key| %>
+        <th><%= key %><span/></th>
       <% end %>
+      <th>詳細</th>
     </tr>
   </thead>
   <tbody>
-    <% @table_vals.zip(@link_tds).each do |vals, link_td| %>
+    <% @table_rows.zip(@employees.pluck(:id)).each do |row, id| %>
       <tr>
-        <td><%= link_to link_td[:name], employee_path(id: link_td[:id], list: @list, day: @tday) %></td>
-        <% vals.each do |val| %>
+        <% row.each do |val| %>
           <td><%= val %></td>
         <% end %>
+        <td><%= link_to "詳細", employee_path(id: id, list: @list, day: @tday) %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
+
+
+<% hoge %>

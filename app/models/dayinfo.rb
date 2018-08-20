@@ -1,4 +1,5 @@
 class Dayinfo < ApplicationRecord
+  has_one :emp_emp_statuses, primary_key: :employee_id, foreign_key: :employee_id
   belongs_to :employee
 
   validates :date, presence: true

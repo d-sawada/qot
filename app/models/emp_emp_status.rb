@@ -3,4 +3,5 @@ class EmpEmpStatus < ApplicationRecord
   belongs_to :company
   belongs_to :emp_status
   belongs_to :employee
+  belongs_to :dayinfo, primary_key: :employee_id, foreign_key: :employee_id
 end
