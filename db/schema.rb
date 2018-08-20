@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_20_033034) do
+ActiveRecord::Schema.define(version: 2018_08_21_064301) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,14 +43,20 @@ ActiveRecord::Schema.define(version: 2018_08_20_033034) do
   end
 
   create_table "dayinfos", force: :cascade do |t|
-    t.integer "employee_id", null: false
-    t.date "date", null: false
+    t.integer "employee_id"
+    t.date "date"
     t.datetime "pre_start"
     t.datetime "pre_end"
     t.datetime "start"
     t.datetime "end"
     t.datetime "rest_start"
     t.datetime "rest_end"
+    t.integer "pre_workdays"
+    t.integer "pre_worktimes"
+    t.integer "workdays"
+    t.integer "worktimes"
+    t.integer "holiday_workdays"
+    t.integer "holiday_worktimes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -59,6 +65,15 @@ ActiveRecord::Schema.define(version: 2018_08_20_033034) do
     t.integer "company_id"
     t.integer "employee_id"
     t.integer "emp_status_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "emp_status_histories", force: :cascade do |t|
+    t.date "start"
+    t.date "end"
+    t.string "emp_status_str"
+    t.integer "employee_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -73,10 +88,8 @@ ActiveRecord::Schema.define(version: 2018_08_20_033034) do
   create_table "employees", force: :cascade do |t|
     t.string "company_code", default: "", null: false
     t.string "no", default: "", null: false
-    t.string "status"
     t.string "name", default: "", null: false
     t.string "email", default: "", null: false
-    t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
@@ -87,8 +100,7 @@ ActiveRecord::Schema.define(version: 2018_08_20_033034) do
     t.string "last_sign_in_ip"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["email"], name: "index_employees_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_employees_on_reset_password_token", unique: true
+    t.index ["no"], name: "index_employees_on_no", unique: true
   end
 
   create_table "holidays", force: :cascade do |t|

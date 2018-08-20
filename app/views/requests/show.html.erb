@@ -1,28 +1,11 @@
 <h1>申請詳細</h1>
 
-<table>
-  <tbody>
-    <tr>
-      <% @all_labels.each do |val| %>
-        <th><%= val %></th>
-      <% end %>
-    <tr>
-    <tr>
-      <% applyer = @request.admin_id.present? ? Admin.find(@request.admin_id).email : "本人" %>
-      <% d = @request.employee.dayinfos.find_by_date(@request.date) %>
-      <% d = d.present? ? [d.start.to_s.slice(11,5), d.end.to_s.slice(11,5)] : ["", ""] %>
-      <% [@request.state, applyer, @request.employee.name, @request.date, d[0], d[1], @request.start.to_s.slice(11,5), @request.end.to_s.slice(11,5)].each do |val| %>
-        <td><%= val %></td>
-      <% end %>
-    </tr>
-  </tbody>
-</table>
+<%= render "dragable_table", {table_keys: @table_keys, table_rows: @table_rows} %>
 
 <%= form_with(model: @request, local: true) do |f| %>
   <% if @request.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@request.errors.count, "error") %> prohibited this employee from being saved:</h2>
-
       <ul>
       <% @request.errors.full_messages.each do |message| %>
         <li><%= message %></li>
@@ -35,25 +18,34 @@
   <%= f.hidden_field :state %>
   <%= f.hidden_field :date %>
 
-  <% if @request.state == "申請中" %>
-    <div>
-      <%= f.radio_button :state, "承認済", {checked: true} %>承認
-      <%= f.radio_button :state, "棄却" %>棄却
+  <% if admins_signed_in? && @request.state == "申請中" %>
+    <div class="form-check-inline form-control-lg">
+      <label class="form-check-label">
+        <%= f.radio_button :state, "承認済", {checked: true} %>承認
+      </label>
+    </div>
+    <div class="form-check-inline form-control-lg">
+      <label class="form-check-label">
+        <%= f.radio_button :state, "棄却" %>棄却
+      </label>
     </div>
   <% end %>
 
-  <div class="field">
-    <%= f.label :employee_comment %>
-    <%= f.text_area :employee_comment, readonly: true %>
-  </div>
-
-  <% if sys_admin_signed_in? || admin_signed_in? %>
-    <div class="field">
-      <%= f.label :admin_comment %>
-      <%= f.text_area :admin_comment %>
+  <fieldset disabled>
+    <div class="form-group">
+      <%= f.text_area :employee_comment, class: "form-control", placeholder: "社員からのコメントはありません" %>
     </div>
-    <div class="actions">
-      <%= f.submit %>
+    <% if employee_signed_in? || @request.state != "申請中" %>
+      <div class="form-group">
+        <%= f.text_area :admin_comment, class: "form-control", placeholder: "管理者からのコメントはありません" %>
+      </div>
+    <% end %>
+  </fieldset>
+  
+  <% if admins_signed_in? && @request.state == "申請中" %>
+    <div class="form-group">
+      <%= f.text_area :admin_comment, class: "form-control", placeholder: "管理者コメントを入力" %>
     </div>
+    <%= f.submit "申請を処理", class: "btn btn-primary btn-lg" %>
   <% end %>
 <% end %>

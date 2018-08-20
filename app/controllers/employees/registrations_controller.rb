@@ -10,12 +10,9 @@ class Employees::RegistrationsController < Devise::RegistrationsController
   # end
 
   # POST /resource
-  def create
-    super
-    params[:employee][:employee_additional_values].each do |name, value|
-      EmployeeAdditionalValue.create({employee_id: @employee.id, employee_additional_label_id: @company.employee_additional_labels.find_by_name(name).id, value: value})
-    end
-  end
+  # def create
+  #   super
+  # end
 
   # GET /resource/edit
   # def edit
@@ -45,13 +42,12 @@ class Employees::RegistrationsController < Devise::RegistrationsController
 
   # If you have extra params to permit, append them to the sanitizer.
   def configure_sign_up_params
-    labels = @company.employee_additional_labels.pluck(:name)
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:company_code, :name, { employee_additional_values: []}])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:company_code, :no, :status, :name])
   end
 
   # If you have extra params to permit, append them to the sanitizer.
   def configure_account_update_params
-    devise_parameter_sanitizer.permit(:account_update, keys: [:company_code, :name])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:company_code, :no, :status, :name])
   end
 
   # The path used after sign up.

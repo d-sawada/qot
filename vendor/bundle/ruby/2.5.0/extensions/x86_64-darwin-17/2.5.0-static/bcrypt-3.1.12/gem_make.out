@@ -1,5 +1,5 @@
 current directory: /Users/d_sawada/Source/rails/test--queen-of-time/vendor/bundle/ruby/2.5.0/gems/bcrypt-3.1.12/ext/mri
-/Users/d_sawada/.rbenv/versions/2.5.1/bin/ruby -r ./siteconf20180820-2731-rntm4y.rb extconf.rb
+/Users/d_sawada/.rbenv/versions/2.5.1/bin/ruby -r ./siteconf20180821-1304-13j1cci.rb extconf.rb
 creating Makefile
 
 current directory: /Users/d_sawada/Source/rails/test--queen-of-time/vendor/bundle/ruby/2.5.0/gems/bcrypt-3.1.12/ext/mri
@@ -16,4 +16,4 @@ linking shared-object bcrypt_ext.bundle
 
 current directory: /Users/d_sawada/Source/rails/test--queen-of-time/vendor/bundle/ruby/2.5.0/gems/bcrypt-3.1.12/ext/mri
 make "DESTDIR=" install
-/usr/bin/install -c -m 0755 bcrypt_ext.bundle ./.gem.20180820-2731-1r17qbe
+/usr/bin/install -c -m 0755 bcrypt_ext.bundle ./.gem.20180821-1304-4jnb04

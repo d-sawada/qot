@@ -3,25 +3,9 @@
 *= require_self
 *= require_tree .
 */
-
-// Custom bootstrap variables must be set or imported *before* bootstrap.
-@import "bootstrap";
-
-ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-input:hover {
-  cursor: pointer;
-  opacity: 0.6;
-}
-
-html {
-  font-size: 62.5%;
-}
 #contents {
   margin: 10px;
+  padding-bottom: 40px;
 }
 
 .clearfix:after {
@@ -34,8 +18,10 @@ html {
 }
 
 header {
-  position: relative;
+  position: fixed;
+  top: 0px;
   height: 40px;
+  width: 100%;
   background-color: mediumpurple;
 }
 .header-left {
@@ -97,6 +83,30 @@ header {
   background-color: black;
   color: grey;
 }
-a{
-  color: rgb(0, 73, 176);
+
+.contents-header {
+  position: relative;
+}
+.change-date {
+  position: absolute;
+  top: 0;
+  left: 550px;
+  font-size: 2.4rem;
+}
+
+// Custom bootstrap variables must be set or imported *before* bootstrap.
+@import "bootstrap";
+
+html { font-size: 62.5%; }
+body { margin-top: 40px; }
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+input:hover { cursor: pointer; opacity: 0.6; }
+a { color: mediumpurple; }
+a:hover {
+  text-decoration: none;
+  color: rgb(111, 0, 255);
 }
