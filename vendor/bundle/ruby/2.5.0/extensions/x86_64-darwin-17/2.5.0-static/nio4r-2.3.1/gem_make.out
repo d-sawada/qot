@@ -1,5 +1,5 @@
-current directory: /Users/d_sawada/Source/rails/queen-of-time/vendor/bundle/ruby/2.5.0/gems/nio4r-2.3.1/ext/nio4r
-/Users/d_sawada/.rbenv/versions/2.5.1/bin/ruby -r ./siteconf20180724-6328-srmun6.rb extconf.rb
+current directory: /Users/d_sawada/Source/rails/test--queen-of-time/vendor/bundle/ruby/2.5.0/gems/nio4r-2.3.1/ext/nio4r
+/Users/d_sawada/.rbenv/versions/2.5.1/bin/ruby -r ./siteconf20180820-2731-10j4bef.rb extconf.rb
 checking for unistd.h... yes
 checking for sys/select.h... yes
 checking for port_event_t in poll.h... no
@@ -10,10 +10,10 @@ checking for port_event_t in port.h... no
 checking for sys/resource.h... yes
 creating Makefile
 
-current directory: /Users/d_sawada/Source/rails/queen-of-time/vendor/bundle/ruby/2.5.0/gems/nio4r-2.3.1/ext/nio4r
+current directory: /Users/d_sawada/Source/rails/test--queen-of-time/vendor/bundle/ruby/2.5.0/gems/nio4r-2.3.1/ext/nio4r
 make "DESTDIR=" clean
 
-current directory: /Users/d_sawada/Source/rails/queen-of-time/vendor/bundle/ruby/2.5.0/gems/nio4r-2.3.1/ext/nio4r
+current directory: /Users/d_sawada/Source/rails/test--queen-of-time/vendor/bundle/ruby/2.5.0/gems/nio4r-2.3.1/ext/nio4r
 make "DESTDIR="
 compiling bytebuffer.c
 compiling monitor.c
@@ -245,6 +245,6 @@ ev_set_allocator (void *(*cb)(void *ptr, long size) EV_THROW) EV_THROW
 compiling selector.c
 linking shared-object nio4r_ext.bundle
 
-current directory: /Users/d_sawada/Source/rails/queen-of-time/vendor/bundle/ruby/2.5.0/gems/nio4r-2.3.1/ext/nio4r
+current directory: /Users/d_sawada/Source/rails/test--queen-of-time/vendor/bundle/ruby/2.5.0/gems/nio4r-2.3.1/ext/nio4r
 make "DESTDIR=" install
-/usr/bin/install -c -m 0755 nio4r_ext.bundle ./.gem.20180724-6328-1u9zt09
+/usr/bin/install -c -m 0755 nio4r_ext.bundle ./.gem.20180820-2731-v6qmps

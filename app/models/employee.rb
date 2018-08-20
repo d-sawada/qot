@@ -4,9 +4,10 @@ class Employee < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
-  has_many :employee_additional_values, dependent: :destroy
   has_many :dayinfos, dependent: :destroy
   has_many :requests, dependent: :destroy
+  has_one :emp_emp_status, dependent: :destroy
+  has_many :holidays, through: :emp_emp_status, primary_key: :emp_status_id, foreign_key: :emp_status_id
   belongs_to :company, primary_key: :code, foreign_key: :company_code
 
   def ex_vals
