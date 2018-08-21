@@ -16,14 +16,14 @@ class ApplicationController < ActionController::Base
       @company_code = @admin.company_code
       @company = @admin.company
       @logout_url = destroy_admin_session_url(company_code: @company_code)
-      @user_kind= "管理者"
+      @user_kind= "管理者様"
       @user_identifer = @admin.email
     elsif employee_signed_in?
       @employee = current_employee
       @company_code = @employee.company_code
       @company = @employee.company
       @logout_url = destroy_employee_session_path(company_code: @company_code)
-      @user_kind = "従業員"
+      @user_kind = "社員"
       @user_identifer = @employee.email
     end
   end

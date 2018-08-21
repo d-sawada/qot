@@ -4,6 +4,8 @@
 
   <% @employee.company_code = @company_code %>
   <%= f.hidden_field :company_code %>
+  <%= f.hidden_field :password %>
+  <%= f.hidden_field :password_confirmation %>
 
   <div class="field">
     <%= f.label :no %>

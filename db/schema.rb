@@ -86,10 +86,11 @@ ActiveRecord::Schema.define(version: 2018_08_21_064301) do
   end
 
   create_table "employees", force: :cascade do |t|
-    t.string "company_code", default: "", null: false
-    t.string "no", default: "", null: false
-    t.string "name", default: "", null: false
-    t.string "email", default: "", null: false
+    t.string "company_code", null: false
+    t.string "no", null: false
+    t.string "name", null: false
+    t.string "email", null: false
+    t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
@@ -101,6 +102,7 @@ ActiveRecord::Schema.define(version: 2018_08_21_064301) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["no"], name: "index_employees_on_no", unique: true
+    t.index ["reset_password_token"], name: "index_employees_on_reset_password_token", unique: true
   end
 
   create_table "holidays", force: :cascade do |t|

@@ -115,7 +115,7 @@ class EmployeesController < ApplicationController
   end
 
   def new
-    @employee = @company.employees.new
+    @employee = @company.employees.new({password: "password", password_confirmation: "password"})
     @emp_emp_status = @employee.emp_emp_status
     @emp_statuses = @company.emp_statuses
   end

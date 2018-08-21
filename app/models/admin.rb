@@ -5,4 +5,7 @@ class Admin < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable
 
   belongs_to :company, primary_key: :code, foreign_key: :company_code
+
+  validates :email, presence: true
+  validates :password, presence: true
 end

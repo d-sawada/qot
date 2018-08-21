@@ -17,7 +17,11 @@ class Employee < ApplicationRecord
 
   accepts_nested_attributes_for :emp_emp_status
 
-  def password_required?
+  
+  def email_reqired?
+    false
+  end
+  def email_changed?
     false
   end
   def data_array

@@ -1,5 +1,5 @@
 current directory: /mnt/c/Users/dtl13/Repos/qot/vendor/bundle/ruby/2.5.0/gems/ffi-1.9.25/ext/ffi_c
-/home/renne/.rbenv/versions/2.5.1/bin/ruby -r ./siteconf20180820-19586-4yusf0.rb extconf.rb
+/home/renne/.rbenv/versions/2.5.1/bin/ruby -r ./siteconf20180822-3289-13xni19.rb extconf.rb
 /home/renne/.rbenv/versions/2.5.1/lib/ruby/2.5.0/mkmf.rb:1553: warning: Insecure world writable dir /home/renne/.rbenv/versions in PATH, mode 040777
 checking for ffi.h... no
 checking for ffi.h in /usr/local/include,/usr/include/ffi... no
@@ -158,4 +158,4 @@ compiling Types.c
 compiling Variadic.c
 compiling ffi.c
 linking shared-object ffi_c.so
-/usr/bin/install -c -m 0755 ffi_c.so ./.gem.20180820-19586-1fiv0nx
+/usr/bin/install -c -m 0755 ffi_c.so ./.gem.20180822-3289-14dahz1

@@ -1,26 +1,20 @@
-<h2>従業員Log in</h2>
+<%= devise_error_messages %>
+<%= form_for(resource, as: resource_name, url: session_path(resource_name), html: {id: "employee_login_form"}) do |f| %>
+  <% @employee.company_code = params[:company_code] %>
+  <%= f.hidden_field :company_code %>
+  <%= f.hidden_field :password, value: "password" %>
+  <%= f.hidden_field :password_confirmation, value: "password" %>
 
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password %><br />
-    <%= f.password_field :password, autocomplete: "off" %>
+  <div class="form-group">
+    <%= f.email_field :email, class: "form-control form-control-lg", placeholder: "メールアドレス", autocomplete: "email", autofocus: true %>
   </div>
 
   <% if devise_mapping.rememberable? -%>
-    <div class="field">
+    <div class="form-group">
       <%= f.check_box :remember_me %>
-      <%= f.label :remember_me %>
+      <%= f.label :remember_me, value: "ログイン状態を記憶する" %>
     </div>
   <% end -%>
 
-  <div class="actions">
-    <%= f.submit "Log in" %>
-  </div>
+  <%= f.submit "社員ログイン", class: "form-btn btn btn-success btn-qot" %>
 <% end %>
-
-<%= render "employees/shared/links" %>

@@ -8,6 +8,7 @@ class DeviseCreateEmployees < ActiveRecord::Migration[5.2]
       t.string :no,                 null: false
       t.string :name,               null: false
       t.string :email,              null: false
+      t.string :encrypted_password, null: false, default: ""
 
       ## Recoverable
       t.string   :reset_password_token
@@ -39,6 +40,7 @@ class DeviseCreateEmployees < ActiveRecord::Migration[5.2]
     end
 
     add_index :employees, :no,                unique: true
+    add_index :employees, :reset_password_token, unique: true
     # add_index :employees, :confirmation_token,   unique: true
     # add_index :employees, :unlock_token,         unique: true
   end
