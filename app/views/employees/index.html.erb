@@ -1,20 +1,28 @@
-<div class="contents-header clearfix">
+<div class="contents-header">
   <% if @list == "day" %>
     <h1><%= @tday.to_daily %></h1>
-    <div class="change-date">
-      <%= link_to("◀︎", employees_path(list: "day", day: @date.yesterday.to_s)) %>
-      <%= link_to("本日", employees_path(list: "day", day: Date.current)) %>
-      <%= link_to("▶︎", employees_path(list: "day", day: @date.tomorrow.to_s)) %>
-    </div>
   <% elsif @list == "month" || @list == "schedule" %>
     <h1><%= @tday.to_monthly %></h1>
-    <div class="change-date">
-      <%= link_to("◀︎", employees_path(list: "month", day: @date.prev_month.to_s)) %>
-      <%= link_to("今月", employees_path(list: "month", day: Date.current)) %>
-      <%= link_to("▶︎", employees_path(list: "month", day: @date.next_month.to_s)) %>
-    </div>
   <% end %>
 </div>
 
-<%= link_to "csv出力", employees_path(list: @list, day: @tday, format: :csv), class: "btn btn-primary btn-lg" %>
+<ul class="table-util clearfix">
+  <li><%= link_to "csv出力", employees_path(list: @list, day: @tday, format: :csv), class: "btn btn-primary btn-lg" %></li>
+  <li>
+    <% if @list == "day" %>
+      <div class="change-date">
+        <%= link_to("◀︎", employees_path(list: "day", day: @date.yesterday.to_s)) %>
+        <%= link_to("本日", employees_path(list: "day", day: Date.current)) %>
+        <%= link_to("▶︎", employees_path(list: "day", day: @date.tomorrow.to_s)) %>
+      </div>
+    <% elsif @list == "month" %>
+      <div class="change-date">
+        <%= link_to("◀︎", employees_path(list: "month", day: @date.prev_month.to_s)) %>
+        <%= link_to("今月", employees_path(list: "month", day: Date.current)) %>
+        <%= link_to("▶︎", employees_path(list: "month", day: @date.next_month.to_s)) %>
+      </div>
+    <% end %>
+  </li>
+</ul>
+
 <%= render "dragable_table", {table_keys: @table_keys, table_rows: @table_rows} %>
