@@ -8,7 +8,7 @@ class Employee < ApplicationRecord
   has_many :requests, dependent: :destroy
   has_one :emp_emp_status, dependent: :destroy
   has_one :emp_status, through: :emp_emp_status, primary_key: :emp_status_id, foreign_key: :id
-  has_many :holidays, through: :emp_emp_status, primary_key: :emp_status_id, foreign_key: :emp_status_id
+  has_many :holidays, through: :emp_status, primary_key: :id, foreign_key: :emp_status_id
   has_many :emp_status_historys, dependent: :destroy
   belongs_to :company, primary_key: :code, foreign_key: :company_code
 
