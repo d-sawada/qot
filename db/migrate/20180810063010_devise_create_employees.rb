@@ -4,12 +4,10 @@ class DeviseCreateEmployees < ActiveRecord::Migration[5.2]
   def change
     create_table :employees do |t|
       ## Database authenticatable
-      t.string :company_code,       null: false, default: ""
-      t.string :no,                 null: false, default: ""
-      t.string :status
-      t.string :name,               null: false, default: ""
-      t.string :email,              null: false, default: ""
-      t.string :encrypted_password, null: false, default: ""
+      t.string :company_code,       null: false
+      t.string :no,                 null: false
+      t.string :name,               null: false
+      t.string :email,              null: false
 
       ## Recoverable
       t.string   :reset_password_token
@@ -40,8 +38,7 @@ class DeviseCreateEmployees < ActiveRecord::Migration[5.2]
       t.timestamps null: false
     end
 
-    add_index :employees, :email,                unique: true
-    add_index :employees, :reset_password_token, unique: true
+    add_index :employees, :no,                unique: true
     # add_index :employees, :confirmation_token,   unique: true
     # add_index :employees, :unlock_token,         unique: true
   end

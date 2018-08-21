@@ -1,22 +1,4 @@
 <h1>申請一覧</h1>
 
-<table class="dragable">
-  <thead>
-  <tr>
-    <% @table_keys.each do |val| %>
-      <th class="case"><%= val %><span/></th>
-    <% end %>
-    <th>詳細</th>
-  </tr>
-  </thead>
-  <tbody>
-    <% @table_vals.zip(@request_ids).each do |vals, id| %>
-      <tr>
-        <% vals.each do |val| %>
-          <td><%= val %></td>
-        <% end %>
-        <td><%= link_to "詳細", request_path(id) %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<%= render "dragable_table", {table_keys: @table_keys, table_rows: @table_rows} %>
+

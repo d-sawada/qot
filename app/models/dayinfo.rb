@@ -1,12 +1,39 @@
 class Dayinfo < ApplicationRecord
-  has_one :emp_emp_statuses, primary_key: :employee_id, foreign_key: :employee_id
   belongs_to :employee
 
   validates :date, presence: true
   validates :employee_id, presence: true
 
-  before_create :times_trunc_sec
-  before_update :times_trunc_sec
+  before_create :times_trunc_sec, :aggregate
+  before_update :times_trunc_sec, :aggregate
+
+  def calc_days_and_times(start_sym, end_sym, days_sym, times_sym)
+    if self[start_sym].present? && self[end_sym].present?
+      self[days_sym] = 1
+      self[times_sym] = (self[end_sym] - self[start_sym]).to_i / 60
+      if self[times_sym] >= 480
+        self[times_sym] -= 60
+      elsif self[times_sym] >= 360
+        self[times_sym] -= 45
+      end
+    end
+  end
+  def aggregate
+    self.pre_workdays = 0
+    self.pre_worktimes = 0
+    self.workdays = 0
+    self.worktimes = 0
+    self.holiday_workdays = 0
+    self.holiday_worktimes = 0
+    calc_days_and_times(:pre_start, :pre_end, :pre_workdays, :pre_worktimes)
+    calc_days_and_times(:start, :end, :workdays, :worktimes)
+    if self.employee.holidays.find_by_date(self.date).present?
+      self.holiday_workdays = self.workdays
+      self.workdays = 0
+      self.holiday_worktimes = self.worktimes
+      self.worktimes = 0
+    end
+  end
 
   def times_trunc_sec
     [:pre_start, :pre_end, :start, :end].each do |sym|

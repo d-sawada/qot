@@ -1,23 +1,2 @@
 <h1>Companies#config</h1>
 
-<h3>▼追加の従業員情報</h3>
-<ul id="employee_additional_labels">
-  <% @employee_additional_labels.each do |add_label| %>
-    <li>
-      <%= add_label.name %>
-      <%= link_to "削除", add_label, method: :delete, remote: true, class: "removable" %>
-    </li>
-  <% end %>
-</ul>
-
-<%= form_with(model: @employee_additional_label, id: "employee_additional_label_form") do |f| %>
-  <%= f.hidden_field :company_code %>
-  <%= f.text_field :name, id: "employee_additional_label_field" %>
-  <%= f.submit '追加' %>
-<% end %>
-
-<script>
-$(".removable").on("click", function() {
-  $(this).parent().hide();
-});
-</script>

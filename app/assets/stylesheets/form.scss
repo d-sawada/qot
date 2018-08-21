@@ -1,0 +1,22 @@
+.form-block {
+  display: block;
+  margin: 0 auto;
+}
+.form-title {
+  margin-left: 6px;
+  font-size: 3rem;
+  text-align: center;
+}
+.btn-qot {
+  display: block;
+  margin: 0 auto;
+  height: 40px;
+  width: 130px;
+}
+
+#employee_new_content .form-block {
+  width: 320px;
+}
+#employee_edit_content .form-block {
+  width: 320px;
+}

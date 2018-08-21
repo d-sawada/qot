@@ -25,9 +25,8 @@ Rails.application.routes.draw do
 
   scope :admin do
     get 'setting' => 'companies#setting', as: 'setting'
-    resources :employee_additional_labels, only: [:create, :destroy]
     resources :admins, only: [:index]
-    resources :employees, except: [:new, :create]
+    resources :employees
   end
 
   devise_scope :employee do

@@ -1,5 +1,23 @@
-<h1>New Employee</h1>
+<div id="employee_new_content">
 
-<%= render 'form', employee: @employee %>
+  <%= form_with(model: @employee, url: employees_path, local: true, method: :post, class: "form-block") do |f| %>
+    <div class="form-title">新規社員作成</div>
+    <%= f.hidden_field :company_code %>
+    <%= f.fields_for :emp_emp_status, (@employee.emp_emp_status || EmpEmpStatus.new) do |f1| %>
+      <div class="form-group">
+        <%= f1.select :emp_status_id, @emp_statuses.map{|s| [s.name, s.id]}, {}, {class: "form-control form-control-lg"} %>
+      </div>
+    <% end %>
+    <div class="form-group">
+      <%= f.text_field  :no,    class: "form-control form-control-lg", autocomplete: "no",    placeholder: "社員No", autofocus: true %>
+    </div>
+    <div class="form-group">
+      <%= f.text_field  :name,  class: "form-control form-control-lg", autocomplete: "name",  placeholder: "名前" %>
+    </div>
+    <div class="form-group">
+      <%= f.email_field :email, class: "form-control form-control-lg", autocomplete: "email", placeholder: "メールアドレス" %>
+    </div>
+    <%= f.submit "新規登録", class: "form-btn btn btn-success btn-qot" %>
+  <% end %>
 
-<%= link_to 'Back', employees_path %>
+</div>
