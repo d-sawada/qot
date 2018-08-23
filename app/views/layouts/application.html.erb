@@ -19,11 +19,11 @@
             <li><%= link_to image_tag("monthly.png"), employees_path(list: "month"), title: "月データ" %></li>
             <!-- <li><%= link_to image_tag(""), employees_path(list: "schedule"), title: "スケジュール" %></li> -->
             <li><%= link_to image_tag("requests.png"), requests_path, title: "申請一覧" %></li>
-            <li><%= link_to image_tag("add_employee"), new_employee_url, title: "社員追加" %></li>
+            <li><%= link_to image_tag("add_employee.png"), new_employee_url, title: "社員追加" %></li>
             <li><%= link_to image_tag("setting.png"), setting_path, title: "設定" %></li>
           <% end %>
           <% if employee_signed_in? || sys_admin_signed_in? %>
-            <li><%= link_to image_tag("timecard"), timecard_path, title: "タイムカード" %></li>
+            <li><%= link_to image_tag("timecard.png"), timecard_path, title: "タイムカード" %></li>
           <% end %>
         </ul>
       </div>

@@ -133,7 +133,11 @@ class EmployeesController < ApplicationController
         format.html { redirect_to employees_path, notice: '社員を登録しました' }
         format.json { render :show, status: :created, location: @employee }
       else
-        format.html { render :new }
+        format.html {
+          @emp_emp_status = @employee.emp_emp_status
+          @emp_statuses = @company.emp_statuses
+          render :new
+        }
         format.json { render json: @employee.errors, status: :unprocessable_entity }
       end
     end

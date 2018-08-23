@@ -1,6 +1,6 @@
 <div id="employee_new_content">
 
-  <%= form_with(model: @employee, url: employees_path, local: true, method: :post, class: "form-block") do |f| %>
+  <%= form_with(model: @employee, local: true, method: :post, class: "form-block needs-validation") do |f| %>
     <div class="form-title">新規社員作成</div>
     <%= f.hidden_field :company_code %>
     <%= f.hidden_field :password, value: "password" %>
@@ -11,7 +11,7 @@
       </div>
     <% end %>
     <div class="form-group">
-      <%= f.text_field  :no,    class: "form-control form-control-lg", autocomplete: "no",    placeholder: "社員No", autofocus: true %>
+      <%= f.text_field  :no,    class: "form-control form-control-lg", required: nil,autocomplete: "no",    placeholder: "社員No", autofocus: true %>
     </div>
     <div class="form-group">
       <%= f.text_field  :name,  class: "form-control form-control-lg", autocomplete: "name",  placeholder: "名前" %>
