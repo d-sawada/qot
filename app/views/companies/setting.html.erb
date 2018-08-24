@@ -1,2 +1,13 @@
-<h1>Companies#config</h1>
+<nav>
+  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+    <a class="nav-item nav-link active" id="nav-tab1" href="#nav-label1" aria-controls="nav-label1" data-toggle="tab" role="tab" aria-selected="true" >パターン</a>
+    <a class="nav-item nav-link"        id="nav-tab2" href="#nav-label2" aria-controls="nav-label2" data-toggle="tab" role="tab" aria-selected="false">管理者</a>
+    <a class="nav-item nav-link"        id="nav-tab3" href="#nav-label3" aria-controls="nav-label3" data-toggle="tab" role="tab" aria-selected="false">メール設定</a>
+  </div>
+</nav>
 
+<div class="tab-content mt-3" id="nav-tabContent">
+  <div class="tab-pane active" aria-labelledby="nav-tab1" id="nav-label1" role="tabpanel"><%= render "pattern" %></div>
+  <div class="tab-pane"        aria-labelledby="nav-tab2" id="nav-label2" role="tabpanel">管理者</div>
+  <div class="tab-pane"        aria-labelledby="nav-tab3" id="nav-label3" role="tabpanel">メール設定</div>
+</div>

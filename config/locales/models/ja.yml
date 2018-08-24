@@ -1,0 +1,9 @@
+ja:
+  activerecord: &activerecord
+    models:
+      employee: 社員
+    attributes:
+      employee:
+        no: 社員番号
+        email: メールアドレス
+        name: 名前

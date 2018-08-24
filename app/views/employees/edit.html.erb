@@ -1,29 +1,33 @@
-<% if @employee.errors.present? %>
-  <% @employee.errors.full_messages.each do |message| %>
-    <%= message %>
-  <% end %>
-<% end %>
+<div id="employee_new_content">
 
-<div id="employee_edit_content">
-
-  <%= form_with(model: @employee, url: employee_path, local: true, method: :patch, class: "form-block") do |f| %>
+  <%= form_with(model: @employee, local: true, class: "form-block needs-validation") do |f| %>
     <div class="form-title">社員情報編集</div>
+    <% if @employee.errors.any? %>
+      <div id="error_explanation">
+        <% @employee.errors.full_messages.each do |message| %>
+          <div class="alert alert-danger" role="alert"><%= message %></div>
+        <% end %>
+      </div>
+    <% end %>
     <%= f.hidden_field :company_code %>
-    <%= f.fields_for :emp_emp_status, (@employee.emp_emp_status || EmpEmpStatus.new) do |f1| %>
+    <%= f.hidden_field :password, value: "password" %>
+    <%= f.hidden_field :password_confirmation, value: "password" %>
+    <%= f.fields_for :emp_emp_status, @employee.emp_emp_status ||= EmpEmpStatus.new do |f1| %>
+      <%= f1.hidden_field :company_id, value: @company.id %>
       <div class="form-group">
-        <%= f1.select :emp_status_id, @emp_statuses.map{|s| [s.name, s.id]}, {}, {class: "form-control"} %>
+        <%= f1.select :emp_status_id, @emp_statuses.map{|s| [s.name, s.id]}, {}, {class: "form-control form-control-lg"} %>
       </div>
     <% end %>
     <div class="form-group">
-      <%= f.text_field  :no,    class: "form-control", autocomplete: "no",    placeholder: "社員No", autofocus: true %>
+      <%= f.text_field  :no,    class: "form-control form-control-lg", autocomplete: "no",    placeholder: "社員No", autofocus: true %>
     </div>
     <div class="form-group">
-      <%= f.text_field  :name,  class: "form-control", autocomplete: "name",  placeholder: "名前" %>
+      <%= f.text_field  :name,  class: "form-control form-control-lg", placeholder: "名前" %>
     </div>
     <div class="form-group">
-      <%= f.email_field :email, class: "form-control", autocomplete: "email", placeholder: "メールアドレス" %>
+      <%= f.email_field :email, class: "form-control form-control-lg", autocomplete: "email", placeholder: "メールアドレス" %>
     </div>
-    <%= f.submit "新規登録", class: "form-btn btn btn-success btn-qot" %>
+    <%= f.submit "変更", class: "form-btn btn btn-success btn-qot" %>
   <% end %>
 
 </div>

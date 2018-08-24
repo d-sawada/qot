@@ -1,4 +1,10 @@
-<h1>申請一覧</h1>
+<div id="request-index">
+  <h1>申請一覧</h1>
 
-<%= render "dragable_table", {table_keys: @table_keys, table_rows: @table_rows} %>
-
+  <ul class="table-util clearfix">
+    <% if employee_signed_in? %>
+      <li><%= link_to "新規申請", new_request_path(id: @employee.id), class: "btn btn-primary btn-lg" %></li>
+    <% end %>
+  </ul>
+  <%= render "dragable_table", {table_keys: @table_keys, table_rows: @table_rows, table_class: nil, table_id: nil} %>
+</div>

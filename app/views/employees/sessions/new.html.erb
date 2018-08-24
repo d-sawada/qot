@@ -1,4 +1,3 @@
-<%= devise_error_messages %>
 <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: {id: "employee_login_form"}) do |f| %>
   <% @employee.company_code = params[:company_code] %>
   <%= f.hidden_field :company_code %>

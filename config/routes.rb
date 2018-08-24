@@ -25,6 +25,8 @@ Rails.application.routes.draw do
 
   scope :admin do
     get 'setting' => 'companies#setting', as: 'setting'
+    post 'create_pattern' => 'companies#create_pattern', as: 'create_pattern'
+    delete 'destroy_pattern/:id' => 'companies#destroy_pattern', as: 'destroy_pattern'
     resources :admins, only: [:index]
     resources :employees
   end
@@ -39,6 +41,13 @@ Rails.application.routes.draw do
       get :cancel, on: :collection
     end
   end
+
+  scope :employee do
+    get 'list' => 'employees#show', as: 'employee_list'
+  end
+
+  get 'notice_company' => 'companies#notice_company', as: 'notice_company'
+  post 'notice_company' => 'companies#check_company', as: 'check_company'
 
   get 'timecard' => 'dayinfos#new', as: 'timecard'
   put 'timecard' => 'dayinfos#put'

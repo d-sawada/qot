@@ -1,15 +1,12 @@
 <%= form_with(model: @request, local: true, id: "new-request-form") do |f| %>
   <% if @request.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@request.errors.count, "error") %> prohibited this employee from being saved:</h2>
-      <ul>
       <% @request.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
+        <div class="alert alert-danger" role="alert"><%= message %></div>
       <% end %>
-      </ul>
     </div>
   <% end %>
-  <div class="form-title">打刻申請</div>
+  <div class="form-title">打刻修正申請</div>
 
   <%= f.hidden_field :employee_id %>
   <%= f.hidden_field :state %>
@@ -25,12 +22,24 @@
       </div>
     </div>
 
+    <% if @date.present? %>
+      <div class="form-group row">
+        <%= f.label :date, class: "col-3 col-form-label col-form-label-lg", value: "日付" %>
+        <div class="col-8">
+          <%= f.text_field :date, class: "form-control form-control-lg", value: @request.date %>
+        </div>
+      </div>
+    <% end %>
+  </fieldset>
+
+  <% if @date.nil? %>
     <div class="form-group row">
       <%= f.label :date, class: "col-3 col-form-label col-form-label-lg", value: "日付" %>
       <div class="col-8">
-        <%= f.text_field :date, class: "form-control form-control-lg", value: @request.date %>
+        <%= f.text_field :date, class: "form-control form-control-lg", placeholder: "例）2000-01-1" %>
+      </div>
     </div>
-  </fieldset>
+  <% end %>
 
   <div class="form-group row">
     <%= f.label :start, class: "col-3 col-form-label col-form-label-lg", value: "出勤時刻" %>
@@ -48,7 +57,7 @@
 
   <% if employee_signed_in? %>
     <div class="form-group row">
-      <%= f.label :employee_comment, class: "col-3 col-form-label col-form-label-lg", value: "退勤時刻" %>
+      <%= f.label :employee_comment, class: "col-3 col-form-label col-form-label-lg", value: "申請コメント" %>
       <div class="col-8">
         <%= f.text_area :employee_comment, class: "form-control form-control-lg" %>
       </div>
