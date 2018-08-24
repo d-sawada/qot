@@ -1,4 +1,7 @@
 class DayinfosController < ApplicationController
+  include ApplicationHelper
+  before_action :authenticate_employees_company, only: [:new, :put]
+
   def new
     @wday = %w(日 月 火 水 木 金 土)
     @now = Time.now
@@ -19,7 +22,7 @@ class DayinfosController < ApplicationController
 
       if params[:commit] == "出勤"
         if dayinfo.start.present?
-          notice = "すでに出勤しています"
+          alert = "すでに出勤しています"
         else
           dayinfo.start = Time.zone.now
           notice = "出勤しました"
@@ -27,16 +30,16 @@ class DayinfosController < ApplicationController
         end
       else #退勤
         if dayinfo.start.blank?
-          notice = "まだ出勤していません"
+          alert = "まだ出勤していません"
         elsif dayinfo.end.present?
-          notice = "すでに退勤しています"
+          alert = "すでに退勤しています"
         else
           dayinfo.end = Time.zone.now
           notice = "退勤しました"
           dayinfo.save
         end
       end
-      redirect_to timecard_path, notice: notice
+      redirect_to timecard_path, notice: notice, alert: alert
     end
   end
 end

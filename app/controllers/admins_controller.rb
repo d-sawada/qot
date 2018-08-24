@@ -1,5 +1,4 @@
 class AdminsController < ApplicationController
-  def index
-    @admins = @company.admins
-  end
+  include ApplicationHelper
+  before_action :authenticate_admins_company
 end

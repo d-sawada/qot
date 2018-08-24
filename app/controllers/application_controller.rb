@@ -4,10 +4,10 @@ class ApplicationController < ActionController::Base
   def set_user_data
     if sys_admin_signed_in?
       @sys_admin = current_sys_admin
-      @admin = Admin.first
-      @employee = Employee.first
-      @company_code = "ga0001"
       @company = Company.first
+      @company_code = @company.code
+      @admin = @company.admins.first
+      @employee = @company.employees.first
       @logout_url = destroy_sys_admin_session_path
       @user_kind = "システム管理者"
       @user_identifer = @sys_admin.email

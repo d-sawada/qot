@@ -1,4 +1,4 @@
-<%= devise_error_messages %>
+<%= devise_error_messages! %>
 <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: {id: "admin_login_form"}) do |f| %>
   <div class="form-group">
     <%= f.email_field :email, class: "form-control form-control-lg", placeholder: "メールアドレス", autocomplete: "email", autofocus: true %>

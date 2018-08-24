@@ -1,5 +1,8 @@
 class RequestsController < ApplicationController
+  include ApplicationHelper
   include ActionView::Helpers::TagHelper
+  before_action :authenticate_company, only: [:index, :show, :new, :create]
+  before_action :authenticate_admins_company, only: [:update]
 
   def index
     requests = @company.requests if sys_admin_signed_in? || admin_signed_in?
@@ -32,35 +35,43 @@ class RequestsController < ApplicationController
   end
 
   def new
-    @request = Request.new(employee_id: params[:id], date: params[:date], state: "申請中")
-    dayinfo = Employee.find(params[:id]).dayinfos.find_by_date(params[:date])
+    @request = Request.new(employee_id: params[:id], state: "申請中")
+    @date = params[:date]
+    if @date.present?
+      @request.date = @date
+      dayinfo = Employee.find(params[:id]).dayinfos.find_by_date(@date)
+      if dayinfo.present?
+        @request.prev_start = dayinfo.start
+        @request.prev_end = dayinfo.end
+      end
+    end
     employee = @request.employee
-    @request.prev_start = dayinfo.start
-    @request.prev_end = dayinfo.end
-    @employee_info = employee.no + " " + employee.name
+    @employee_info = employee.no + " " + employee.emp_status.name + " " + employee.name
   end
 
   def create
     @request = Request.new(request_params)
-    dayinfo = @request.employee.dayinfos.find_by_date(@request.date)
     @request.admin_id = @admin.id if @admin.present?
+
     b = @request.start.present? || @request.end.present?
-    if @request.save && b
-      redirect_to requests_path
+    if b && @request.save
+      redirect_to requests_path, notice: "申請しました"
     else
-      errmes = b ? @request.errors.full_message : "修正打刻時間を入力して下さい"
-      redirect_to new_request_url(id: @request.employee_id, date: @request.date), alert: errmes
+      employee = @request.employee
+      @employee_info = employee.no + " " + employee.emp_status.name + " " + employee.name
+      flash.now[:alert] = (params[:request][:start].empty? && params[:request][:end].empty?) ? "時刻をどちらかは入力してください" : "不正な値です"
+      render :new
     end
   end
 
   def update
     @request = Request.find(params[:id])
-    if @request.state != "申請中" && params[:state].present? && @request.state != params[:state]
+    if @request.state != "申請中" && params[:state].present? && !params[:state].in("承認済", "棄却") && @request.state != params[:state]
       redirect_to requests_path, alert: "不正なアクセスです"
     elsif @request.update(request_params)
       dayinfo = @request.employee.dayinfos.find_by_date(@request.date) || @request.employee.dayinfos.new(date: @request.date)
       dayinfo.update(start: @request.start, end: @request.end)
-      redirect_to @request
+      redirect_to @request, notice: "申請を#{@request.state == "承認済" ? "承認" : "棄却"}しました"
     else
       render :show
     end

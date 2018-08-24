@@ -13,6 +13,7 @@ class Employee < ApplicationRecord
   belongs_to :company, primary_key: :code, foreign_key: :company_code
 
   validates :no, presence: true
+  validates :no, length: { is: 4 }, if: ->(u) { u.no.present? }
   validates :name, presence: true
 
   accepts_nested_attributes_for :emp_emp_status

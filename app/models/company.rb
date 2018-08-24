@@ -7,6 +7,7 @@ class Company < ApplicationRecord
   has_many :employees,                     primary_key: :code, foreign_key: :company_code, dependent: :destroy
   has_many :dayinfos, through: :employees, primary_key: :id,   foreign_key: :employee_id
   has_many :requests, through: :employees, primary_key: :id,   foreign_key: :employee_id
+  has_many :work_patterns, dependent: :destroy
 
   rails_admin do
     edit do

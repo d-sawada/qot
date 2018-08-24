@@ -5,20 +5,32 @@ module ApplicationHelper
   def admins_signed_in?
     sys_admin_signed_in? || admin_signed_in?
   end
-
-  # デバイスのエラーメッセージ出力メソッド
-  def devise_error_messages
-    return "" if resource.errors.empty?
-    html = ""
-    # エラーメッセージ用のHTMLを生成
-    messages = resource.errors.full_messages.each do |msg|
-      html += <<-EOF
-        <div class="error_field alert alert-danger" role="alert">
-          <p class="error_msg">#{msg}</p>
-        </div>
-      EOF
+  def employees_signed_in?
+    sys_admin_signed_in? || employee_signed_in?
+  end
+  def check_company(kind)
+    code = params[:company_code]
+    if code.prisent? && Company.find_by_code(code).present?
+      redirect_to "/#{code}/#{kind}/signed_in", alert: "ログインが必要です"
+    else
+      redirect_to notice_company_url, alert: "会社コードを入力してください"
     end
-    html.html_safe
+  end
+  def authenticate_admins_company
+    check_company("admin") unless admins_signed_in?
+  end
+  def authenticate_employees_company
+    check_company("employee") unless employees_signed_in?
+  end
+  def authenticate_company
+    redirect_to notice_company_url, alert: "会社コードを入力してください" unless signed_in?
+  end
+end
+
+class Object
+  def in(*args)
+    args.each {|v|return true if self == v}
+    false
   end
 end
 
@@ -29,12 +41,25 @@ class Integer
   def min_to_times
     (self / 60).to_s + ":" + (self % 60 < 10 ? "0" + (self % 60).to_s : (self % 60).to_s)
   end
+  def apply_rest
+    if self >= 480
+      self - 60
+    elsif self >= 360
+      self - 45
+    end
+  end
 end
 
 class Float
   def to_hm
     x = self.to_i
     ("0" + (x / 3600).to_s).slice(-2, 2) + ":" + ("0" + ((x % 3600) / 60).to_s).slice(-2, 2)
+  end
+end
+
+class DateTime
+  def to_hm
+    self.strftime("%h:%M")
   end
 end
 

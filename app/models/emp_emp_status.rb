@@ -3,7 +3,7 @@ class EmpEmpStatus < ApplicationRecord
   belongs_to :emp_status
   belongs_to :employee
 
-  after_commit :create_emp_status_history
+  after_save :create_emp_status_history
 
   rails_admin do
     edit do

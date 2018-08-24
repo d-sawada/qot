@@ -1,32 +1,41 @@
 <div class="contents-header">
   <% if @list == "day" %>
-    <h1><%= @employee.name + " > " %><%= link_to(@tday.to_monthly, employee_url(list: "month", day: @tday)) %><%= " > " + @tday.to_daily %></h1>
+    <h1>
+      <%= @employee.no + " " + @employee.emp_status.name + " " + @employee.name + " > " %>
+      <%= link_to(@tday.to_monthly, employee_url(@employee, list: "month", day: @tday)) %><%= " > " + @tday.to_daily %>
+    </h1>
   <% elsif @list == "month" || @list == "schedule" %>
-    <h1><%= @employee.name + " > " + @tday.to_monthly %></h1>
+    <h1><%= @employee.no + " " + @employee.emp_status.name + " " + @employee.name + " > " + @tday.to_monthly %></h1>
   <% end %>
 </div>
 
 <ul class="table-util crearfix">
-  <li><%= link_to "従業員を削除", employee_url(@employee, list: @list), method: :delete, class: "btn btn-danger btn-lg",
-      title: "社員を削除しようとしています", data: {confirm: "社員を削除すると関連する情報が全て失われます", cancel: "やめる", commit: "削除する"} %></li>
-  <li><%= link_to "従業員情報を編集", edit_employee_path(@employee), class: "btn btn-primary btn-lg" %></li>
-  <li><%= link_to "csv出力",employee_url(id: @employee.id, list: @list, day: @tday, format: :csv), class: "btn btn-primary btn-lg" %></li>
+  <% if admins_signed_in? %>
+    <li><%= link_to "従業員を削除", employee_url(@employee, list: @list), method: :delete, class: "btn btn-danger btn-lg",
+        title: "社員を削除しようとしています", data: {confirm: "社員を削除すると関連する情報が全て失われます", cancel: "やめる", commit: "削除する"} %></li>
+    <li><%= link_to "従業員情報を編集", edit_employee_path(@employee), class: "btn btn-primary btn-lg" %></li>
+    <li><%= link_to "csv出力",employee_url(id: @employee.id, list: @list, day: @tday, format: :csv), class: "btn btn-primary btn-lg" %></li>
+  <% end %>
 
   <li>
     <% if @list == "day" %>
       <div class="change-date">
-        <%= link_to("◀︎", employee_url(list: "day", day: @date.yesterday.to_s)) %>
-        <%= link_to("本日", employee_url(list: "day", day: Date.current)) %>
-        <%= link_to("▶︎", employee_url(list: "day", day: @date.tomorrow.to_s)) %>
+        <%= link_to("◀︎", employee_url(@employee, list: "day", day: @date.yesterday.to_s)) %>
+        <%= link_to("本日", employee_url(@employee, list: "day", day: Date.current)) %>
+        <%= link_to("▶︎", employee_url(@employee, list: "day", day: @date.tomorrow.to_s)) %>
       </div>
     <% elsif @list == "month" %>
       <div class="change-date">
-        <%= link_to("◀︎", employee_url(list: "month", day: @date.prev_month.to_s)) %>
-        <%= link_to("今月", employee_url(list: "month", day: Date.current)) %>
-        <%= link_to("▶︎", employee_url(list: "month", day: @date.next_month.to_s)) %>
+        <%= link_to("◀︎", employee_url(@employee, list: "month", day: @date.prev_month.to_s)) %>
+        <%= link_to("今月", employee_url(@employee, list: "month", day: Date.current)) %>
+        <%= link_to("▶︎", employee_url(@employee, list: "month", day: @date.next_month.to_s)) %>
       </div>
     <% end %>
   </li>
 </div>
 
-<%= render "dragable_table", {table_keys: @table_keys, table_rows: @table_rows} %>
+<% if @list == "month" %>
+  <%= render "dragable_table", {table_keys: @sum_dayinfo_keys, table_rows: @sum_dayinfo_rows, table_class: nil, table_id: nil} %>
+<% end %>
+
+<%= render "dragable_table", {table_keys: @table_keys, table_rows: @table_rows, table_class: nil, table_id: nil} %>

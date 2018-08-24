@@ -1,0 +1,31 @@
+<%= form_with(model: @pattern, url: create_pattern_path, id: "pattern-form") do |f| %>
+  <div class="form-row">
+    <% if @work_pattern.errors.any? %>
+      <div id="error_explanation">
+        <% @work_pattern.errors.full_messages.each do |message| %>
+          <div class="alert alert-danger" role="alert"><%= message %></div>
+        <% end %>
+      </div>
+    <% end %>
+    <div class="form-group">
+      <%= f.text_field  :name, class: "col form-control form-control-lg", placeholder: "パターン名", autofocus: true %>
+    </div>
+    <div class="form-group">
+      <%= f.select :start_day, %w(当日 前日 翌日), {}, {class: "col form-control form-control-lg"} %>
+    </div>
+    <div class="form-group">
+      <%= f.text_field  :start, class: "col form-control form-control-lg", placeholder: "hh:mm" %>
+    </div>
+    <div class="form-group">
+      <%= f.select :end_day, %w(当日 前日 翌日), {}, {class: "col form-control form-control-lg"} %>
+    </div>
+    <div class="form-group">
+      <%= f.text_field  :end, class: "col form-control form-control-lg", placeholder: "hh:mm" %>
+    </div>
+    <div class="form-group">
+      <%= f.submit "パターン作成", class: "btn btn-primary btn-lg" %>
+    </div>
+  </div>
+<% end %>
+
+<%= render "dragable_table", {table_keys: @pattern_keys, table_rows: @pattern_rows , table_id: "patterns-table", table_class: nil, row_ids: @pattern_ids } %>

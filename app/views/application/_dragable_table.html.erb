@@ -1,18 +1,28 @@
-<table class="table dragable">
-  <thead>
-    <tr>
-      <% @table_keys.each do |key| %>
-        <th scope="col"><%= key %><span/></th>
-      <% end %>
-    </tr>
-  </thead>
-  <tbody>
-    <% @table_rows.each do |row| %>
+<% default_class = 'table table-bordered table-hover table-sm text-nowrap dragable' %>
+<% if table_class.nil? %>
+  <% table_class = default_class %>
+<% else %>
+  <% table_class = default_class + " " + table_class %>
+<% end %>
+<% row_ids = [] if row_ids.nil? %>
+
+<div class="table-responsive">
+  <table id="<%= table_id %>" class="<%= table_class %>">
+    <thead>
       <tr>
-        <% row.each do |val| %>
-          <td><%= val %></td>
+        <% table_keys.each do |key| %>
+          <th scope="col"><%= key %><span/></th>
         <% end %>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% (0..table_rows.length - 1).each do |i| %>
+        <tr id="<%= row_ids[i] %>">
+          <% table_rows[i].each do |val| %>
+            <td><%= val %></td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

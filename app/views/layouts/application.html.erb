@@ -25,6 +25,11 @@
           <% if employee_signed_in? || sys_admin_signed_in? %>
             <li><%= link_to image_tag("timecard.png"), timecard_path, title: "タイムカード" %></li>
           <% end %>
+          <% if employee_signed_in? %>
+            <li><%= link_to image_tag("requests.png"), requests_path, title: "申請一覧" %></li>
+            <li><%= link_to image_tag("dayly.png"), employee_list_url(list: "day"), title: "日データ" %></li>
+            <li><%= link_to image_tag("monthly.png"), employee_list_url(list: "month"), title: "月データ" %></li>
+          <% end %>
         </ul>
       </div>
       <div class="header-right">
@@ -39,12 +44,8 @@
     </header>
     
     <div id="contents">
-    <% if notice %>
-      <p class="alert alert-primary"><%= notice %></p>
-    <% end %>
-    <% if alert %>
-      <p class="alert alert-danger"><%= alert %></p>
-    <% end %>
+      <% if notice %><p class="alert alert-primary"><%= notice %></p><% end %>
+      <% if alert %><p class="alert alert-danger"><%= alert %></p><% end %>
       <%= yield %>
     </div>
   </body>
