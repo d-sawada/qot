@@ -90,6 +90,7 @@ ActiveRecord::Schema.define(version: 2018_08_26_141204) do
   create_table "emp_statuses", force: :cascade do |t|
     t.string "company_code", null: false
     t.string "name", null: false
+    t.integer "work_template_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

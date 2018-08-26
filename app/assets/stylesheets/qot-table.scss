@@ -29,6 +29,15 @@ td {
   text-align: right;
 }
 
+#employee-monthly-table_filter {
+  display: none;
+}
 #patterns-table {
   width: auto;
+}
+#statuses-table {
+  width: 200px;
+}
+#statuses-table_filter {
+  display: none;
 }

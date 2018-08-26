@@ -105,6 +105,7 @@ header {
 
 html { font-size: 62.5%; }
 body { margin-top: 40px; }
+header { z-index: 1000; }
 ul {
   margin: 0;
   padding: 0;

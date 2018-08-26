@@ -2,6 +2,7 @@
   <div class="nav nav-tabs" id="nav-tab" role="tablist">
     <a class="nav-item nav-link active" id="nav-tab-pattern"     href="#nav-label-pattern"     aria-controls="nav-label-pattern"     data-toggle="tab" role="tab" aria-selected="true" >パターン</a>
     <a class="nav-item nav-link"        id="nav-tab-template"    href="#nav-label-template"    aria-controls="nav-label-template"    data-toggle="tab" role="tab" aria-selected="false">テンプレート</a>
+    <a class="nav-item nav-link"        id="nav-tab-status"      href="#nav-label-status"      aria-controls="nav-label-status"      data-toggle="tab" role="tab" aria-selected="false">雇用区分</a>
     <a class="nav-item nav-link"        id="nav-tab-admins"      href="#nav-label-admins"      aria-controls="nav-label-mail-config" data-toggle="tab" role="tab" aria-selected="false">管理者</a>
     <a class="nav-item nav-link"        id="nav-tab-mail-config" href="#nav-label-mail-config" aria-controls="nav-label-mail-config" data-toggle="tab" role="tab" aria-selected="false">メール送信</a>
   </div>
@@ -10,6 +11,7 @@
 <div class="tab-content mt-3" id="nav-tabContent">
   <div class="tab-pane active"   aria-labelledby="nav-tab-pattern"     id="nav-label-pattern"     role="tabpanel"><%= render "pattern" %></div>
   <div class="tab-pane clearfix" aria-labelledby="nav-tab-template"    id="nav-label-template"    role="tabpanel"><%= render "template" %></div>
+  <div class="tab-pane"          aria-labelledby="nav-tab-status"      id="nav-label-status"      role="tabpanel"><%= render "status" %></div>
   <div class="tab-pane"          aria-labelledby="nav-tab-admins"      id="nav-label-admins"      role="tabpanel"><%= render "admins" %></div>
   <div class="tab-pane"          aria-labelledby="nav-tab-mail-config" id="nav-label-mail-config" role="tabpanel"><%= render "mail_config" %></div>
 </div>
