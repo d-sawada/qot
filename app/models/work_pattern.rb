@@ -8,7 +8,7 @@ class WorkPattern < ApplicationRecord
   validates :start_day, inclusion: { in: %w(前日 当日 翌日) }
   validates :end_day,   inclusion: { in: %w(前日 当日 翌日) }
 
-  before_save :erase_rest_day, apply_day_offset
+  before_save :erase_rest_day, :apply_day_offset
 
   def erase_rest_day
     self.rest_start_day = "" if self.rest_start.nil?

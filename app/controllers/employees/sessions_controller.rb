@@ -2,6 +2,7 @@
 
 class Employees::SessionsController < Devise::SessionsController
   before_action :configure_sign_in_params
+  before_action :sys_admin_redirect
 
   # GET /resource/sign_in
   def new
@@ -37,5 +38,9 @@ class Employees::SessionsController < Devise::SessionsController
 
   def after_sign_out_path_for(resource)
     new_employee_session_path
+  end
+
+  def sys_admin_redirect
+    redirect_to employees_path if sys_admin_signed_in?
   end
 end
