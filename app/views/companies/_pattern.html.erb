@@ -1,26 +1,40 @@
 <%= form_with(model: @pattern, url: create_pattern_path, id: "pattern-form") do |f| %>
   <div class="form-row">
-    <% if @work_pattern.errors.any? %>
-      <div id="error_explanation">
-        <% @work_pattern.errors.full_messages.each do |message| %>
-          <div class="alert alert-danger" role="alert"><%= message %></div>
-        <% end %>
-      </div>
-    <% end %>
+    <%= f.label :name, class: "col-2 col-form-label col-form-label-lg", value: "名前" %>
     <div class="form-group">
       <%= f.text_field  :name, class: "col form-control form-control-lg", placeholder: "パターン名", autofocus: true %>
     </div>
+  </div>
+  <div class="form-row">
+    <label class="col-2 col-form-label col-form-label-lg">所定労働時間</label>
     <div class="form-group">
       <%= f.select :start_day, %w(当日 前日 翌日), {}, {class: "col form-control form-control-lg"} %>
     </div>
-    <div class="form-group">
-      <%= f.text_field  :start, class: "col form-control form-control-lg", placeholder: "hh:mm" %>
+    <div class="form-group col-2">
+      <%= f.text_field  :start, class: "form-control form-control-lg", placeholder: "hh:mm" %>
     </div>
+    <div class="col-form-label-lg">～</div>
     <div class="form-group">
       <%= f.select :end_day, %w(当日 前日 翌日), {}, {class: "col form-control form-control-lg"} %>
     </div>
+    <div class="form-group col-2">
+      <%= f.text_field  :end, class: "form-control form-control-lg", placeholder: "hh:mm" %>
+    </div>
+  </div>
+  <div class="form-row">
+    <label class="col-2 col-form-label col-form-label-lg">休憩時間</label>
     <div class="form-group">
-      <%= f.text_field  :end, class: "col form-control form-control-lg", placeholder: "hh:mm" %>
+      <%= f.select :rest_start_day, %w(当日 前日 翌日), {include_blank: true}, {class: "col form-control form-control-lg" } %>
+    </div>
+    <div class="form-group col-2">
+      <%= f.text_field  :rest_start, class: "form-control form-control-lg", placeholder: "hh:mm" %>
+    </div>
+    <div class="col-form-label-lg">～</div>
+    <div class="form-group">
+      <%= f.select :rest_end_day, %w(当日 前日 翌日), {include_blank: true}, {class: "col form-control form-control-lg" } %>
+    </div>
+    <div class="form-group col-2">
+      <%= f.text_field  :rest_end, class: "form-control form-control-lg", placeholder: "hh:mm" %>
     </div>
     <div class="form-group">
       <%= f.submit "パターン作成", class: "btn btn-primary btn-lg" %>

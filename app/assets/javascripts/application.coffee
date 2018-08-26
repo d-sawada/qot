@@ -20,5 +20,10 @@
 #= require_tree .
 
 $(document).on 'turbolinks:load', ->
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+    }
+  })
   tableDragger(document.querySelector(".dragable"))
   $(".dragable").tablesorter()

@@ -8,7 +8,7 @@ module ApplicationHelper
   def employees_signed_in?
     sys_admin_signed_in? || employee_signed_in?
   end
-  def check_company(kind)
+  def company_select(kind)
     code = params[:company_code]
     if code.prisent? && Company.find_by_code(code).present?
       redirect_to "/#{code}/#{kind}/signed_in", alert: "ログインが必要です"
@@ -17,10 +17,10 @@ module ApplicationHelper
     end
   end
   def authenticate_admins_company
-    check_company("admin") unless admins_signed_in?
+    company_select("admin") unless admins_signed_in?
   end
   def authenticate_employees_company
-    check_company("employee") unless employees_signed_in?
+    company_select("employee") unless employees_signed_in?
   end
   def authenticate_company
     redirect_to notice_company_url, alert: "会社コードを入力してください" unless signed_in?
@@ -35,7 +35,7 @@ class Object
 end
 
 class Integer
-  def sel_to_hm
+  def sec_to_hm
     ("0" + (self / 3600).to_s).slice(-2, 2) + ":" + ("0" + ((self % 3600) / 60).to_s).slice(-2, 2)
   end
   def min_to_times
@@ -80,7 +80,7 @@ class String
     date = Date.parse(self)
     date.strftime("%Y年%-m月%-d日(") + %w(日 月 火 水 木 金 土)[date.wday] + ")"
   end
-  def to_monthly
+  def to_monthly 
     Date.parse(self).strftime("%Y年%-m月")
   end
 end

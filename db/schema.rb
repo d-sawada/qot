@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_23_150850) do
+ActiveRecord::Schema.define(version: 2018_08_26_141204) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(version: 2018_08_23_150850) do
     t.string "name", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
+    t.boolean "is_super", default: false, null: false
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
@@ -40,6 +41,14 @@ ActiveRecord::Schema.define(version: 2018_08_23_150850) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["code"], name: "index_companies_on_code", unique: true
+  end
+
+  create_table "company_configs", force: :cascade do |t|
+    t.integer "company_id"
+    t.string "key"
+    t.string "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "dayinfos", force: :cascade do |t|
@@ -145,12 +154,30 @@ ActiveRecord::Schema.define(version: 2018_08_23_150850) do
   end
 
   create_table "work_patterns", force: :cascade do |t|
+    t.integer "company_id", null: false
     t.string "name", null: false
     t.datetime "start", null: false
     t.datetime "end", null: false
+    t.datetime "rest_start"
+    t.datetime "rest_end"
     t.string "start_day", null: false
     t.string "end_day", null: false
+    t.string "rest_start_day"
+    t.string "rest_end_day"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "work_templates", force: :cascade do |t|
     t.integer "company_id", null: false
+    t.string "name", null: false
+    t.integer "mon"
+    t.integer "tue"
+    t.integer "wed"
+    t.integer "thu"
+    t.integer "fri"
+    t.integer "sat"
+    t.integer "sun"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

@@ -1,10 +1,7 @@
-<% default_class = 'table table-bordered table-hover table-sm text-nowrap dragable' %>
-<% if table_class.nil? %>
-  <% table_class = default_class %>
-<% else %>
-  <% table_class = default_class + " " + table_class %>
-<% end %>
-<% row_ids = [] if row_ids.nil? %>
+<% table_id ||= nil %>
+<% table_class ||= "" %>
+<% table_class += ' table table-bordered table-hover table-sm text-nowrap dragable' %>
+<% row_ids ||= [] %>
 
 <div class="table-responsive">
   <table id="<%= table_id %>" class="<%= table_class %>">

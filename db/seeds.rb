@@ -5,7 +5,7 @@ Company.delete_all
 ga = Company.create({code: "ga0001", name: "GAtechnologies" })
 
 Admin.delete_all
-ga.admins.create({name: "管理者1", email: "admin1@email.com", password: "password", password_confirmation: "password" })
+ga.admins.create({name: "管理者1", email: "admin1@email.com", password: "password", password_confirmation: "password", is_super: true })
 
 EmpStatus.delete_all
 regular = ga.emp_statuses.create({name: "正社員"})

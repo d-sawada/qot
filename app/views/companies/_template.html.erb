@@ -1,0 +1,20 @@
+<div class="float-left">
+  <%= form_with(model: @work_template, url: create_template_path, id: "template-form") do |f| %>
+    <div class="form-row">
+      <%= f.label :name, class: "col-2 col-form-label col-form-label-lg", value: "名前" %>
+      <div class="form-group">
+        <%= f.text_field  :name, class: "col form-control form-control-lg", placeholder: "パターン名", autofocus: true %>
+      </div>
+    </div>
+    <% %w(月 火 水 木 金 土 日).zip([:mon, :tue, :wed, :thu, :fri, :sat, :sun]).each do |label, sym| %>
+      <%= render "select_pattern", {form: f, label: label, sym: sym, pattern_options: @pattern_options} %>
+    <% end %>
+    <div class="form-group">
+      <%= f.submit "テンプレート作成", class: "btn btn-primary btn-lg" %>
+    </div>
+  <% end %>
+</div>
+
+<div class="float-left">
+  <%= render "dragable_table", {table_keys: @template_keys, table_rows: @template_rows , table_id: "templates-table", table_class: nil, row_ids: @template_ids } %>
+</div>
