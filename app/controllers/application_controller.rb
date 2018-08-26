@@ -4,8 +4,8 @@ class ApplicationController < ActionController::Base
   def set_user_data
     if sys_admin_signed_in?
       @sys_admin = current_sys_admin
-      @company = Company.first
-      @company_code = @company.code
+      @company_code = params[:company_code] || Company.first.code
+      @company = Company.find_by_code(@company_code)
       @admin = @company.admins.first
       @employee = @company.employees.first
       @logout_url = destroy_sys_admin_session_path

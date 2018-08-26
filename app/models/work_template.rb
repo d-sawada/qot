@@ -1,7 +1,7 @@
 class WorkTemplate < ApplicationRecord
   include ActionView::Helpers::TagHelper
   belongs_to :company
-  belongs_to :emp_status
+  has_one :emp_status
 
   def to_table_row(pattern_names)
     row = [self.name]
