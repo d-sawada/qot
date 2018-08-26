@@ -36,7 +36,7 @@ class RequestsController < ApplicationController
 
   def new
     @request = Request.new(employee_id: params[:id], state: "申請中")
-    @date = params[:date]
+    @date = params[:day]
     if @date.present?
       @request.date = @date
       dayinfo = Employee.find(params[:id]).dayinfos.find_by_date(@date)
@@ -69,8 +69,16 @@ class RequestsController < ApplicationController
     if @request.state != "申請中" && params[:state].present? && !params[:state].in("承認済", "棄却") && @request.state != params[:state]
       redirect_to requests_path, alert: "不正なアクセスです"
     elsif @request.update(request_params)
-      dayinfo = @request.employee.dayinfos.find_by_date(@request.date) || @request.employee.dayinfos.new(date: @request.date)
-      dayinfo.update(start: @request.start, end: @request.end)
+      emp_email = @request.employee.email
+      send_email = (@company.company_configs.find_by_key('send_mail_request_processed').value == "送信する")
+      if @request.state == "承認済"
+        dayinfo = @request.employee.dayinfos.find_by_date(@request.date) || @request.employee.dayinfos.new(date: @request.date)
+        dayinfo.update(start: @request.start, end: @request.end)
+        RequestMailer.request_accepted_mail(emp_email ,@request.admin_comment).deliver if send_email
+      else
+        RequestMailer.request_rejected_mail(emp_email ,@request.admin_comment).deliver if send_email
+      end
+
       redirect_to @request, notice: "申請を#{@request.state == "承認済" ? "承認" : "棄却"}しました"
     else
       render :show

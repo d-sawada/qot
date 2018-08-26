@@ -8,6 +8,15 @@ class Company < ApplicationRecord
   has_many :dayinfos, through: :employees, primary_key: :id,   foreign_key: :employee_id
   has_many :requests, through: :employees, primary_key: :id,   foreign_key: :employee_id
   has_many :work_patterns, dependent: :destroy
+  has_many :work_templates, dependent: :destroy
+  has_many :company_configs, dependent: :destroy
+
+  after_create :create_default_configs
+
+  def create_default_configs
+    self.company_configs.build({key: "send_mail_request_processed", value: "送信する"})
+    self.save
+  end
 
   rails_admin do
     edit do

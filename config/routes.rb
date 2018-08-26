@@ -27,6 +27,12 @@ Rails.application.routes.draw do
     get 'setting' => 'companies#setting', as: 'setting'
     post 'create_pattern' => 'companies#create_pattern', as: 'create_pattern'
     delete 'destroy_pattern/:id' => 'companies#destroy_pattern', as: 'destroy_pattern'
+    post 'create_template' => 'companies#create_template', as: 'create_template'
+    delete 'destroy_template/:id' => 'companies#destroy_template', as: 'destroy_template'
+    patch 'update_company_config' => 'companies#update_company_config', as: 'update_company_config'
+    post 'create_admin' => 'companies#create_admin', as: 'create_admin'
+    delete 'destroy_admin/:id' => 'companies#destroy_admin', as: 'destroy_admin'
+    
     resources :admins, only: [:index]
     resources :employees
   end

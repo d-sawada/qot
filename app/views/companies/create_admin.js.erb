@@ -1,0 +1,8 @@
+$("#contents .alert").remove();
+<% if @admin.errors.any? %>
+  $("#contents").prepend('<p class="alert alert-danger"><%= @message %></p>');
+<% else %>
+  $("#contents").prepend('<p class="alert alert-primary"><%= @message %></p>');
+  $("#create-admin-form input").val('');
+  $("#create-admin-form select").val('通常管理者');
+<% end %>

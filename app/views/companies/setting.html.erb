@@ -1,13 +1,42 @@
 <nav>
   <div class="nav nav-tabs" id="nav-tab" role="tablist">
-    <a class="nav-item nav-link active" id="nav-tab1" href="#nav-label1" aria-controls="nav-label1" data-toggle="tab" role="tab" aria-selected="true" >パターン</a>
-    <a class="nav-item nav-link"        id="nav-tab2" href="#nav-label2" aria-controls="nav-label2" data-toggle="tab" role="tab" aria-selected="false">管理者</a>
-    <a class="nav-item nav-link"        id="nav-tab3" href="#nav-label3" aria-controls="nav-label3" data-toggle="tab" role="tab" aria-selected="false">メール設定</a>
+    <a class="nav-item nav-link active" id="nav-tab-pattern"     href="#nav-label-pattern"     aria-controls="nav-label-pattern"     data-toggle="tab" role="tab" aria-selected="true" >パターン</a>
+    <a class="nav-item nav-link"        id="nav-tab-template"    href="#nav-label-template"    aria-controls="nav-label-template"    data-toggle="tab" role="tab" aria-selected="false">テンプレート</a>
+    <a class="nav-item nav-link"        id="nav-tab-admins"      href="#nav-label-admins"      aria-controls="nav-label-mail-config" data-toggle="tab" role="tab" aria-selected="false">管理者</a>
+    <a class="nav-item nav-link"        id="nav-tab-mail-config" href="#nav-label-mail-config" aria-controls="nav-label-mail-config" data-toggle="tab" role="tab" aria-selected="false">メール送信</a>
   </div>
 </nav>
 
 <div class="tab-content mt-3" id="nav-tabContent">
-  <div class="tab-pane active" aria-labelledby="nav-tab1" id="nav-label1" role="tabpanel"><%= render "pattern" %></div>
-  <div class="tab-pane"        aria-labelledby="nav-tab2" id="nav-label2" role="tabpanel">管理者</div>
-  <div class="tab-pane"        aria-labelledby="nav-tab3" id="nav-label3" role="tabpanel">メール設定</div>
+  <div class="tab-pane active"   aria-labelledby="nav-tab-pattern"     id="nav-label-pattern"     role="tabpanel"><%= render "pattern" %></div>
+  <div class="tab-pane clearfix" aria-labelledby="nav-tab-template"    id="nav-label-template"    role="tabpanel"><%= render "template" %></div>
+  <div class="tab-pane"          aria-labelledby="nav-tab-admins"      id="nav-label-admins"      role="tabpanel"><%= render "admins" %></div>
+  <div class="tab-pane"          aria-labelledby="nav-tab-mail-config" id="nav-label-mail-config" role="tabpanel"><%= render "mail_config" %></div>
 </div>
+
+<script js>
+// Javascript to enable link to tab
+var url = document.location.toString();
+if (url.match('#')) {
+    $('.nav-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
+} 
+// Change hash for page-reload
+$('.nav-tabs a').on('shown.bs.tab', function (e) {
+    window.location.hash = e.target.hash;
+});
+
+// Mail config
+$("input[name='send_mail_request_processed']").val(['<%= @configs["send_mail_request_processed"] %>']);
+$("input[name='send_mail_request_processed']").change(function() {
+  $.ajax({
+    url: '/admin/update_company_config',
+    method: 'PATCH',
+    data: $.param({
+      company_config: {
+        'key': 'send_mail_request_processed',
+        'value': $(this).val()
+      }
+    })
+  });
+});
+</script>

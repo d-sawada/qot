@@ -30,7 +30,11 @@ class Dayinfo < ApplicationRecord
     end
     if self.start.present? && self.end.present?
       self.workdays = 1
-      self.worktimes = (([self.end, self.pre_end].min - [self.start, self.pre_start].max).to_i / 60).apply_rest
+      if self.pre_start.present? && self.pre_end.present?
+        self.worktimes = (([self.end, self.pre_end].min - [self.start, self.pre_start].max).to_i / 60).apply_rest
+      else
+        self.worktimes = ((self.end - self.start).to_i / 60).apply_rest
+      end
     end
     if self.employee.holidays.find_by_date(self.date).present?
       self.holiday_workdays,  self.workdays  = self.workdays,  0
