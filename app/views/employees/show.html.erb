@@ -35,7 +35,7 @@
 </div>
 
 <% if @list == "month" %>
-  <%= render "dragable_table", {table_keys: @sum_dayinfo_keys, table_rows: @sum_dayinfo_rows, table_class: nil, table_id: nil} %>
+  <%= render "qot_table", {table_id: "employee-monthly-table", table_keys: @sum_dayinfo_keys, table_rows: @sum_dayinfo_rows} %>
 <% end %>
 
-<%= render "dragable_table", {table_keys: @table_keys, table_rows: @table_rows, table_class: nil, table_id: nil} %>
+<%= render "qot_table", {table_id: "employees-table", table_keys: @table_keys, table_rows: @table_rows} %>

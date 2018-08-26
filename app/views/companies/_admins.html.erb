@@ -1,7 +1,6 @@
 <% if sys_admin_signed_in? || @admin.is_super %>
   <div class="float-left">
     <%= form_with(model: @admin, url: create_admin_path, id: "create-admin-form", class: "needs-validation") do |f| %>
-      <div class="form-title">新規管理者作成</div>
       <%= f.hidden_field :company_code %>
       <div class="form-group">
         <%= f.select :is_super, [['通常管理者', false], ['総合管理者', true]], {}, {class: "col form-control form-control-lg"} %>
@@ -18,12 +17,15 @@
       <div class="form-group">
         <%= f.password_field :password_confirmation, class: "form-control form-control-lg", autocomplete: "password", placeholder: "パスワード（確認用）" %>
       </div>
-      <%= f.submit "新規登録", class: "form-btn btn btn-success btn-qot" %>
+      <%= f.submit @admin_submit, class: "form-btn btn btn-success btn-qot" %>
+      <% if @admin.id.present? %>
+        <a id="admins-edit-back" href="/admin/setting#nav-label-admins"><div class="btn btn-primary btn-lg">編集をやめる</div></a>
+      <% end %>
     <% end %>
   </div>
 
   <div class="float-left mt-5 ml-5">
-    <%= render "dragable_table", {table_keys: @admin_keys, table_rows: @admin_rows , table_id: "admins-table", row_ids: @admin_ids } %>
+    <%= render "qot_table", {table_keys: @admin_keys, table_rows: @admin_rows , table_id: "admins-table", row_ids: @admin_ids } %>
   </div>
 <% else %>
   <h4>総合管理者のみ管理者を閲覧・作成できます</h4>

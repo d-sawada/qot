@@ -1,7 +1,7 @@
 $("#contents .alert").remove();
-<% if @admin.errors.any? %>
+<% if @status.errors.any? %>
   $("#contents").prepend('<p class="alert alert-danger"><%= @message %></p>');
 <% else %>
-  $("#admin-<%= @admin.id %>").fadeOut();
+  $("#status-<%= @status.id %>").fadeOut();
   $("#contents").prepend('<p class="alert alert-primary"><%= @message %></p>');
 <% end %>

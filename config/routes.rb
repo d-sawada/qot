@@ -32,6 +32,8 @@ Rails.application.routes.draw do
     patch 'update_company_config' => 'companies#update_company_config', as: 'update_company_config'
     post 'create_admin' => 'companies#create_admin', as: 'create_admin'
     delete 'destroy_admin/:id' => 'companies#destroy_admin', as: 'destroy_admin'
+    post 'create_status' => 'companies#create_status', as: 'create_status'
+    delete 'destroy_status/:id' => 'companies#destroy_status', as: 'destroy_status'
     
     resources :admins, only: [:index]
     resources :employees

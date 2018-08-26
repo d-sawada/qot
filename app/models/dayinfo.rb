@@ -5,8 +5,8 @@ class Dayinfo < ApplicationRecord
   validates :date, presence: true
   validates :employee_id, presence: true
 
-  before_create :times_trunc_sec, :aggregate
-  before_update :times_trunc_sec, :aggregate
+  before_create :times_trunc_sec, :aggregate, :apply_template
+  before_update :times_trunc_sec, :aggregate, :apply_template
 
   def times_trunc_sec
     [:pre_start, :pre_end, :start, :end].each do |sym|
@@ -40,6 +40,13 @@ class Dayinfo < ApplicationRecord
       self.holiday_workdays,  self.workdays  = self.workdays,  0
       self.holiday_worktimes, self.worktimes = self.worktimes, 0
     end
+  end
+  def apply_template
+    pattern = WorkPattern.find(self.employee.emp_status.work_template[[:sun, :mon, :tue, :wed, :thu, :fri, :sat][self.date.wday]])
+    self.pre_start = pattern.start
+    self.pre_end = pattern.end
+    self.rest_start = pattern.rest_start
+    self.rest_end = pattern.rest_end
   end
 
   def daily_data

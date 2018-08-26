@@ -25,5 +25,10 @@ $(document).on 'turbolinks:load', ->
       'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
     }
   })
-  tableDragger(document.querySelector(".dragable"))
-  $(".dragable").tablesorter()
+  $(".qot-table").tablesorter()
+  $(".qot-table").DataTable({
+    lengthChange: false,
+    ordering: false,
+    info: false,
+    paging: false
+  })

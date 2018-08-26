@@ -1,6 +1,6 @@
 <h1>申請詳細</h1>
 
-<%= render "dragable_table", {table_keys: @table_keys, table_rows: @table_rows} %>
+<%= render "qot_table", {table_keys: @table_keys, table_rows: @table_rows} %>
 
 <%= form_with(model: @request, local: true) do |f| %>
   <% if @request.errors.any? %>
