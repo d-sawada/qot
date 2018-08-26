@@ -1,33 +1,36 @@
-<div id="employee_new_content">
+<% if @emp_statuses.present? %>
+  <div id="employee_new_content">
 
-  <%= form_with(model: @employee, local: true, class: "form-block needs-validation") do |f| %>
-    <div class="form-title">新規社員作成</div>
-    <% if @employee.errors.any? %>
-      <div id="error_explanation">
-        <% @employee.errors.full_messages.each do |message| %>
-          <div class="alert alert-danger" role="alert"><%= message %></div>
-        <% end %>
-      </div>
-    <% end %>
-    <%= f.hidden_field :company_code %>
-    <%= f.hidden_field :password, value: "password" %>
-    <%= f.hidden_field :password_confirmation, value: "password" %>
-    <%= f.fields_for :emp_emp_status, @employee.emp_emp_status ||= EmpEmpStatus.new do |f1| %>
-      <%= f1.hidden_field :company_id, value: @company.id %>
+    <%= form_with(model: @employee, local: true, class: "form-block needs-validation") do |f| %>
+      <div class="form-title">新規社員作成</div>
+      <% if @employee.errors.any? %>
+        <div id="error_explanation">
+          <% @employee.errors.full_messages.each do |message| %>
+            <div class="alert alert-danger" role="alert"><%= message %></div>
+          <% end %>
+        </div>
+      <% end %>
+      <%= f.hidden_field :company_code %>
+      <%= f.hidden_field :password, value: "password" %>
+      <%= f.hidden_field :password_confirmation, value: "password" %>
+      <%= f.fields_for :emp_emp_status, @employee.emp_emp_status ||= EmpEmpStatus.new do |f1| %>
+        <%= f1.hidden_field :company_id, value: @company.id %>
+        <div class="form-group">
+          <%= f1.select :emp_status_id, @emp_statuses.map{|s| [s.name, s.id]}, {}, {class: "form-control form-control-lg"} %>
+        </div>
+      <% end %>
       <div class="form-group">
-        <%= f1.select :emp_status_id, @emp_statuses.map{|s| [s.name, s.id]}, {}, {class: "form-control form-control-lg"} %>
+        <%= f.text_field  :no,    class: "form-control form-control-lg", required: nil,autocomplete: "no",    placeholder: "社員番号（4文字）", autofocus: true %>
       </div>
+      <div class="form-group">
+        <%= f.text_field  :name,  class: "form-control form-control-lg", autocomplete: "name",  placeholder: "名前" %>
+      </div>
+      <div class="form-group">
+        <%= f.email_field :email, class: "form-control form-control-lg", autocomplete: "email", placeholder: "メールアドレス" %>
+      </div>
+      <%= f.submit "新規登録", class: "form-btn btn btn-success btn-qot" %>
     <% end %>
-    <div class="form-group">
-      <%= f.text_field  :no,    class: "form-control form-control-lg", required: nil,autocomplete: "no",    placeholder: "社員番号（4文字）", autofocus: true %>
-    </div>
-    <div class="form-group">
-      <%= f.text_field  :name,  class: "form-control form-control-lg", autocomplete: "name",  placeholder: "名前" %>
-    </div>
-    <div class="form-group">
-      <%= f.email_field :email, class: "form-control form-control-lg", autocomplete: "email", placeholder: "メールアドレス" %>
-    </div>
-    <%= f.submit "新規登録", class: "form-btn btn btn-success btn-qot" %>
-  <% end %>
-
-</div>
+  </div>
+<% else %>
+  <div class="alert alert-danger" role="alert">雇用区分を作成する必要があります</div>
+<% end %>

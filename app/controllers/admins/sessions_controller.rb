@@ -3,7 +3,7 @@
 class Admins::SessionsController < Devise::SessionsController
   include ApplicationHelper
   # before_action :configure_sign_in_params, only: [:create]
-  before_adction :sys_admin_redirect
+  before_action :sys_admin_redirect
 
   # GET /resource/sign_in
   # def new

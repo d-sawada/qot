@@ -50,17 +50,11 @@ ga.employees.each do |emp|
       if wd == 1
         s = DateTime.new(2018,8,i,8,45,0,0.375)
         e = DateTime.new(2018,8,i,18,15,0,0.375)
-        ps = DateTime.new(2018,8,i,9,0,0,0.375)
-        pe = DateTime.new(2018,8,i,18,0,0,0.375)
       elsif
         s = DateTime.new(2018,8,i,9,45,0,0.375)
         e = DateTime.new(2018,8,i,19,15,0,0.375)
-        ps = DateTime.new(2018,8,i,10,0,0,0.375)
-        pe = DateTime.new(2018,8,i,19,0,0,0.375)
       end
-      rs = DateTime.new(2018,8,i,13,0,0,0.375)
-      re = DateTime.new(2018,8,i,14,0,0,0.375)
-      emp.dayinfos.create({date: "2018-08-" + i.to_s, start: s, end: e, pre_start: ps, pre_end: pe, rest_start: rs, rest_end: re})
+      emp.dayinfos.create({date: "2018-08-" + i.to_s, start: s, end: e})
     end
   end
 end

@@ -5,8 +5,8 @@ class Dayinfo < ApplicationRecord
   validates :date, presence: true
   validates :employee_id, presence: true
 
-  before_create :times_trunc_sec, :aggregate, :apply_template
-  before_update :times_trunc_sec, :aggregate, :apply_template
+  before_create :times_trunc_sec, :apply_template, :aggregate
+  before_update :times_trunc_sec, :apply_template, :aggregate
 
   def times_trunc_sec
     [:pre_start, :pre_end, :start, :end].each do |sym|
@@ -18,6 +18,23 @@ class Dayinfo < ApplicationRecord
       self[days_sym] = 1
       self[times_sym] = (self[end_sym] - self[start_sym]).to_i / 60
       apply_rest(tymes_sym)
+    end
+  end
+  def apply_template
+    pattern = WorkPattern.find(self.employee.emp_status.work_template[[:sun, :mon, :tue, :wed, :thu, :fri, :sat][self.date.wday]])
+    if pattern.present?
+      self.pre_start = pattern.start.change(year: self.date.year, month: self.date.month, day: self.date.day) if pattern.start.present?
+      self.pre_end = pattern.end.change(year: self.date.year, month: self.date.month, day: self.date.day) if pattern.end.present?
+      self.rest_start = pattern.rest_start.change(year: self.date.year, month: self.date.month, day: self.date.day) if pattern.rest_start.present?
+      self.rest_end = pattern.rest_end.change(year: self.date.year, month: self.date.month, day: self.date.day) if pattern.rest_start.present?
+      self.pre_start = self.pre_start.yesterday if pattern.start_day == "前日"
+      self.pre_start = self.pre_start.tommorrow if pattern.start_day == "翌日"
+      self.pre_end = self.pre_end.yesterday if pattern.end_day == "前日"
+      self.pre_end = self.pre_end.tommorrow if pattern.end_day == "翌日"
+      self.rest_start = self.rest_start.yesterday if pattern.rest_start_day == "前日"
+      self.rest_start = self.rest_start.tommorrow if pattern.rest_start_day == "翌日"
+      self.rest_end = self.rest_end.yesterday if pattern.rest_end_day == "前日"
+      self.rest_end = self.rest_end.tommorrow if pattern.rest_end_day == "翌日"
     end
   end
   def aggregate
@@ -40,13 +57,6 @@ class Dayinfo < ApplicationRecord
       self.holiday_workdays,  self.workdays  = self.workdays,  0
       self.holiday_worktimes, self.worktimes = self.worktimes, 0
     end
-  end
-  def apply_template
-    pattern = WorkPattern.find(self.employee.emp_status.work_template[[:sun, :mon, :tue, :wed, :thu, :fri, :sat][self.date.wday]])
-    self.pre_start = pattern.start
-    self.pre_end = pattern.end
-    self.rest_start = pattern.rest_start
-    self.rest_end = pattern.rest_end
   end
 
   def daily_data

@@ -32,12 +32,9 @@ td {
 #employee-monthly-table_filter {
   display: none;
 }
-#patterns-table {
-  width: auto;
+#patterns-table-wrapper {
+  width: 500px;
 }
-#statuses-table {
-  width: 200px;
-}
-#statuses-table_filter {
-  display: none;
+#statuses-table-wrapper {
+  width: 300px;
 }

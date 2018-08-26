@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  root "companies#top"
   mount RailsAdmin::Engine => '/system_admin', as: 'rails_admin'
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
   devise_for :sys_admins, skip: :all
@@ -31,6 +32,7 @@ Rails.application.routes.draw do
     delete 'destroy_template/:id' => 'companies#destroy_template', as: 'destroy_template'
     patch 'update_company_config' => 'companies#update_company_config', as: 'update_company_config'
     post 'create_admin' => 'companies#create_admin', as: 'create_admin'
+    patch 'update_admin/:id' => 'companies#update_admin', as: 'update_admin'
     delete 'destroy_admin/:id' => 'companies#destroy_admin', as: 'destroy_admin'
     post 'create_status' => 'companies#create_status', as: 'create_status'
     delete 'destroy_status/:id' => 'companies#destroy_status', as: 'destroy_status'
@@ -54,8 +56,10 @@ Rails.application.routes.draw do
     get 'list' => 'employees#show', as: 'employee_list'
   end
 
-  get 'notice_company' => 'companies#notice_company', as: 'notice_company'
-  post 'notice_company' => 'companies#check_company', as: 'check_company'
+  get 'top' => 'companies#top', as: 'top'
+  post 'top' => 'companies#check_company', as: 'check_company'
+  post 'create_company' => 'companies#create_company', as: 'create_company'
+  get 'after_create_company/:id' => 'companies#after_create_company', as: 'after_create_company'
 
   get 'timecard' => 'dayinfos#new', as: 'timecard'
   put 'timecard' => 'dayinfos#put'

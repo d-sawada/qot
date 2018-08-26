@@ -1,19 +1,25 @@
 class CompaniesController < ApplicationController
   include ApplicationHelper
   include ActionView::Helpers::TagHelper
-  before_action :authenticate_admins_company, except: [:notice_company]
+  before_action :authenticate_admins_company, except: [:top, :check_company, :create_company, :after_create_company]
 
-  def notice_company
+  def top
+    if admins_signed_in?
+      redirect_to employees_path
+    elsif employee_signed_in?
+      redirect_to timecard_path
+    end
+    render layout: 'top_layout'
   end
   def check_company
     if params[:code].present?
       company = Company.find_by_code(params[:code])
       if company.present?
         if params[:commit].present?
-          if params[:commit] == "管理者様ログイン画面へ"
+          if params[:commit] == "管理者様ログイン画面"
             redirect_to "/#{params[:code]}/admin/sign_in"
             return
-          elsif params[:commit] == "社員ログイン画面へ"
+          elsif params[:commit] == "社員ログイン画面"
             redirect_to "/#{params[:code]}/employee/sign_in"
             return
           else
@@ -26,7 +32,40 @@ class CompaniesController < ApplicationController
     else
       flash.now[:alert] = "企業コードを入力してください"
     end
-    render :notice_company
+    render :top, layout: 'top_layout'
+  end
+  def create_company
+    @company = Company.new(company_params)
+    alpha = @company.name.downcase.split("").select{|c| 'a' <= c && c <= 'z' }
+    companies = Company.all.pluck(:code)
+    case alpha.length
+    when 0
+      prefix = "ja"
+    when 1
+      prefix = alpha[0] + "_"
+    else
+      prefix = alpha[0] + alpha[1]
+    end
+    i = 1
+    while true do
+      code = prefix + ("000" + i.to_s).slice(-4,4)
+      break if companies.find{|com| com == code}.nil?
+      i += 1
+      p code
+    end
+    @company.code = code
+    @company.save
+    @admin = Admin.new({company_code: code, is_super: true, name: params[:admin][:name], email: params[:admin][:email], password: "password", password_confirmation: "password"})
+    if @admin.save
+      TrialMailer.start_trial_mail(@admin).deliver
+      redirect_to after_create_company_path(id: @admin.id)
+    else
+      @company.destroy
+      render :top
+    end
+  end
+  def after_create_company
+    @admin = Admin.find(params[:id])
   end
 
   def setting
@@ -106,11 +145,11 @@ class CompaniesController < ApplicationController
       @status_submit = "雇用区分を作成"
     end
     if params[:admin].present?
-      @admin = Admin.find(params[:admin].to_i)
-      @admin_submit = "管理者を更新"
+      @new_admin = Admin.find(params[:admin].to_i)
+      @new_admin_submit = "管理者を更新"
     else
-      @admin = @company.admins.build
-      @admin_submit = "管理者を作成"
+      @new_admin = @company.admins.build
+      @new_admin_submit = "管理者を作成"
     end
   end
 
@@ -185,22 +224,34 @@ class CompaniesController < ApplicationController
     end
   end
   def create_admin
-    @admin = @company.admins.build(admin_params)
-    if @admin.save
-      @row_id = "admin-#{@admin.id}"
+    @new_admin = @company.admins.build(admin_params)
+    @new_admin.id = params[:id]
+    if @new_admin.save
+      @row_id = "admin-#{@new_admin.id}"
       @row = [
-        (@admin.is_super ? "〇" : ""), @admin.name, @admin.email,
-        content_tag(:a, "削除", href: @admin.id.nil? ? nil : destroy_admin_path(@admin), rel: "nofollow", data: { remote: true, method: :delete,
-            title: "管理者[#{@admin.name}]を削除しますか？",cancel: "やめる", commit: "削除する"})
+        (@new_admin.is_super ? "〇" : ""), @new_admin.name, @new_admin.email,
+        content_tag(:a, "削除", href: @new_admin.id.nil? ? nil : destroy_admin_path(@new_admin), rel: "nofollow", data: { remote: true, method: :delete,
+            title: "管理者[#{@new_admin.name}]を削除しますか？",cancel: "やめる", commit: "削除する"})
       ]
       @message = "管理者を作成しました"
     else
       @message = "管理者の作成に失敗しました。入力を確認してください"
+      p @new_admin.errors
     end
   end
+  def update_admin
+    @new_admin = Admin.find(params[:id])
+    if @new_admin.update(admin_params)
+      @row_id = "admin-#{@new_admin.id}"
+      @row = [
+        (@new_admin.is_super ? "〇" : ""), @new_admin.name, @new_admin.email,
+        content_tag(:a, "削除", href: @new_admin.id.nil? ? nil : destroy_admin_path(@new_admin), rel: "nofollow", data: { remote: true, method: :delete,
+            title: "管理者[#{@new_admin.name}]を削除しますか？",cancel: "やめる", commit: "削除する"})
+      ]
+  end
   def destroy_admin
-    @admin = Admin.find(params[:id])
-    if @admin.destroy
+    @new_admin = Admin.find(params[:id])
+    if @new_admin.destroy
       @message = "管理者を削除しました"
     else
       @message = "管理者の削除に失敗しました"
@@ -212,6 +263,9 @@ class CompaniesController < ApplicationController
   end
 
   private
+  def company_params
+    params.require(:company).permit(:name)
+  end
   def work_pattern_params
     params.require(:work_pattern).permit(:company_id, :name, :start, :start_day, :end, :end_day, :rest_start, :rest_start_day, :rest_end, :rest_end_day)
   end
@@ -225,6 +279,6 @@ class CompaniesController < ApplicationController
     params.require(:company_config).permit(:key, :value)
   end
   def admin_params
-    params.require(:admin).permit(:company_code, :name, :email, :password, :password_confirmation, :is_super)
+    params.require(:admin).permit(:is_super, :name, :email, :password, :password_confirmation)
   end
 end
