@@ -13,7 +13,7 @@ module ApplicationHelper
     if code.prisent? && Company.find_by_code(code).present?
       redirect_to "/#{code}/#{kind}/signed_in", alert: "ログインが必要です"
     else
-      redirect_to notice_company_url, alert: "会社コードを入力してください"
+      redirect_to top_url, alert: "会社コードを入力してください"
     end
   end
   def authenticate_admins_company
@@ -23,7 +23,7 @@ module ApplicationHelper
     company_select("employee") unless employees_signed_in?
   end
   def authenticate_company
-    redirect_to notice_company_url, alert: "会社コードを入力してください" unless signed_in?
+    redirect_to top_url, alert: "会社コードを入力してください" unless signed_in?
   end
 end
 

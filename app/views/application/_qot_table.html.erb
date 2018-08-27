@@ -1,9 +1,10 @@
+<% wrapper_id ||= nil %>
 <% table_id ||= nil %>
 <% table_class ||= "" %>
 <% table_class += ' table table-bordered table-hover table-sm text-nowrap qot-table' %>
 <% row_ids ||= [] %>
 
-<div class="table-responsive">
+<div id="<%= wrapper_id %>" class="table-responsive">
   <table id="<%= table_id %>" class="<%= table_class %>">
     <thead>
       <tr>
