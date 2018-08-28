@@ -20,13 +20,13 @@
         </div>
       <% end %>
       <div class="form-group">
-        <%= f.text_field  :no,    class: "form-control form-control-lg", required: nil,autocomplete: "no",    placeholder: "社員番号（4文字）", autofocus: true %>
+        <%= f.text_field  :no,    class: "form-control form-control-lg", required: nil,autocomplete: "no",    placeholder: "社員番号（4文字）", autofocus: true, required: true %>
       </div>
       <div class="form-group">
-        <%= f.text_field  :name,  class: "form-control form-control-lg", autocomplete: "name",  placeholder: "名前" %>
+        <%= f.text_field  :name,  class: "form-control form-control-lg", autocomplete: "name",  placeholder: "名前", required: true %>
       </div>
       <div class="form-group">
-        <%= f.email_field :email, class: "form-control form-control-lg", autocomplete: "email", placeholder: "メールアドレス" %>
+        <%= f.email_field :email, class: "form-control form-control-lg", autocomplete: "email", placeholder: "メールアドレス", required: true %>
       </div>
       <%= f.submit "新規登録", class: "form-btn btn btn-success btn-qot" %>
     <% end %>

@@ -1,9 +1,11 @@
-<% if @template_options.present? %>
+<div id="setting-status-require" class="alert alert-danger d-none" role="alert">テンプレートを作成する必要があります</div>
+
+<div id="setting-status-content">
   <%= form_with(model: @status, url: @status.id.present? ? update_status_path(@status.id) : create_status_path, id: "status-form") do |f| %>
     <div class="form-row">
       <%= f.label :name, class: "col-1 col-form-label col-form-label-lg", value: "名前" %>
       <div class="form-group">
-        <%= f.text_field  :name, class: "col form-control form-control-lg", placeholder: "雇用区分名", autofocus: true %>
+        <%= f.text_field  :name, class: "col form-control form-control-lg", placeholder: "雇用区分名", autofocus: true, required: true %>
       </div>
       <label class="col-2 col-form-label col-form-label-lg ml-5">設定テンプレート</label>
       <div class="form-group">
@@ -19,6 +21,4 @@
   <% end %>
 
   <%= render "qot_table", {wrapper_id: "statuses-table-wrapper", table_id: "statuses-table", table_keys: @status_keys, table_rows: @status_rows, row_ids: @status_ids } %>
-<% else %>
-  <div class="alert alert-danger" role="alert">テンプレートを作成する必要があります</div>
-<% end %>
+</div>

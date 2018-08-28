@@ -67,6 +67,7 @@ class CompaniesController < ApplicationController
   end
   def after_create_company
     @admin = Admin.find(params[:id])
+    render layout: 'top_layout'
   end
 
   def setting
@@ -141,6 +142,9 @@ class CompaniesController < ApplicationController
       @row_id = "pattern-#{@work_pattern.id}"
       @row = @work_pattern.to_table_row
       @message = "パターンを作成しました"
+      if @company.work_patterns.count <= 1
+        redirect_to "/admin/setting#nav-label-pattern", notice: "パターンを作成しました"
+      end
     end
   end
   def update_pattern
@@ -153,6 +157,9 @@ class CompaniesController < ApplicationController
     @work_pattern = WorkPattern.find(params[:id])
     if @work_pattern.destroy
       @message = "パターンを削除しました"
+      if @company.work_patterns.count <= 1
+        redirect_to "/admin/setting#nav-label-pattern", notice: "パターンを削除しました"
+      end
     end
   end
 
@@ -163,6 +170,9 @@ class CompaniesController < ApplicationController
       @row_id = "template-#{@work_template.id}"
       @row = @work_template.to_table_row(pattern_names)
       @message = "テンプレートを作成しました"
+      if @company.work_templates.count <= 1
+        redirect_to "/admin/setting#nav-label-template", notice: "テンプレートを作成しました"
+      end
     end
   end
   def update_template
@@ -175,6 +185,9 @@ class CompaniesController < ApplicationController
     @work_template = WorkTemplate.find(params[:id])
     if @work_template.destroy
       @message = "テンプレートを削除しました"
+      if @company.work_templates.count <= 1
+        redirect_to "/admin/setting#nav-label-template", notice: "テンプレートを削除しました"
+      end
     end
   end
 

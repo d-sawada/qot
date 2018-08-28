@@ -11,14 +11,14 @@
       <%= f.select :start_day, %w(当日 前日 翌日), {}, {class: "col form-control form-control-lg"} %>
     </div>
     <div class="form-group col-2">
-      <%= f.text_field  :start, class: "form-control form-control-lg", placeholder: "hh:mm" %>
+      <%= f.text_field  :start, class: "form-control form-control-lg", placeholder: "hh:mm", required: true %>
     </div>
     <div class="col-form-label-lg">～</div>
     <div class="form-group">
       <%= f.select :end_day, %w(当日 前日 翌日), {}, {class: "col form-control form-control-lg"} %>
     </div>
     <div class="form-group col-2">
-      <%= f.text_field  :end, class: "form-control form-control-lg", placeholder: "hh:mm" %>
+      <%= f.text_field  :end, class: "form-control form-control-lg", placeholder: "hh:mm", required: true %>
     </div>
   </div>
   <div class="form-row">
