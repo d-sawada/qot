@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  before_action :set_user_data
+  before_action :set_user_data, :trial_fail
 
   def set_user_data
     if sys_admin_signed_in?
@@ -25,6 +25,17 @@ class ApplicationController < ActionController::Base
       @logout_url = destroy_employee_session_path(company_code: @company_code)
       @user_kind = "社員 - " + @employee.name
       @user_identifer = @employee.email
+    end
+  end
+  def trial_fail
+    kind = nil
+    kind = "admin" if admin_signed_in?
+    kind = "employee" if employee_signed_in?
+    if kind.present?
+      if (DateTime.now.to_i - @company.created_at.to_i) > 30 * 24 * 3600
+        sign_out(@admin)
+        redirect_to "/#{@company_code}/#{kind}/sign_in", alert: "トライアル期間が終了しました"
+      end
     end
   end
 end
