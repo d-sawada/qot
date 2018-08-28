@@ -1,13 +1,8 @@
 <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: {id: "employee_login_form"}) do |f| %>
   <h1 class="text-center">社員ログイン</h1>
 
-  <% @employee.company_code = params[:company_code] %>
-  <%= f.hidden_field :company_code %>
-  <%= f.hidden_field :password, value: "password" %>
-  <%= f.hidden_field :password_confirmation, value: "password" %>
-
   <div class="form-group">
-    <%= f.email_field :email, class: "form-control form-control-lg", placeholder: "メールアドレス", autocomplete: "email", autofocus: true %>
+    <%= f.text_field :no, class: "form-control form-control-lg", placeholder: "社員番号", autocomplete: "no", autofocus: true %>
   </div>
 
   <% if devise_mapping.rememberable? -%>
