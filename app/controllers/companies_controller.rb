@@ -8,8 +8,9 @@ class CompaniesController < ApplicationController
       redirect_to employees_path
     elsif employee_signed_in?
       redirect_to timecard_path
+    else
+      render layout: 'top_layout'
     end
-    render layout: 'top_layout'
   end
   def check_company
     if params[:code].present?
@@ -73,16 +74,7 @@ class CompaniesController < ApplicationController
     @pattern_keys = %w(パターン名 出勤 退勤 休憩開始 休憩終了 編集 削除)
     work_patterns = @company.work_patterns
     @pattern_ids = work_patterns.pluck(:id).map{|id| "pattern-#{id}"}
-    @pattern_rows = work_patterns.map{|p| [
-      p.name,
-      p.start_day + " " + p.start.to_hm,
-      p.end_day + " " + p.end.to_hm,
-      p.rest_start_day.present? ? p.rest_start_day + " " + p.rest_start.to_hm : "",
-      p.rest_end_day.present? ? p.rest_end_day + " " + p.rest_end.to_hm : "",
-      content_tag(:a, "編集", href: p.id.nil? ? nil : "/admin/setting?pattern=#{p.id}#nav-label-pattern"),
-      content_tag(:a, "削除", href: p.id.nil? ? nil : destroy_pattern_path(p), rel: "nofollow", data: { remote: true, method: :delete,
-          title: "パターン[#{p.name}]を削除しますか？", confirm: "削除しても[#{p.name}]が適用されたスケジュールは変更されません", cancel: "やめる", commit: "削除する"})
-    ]}
+    @pattern_rows = work_patterns.map{|pattern| pattern.to_table_row }
 
     # ========== テンプレート ==========
     pattern_names = Hash[work_patterns.map{|p| [p.id, p.name]}]
@@ -98,23 +90,13 @@ class CompaniesController < ApplicationController
     statuses = @company.emp_statuses
     @status_ids = statuses.map{|status| "status-#{status.id}"}
     @status_keys = %w(雇用区分名 テンプレート名 編集 削除)
-    @status_rows = statuses.map{|s| [
-      s.name, template_names[s.work_template_id],
-      content_tag(:a, "編集", href: s.id.nil? ? nil : "/admin/setting?status=#{s.id}#nav-label-status"),
-      content_tag(:a, "削除", href: s.id.nil? ? nil : destroy_status_path(s), rel: "nofollow", data: { remote: true, method: :delete,
-          title: "雇用区分[#{s.name}]を削除しますか？", confirm: "削除しても[#{s.name}]が適用されたスケジュールは変更されません", cancel: "やめる", commit: "削除する"})
-    ]}
+    @status_rows = statuses.map{|s| s.to_table_row(template_names) }
 
     # ========== 管理者 ==========
     admins = @company.admins
     @admin_ids = admins.map{|admin| "admin-#{admin.id}"}
     @admin_keys = %w(総合管理者 名前 メールアドレス 編集 削除)
-    @admin_rows = admins.map{|admin| [
-      (admin.is_super ? "〇" : ""), admin.name, admin.email,
-      content_tag(:a, "編集", href: admin.id.nil? ? nil : "/admin/setting?admin=#{admin.id}#nav-label-admins"),
-      content_tag(:a, "削除", href: (admin.id.nil? ? nil : destroy_admin_path(admin)), rel: "nofollow", data: { remote: true, method: :delete,
-          title: "管理者[#{admin.name}]を削除しますか？", cancel: "やめる", commit: "削除する"})
-    ]}
+    @admin_rows = admins.map{|admin| admin.to_table_row }
 
     # ========== メール設定 ==========
     @configs = Hash[@company.company_configs.map{|config| [config.key, config.value]}]
@@ -157,97 +139,80 @@ class CompaniesController < ApplicationController
     @work_pattern = @company.work_patterns.build(work_pattern_params)
     if @work_pattern.save
       @row_id = "pattern-#{@work_pattern.id}"
-      @row = [
-        @work_pattern.name,
-        @work_pattern.start_day + " " + @work_pattern.start.to_hm,
-        @work_pattern.end_day + " " + @work_pattern.end.to_hm,
-        (@work_pattern.rest_start_day.present? ? @work_pattern.rest_start_day + " " + @work_pattern.rest_start.to_hm : ""),
-        (@work_pattern.rest_end_day.present? ? @work_pattern.rest_end_day + " " + @work_pattern.rest_end.to_hm : ""),
-        content_tag(:a, "削除", href: destroy_pattern_path(@work_pattern), rel: "nofolloe", data: { remote: true, method: :delete,
-            title: "パターン[#{@work_pattern.name}]を削除しますか？", confirm: "削除しても[#{@work_pattern.name}]が適用されたスケジュールは変更されません", cancel: "やめる", commit: "削除する"})
-      ]
+      @row = @work_pattern.to_table_row
       @message = "パターンを作成しました"
-    else
-      @message = "パターンの作成に失敗しました。入力した値を確認してください"
+    end
+  end
+  def update_pattern
+    @work_pattern = WorkPattern.find(params[:id])
+    if @work_pattern.update(work_pattern_params)
+      redirect_to "/admin/setting#nav-label-pattern", notice: "パターン[#{@work_pattern.name}]を更新しました"
     end
   end
   def destroy_pattern
     @work_pattern = WorkPattern.find(params[:id])
     if @work_pattern.destroy
       @message = "パターンを削除しました"
-      @id = @work_pattern.id
-    else
-      @message = "パターンの削除に失敗しました"
     end
   end
+
   def create_template
     @work_template = @company.work_templates.build(work_template_params)
     if @work_template.save
-      pattern_names = Hash[@company.work_patterns.map{|p| [p.id, p.name]}]
+      pattern_names = Hash[@company.work_patterns.map{|pattern| [pattern.id, pattern.name]}]
       @row_id = "template-#{@work_template.id}"
       @row = @work_template.to_table_row(pattern_names)
       @message = "テンプレートを作成しました"
-    else
-      @message = "テンプレートの作成に失敗しました。入力した値を確認してください"
+    end
+  end
+  def update_template
+    @work_template = WorkTemplate.find(params[:id])
+    if @work_template.update(work_template_params)
+      redirect_to "/admin/setting#nav-label-template", notice: "テンプレート[#{@work_template.name}]を更新しました"
     end
   end
   def destroy_template
     @work_template = WorkTemplate.find(params[:id])
     if @work_template.destroy
       @message = "テンプレートを削除しました"
-    else
-      @message = "テンプレートの削除に失敗しました"
     end
   end
+
   def create_status
     @status = @company.emp_statuses.build(emp_status_params)
     if @status.save
       template_names = Hash[@company.work_templates.map{|t| [t.id, t.name]}]
       @row_id = "status-#{@status.id}"
-      @row = [
-        @status.name, template_names[@status.work_template_id],
-        content_tag(:a, "編集", href: @status.id.nil? ? nil : "/admin/setting?status=#{@status.id}#nav-label-status"),
-        content_tag(:a, "削除", href: @status.id.nil? ? nil : destroy_status_path(@status), rel: "nofollow", data: { remote: true, method: :delete,
-            title: "雇用区分[#{@status.name}]を削除しますか？", confirm: "削除しても[#{@status.name}]が適用されたスケジュールは変更されません", cancel: "やめる", commit: "削除する"})
-      ]
+      @row = @status.to_table_row(template_names)
       @message = "雇用区分を作成しました"
-    else
-      @message = "雇用区分の作成に失敗しました。入力した値を確認してください"
+    end
+  end
+  def update_status
+    @status = EmpStatus.find(params[:id])
+    if @status.update(emp_status_params)
+      redirect_to "/admin/setting#nav-label-status", notice: "雇用区分[#{@status.name}]を更新しました"
     end
   end
   def destroy_status
     @status = EmpStatus.find(params[:id])
     if @status.destroy
       @message = "雇用区分を削除しました"
-    else
-      @message = "雇用区分の削除に失敗しました"
     end
   end
+
   def create_admin
     @new_admin = @company.admins.build(admin_params)
-    @new_admin.id = params[:id]
     if @new_admin.save
       @row_id = "admin-#{@new_admin.id}"
-      @row = [
-        (@new_admin.is_super ? "〇" : ""), @new_admin.name, @new_admin.email,
-        content_tag(:a, "削除", href: @new_admin.id.nil? ? nil : destroy_admin_path(@new_admin), rel: "nofollow", data: { remote: true, method: :delete,
-            title: "管理者[#{@new_admin.name}]を削除しますか？",cancel: "やめる", commit: "削除する"})
-      ]
+      @row = @new_admin.to_table_row
       @message = "管理者を作成しました"
-    else
-      @message = "管理者の作成に失敗しました。入力を確認してください"
-      p @new_admin.errors
     end
   end
   def update_admin
     @new_admin = Admin.find(params[:id])
     if @new_admin.update(admin_params)
-      @row_id = "admin-#{@new_admin.id}"
-      @row = [
-        (@new_admin.is_super ? "〇" : ""), @new_admin.name, @new_admin.email,
-        content_tag(:a, "削除", href: @new_admin.id.nil? ? nil : destroy_admin_path(@new_admin), rel: "nofollow", data: { remote: true, method: :delete,
-            title: "管理者[#{@new_admin.name}]を削除しますか？",cancel: "やめる", commit: "削除する"})
-      ]
+      redirect_to "/admin/setting#nav-label-template", notice: "管理者[#{@new_admin.name}]を更新しました"
+    end
   end
   def destroy_admin
     @new_admin = Admin.find(params[:id])

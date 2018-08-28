@@ -1,6 +1,6 @@
 class Company < ApplicationRecord
   validates :code, length: { is: 6 }, uniqueness: true
-  validates :name, length: { maximum: 255 }
+  validates :name, presence: true, length: { maximum: 255 }
 
   has_many :admins,                        primary_key: :code, foreign_key: :company_code, dependent: :destroy
   has_many :emp_statuses,                  primary_key: :code, foreign_key: :company_code, dependent: :destroy

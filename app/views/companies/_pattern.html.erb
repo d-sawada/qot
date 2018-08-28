@@ -1,4 +1,4 @@
-<%= form_with(model: @pattern, url: create_pattern_path, id: "pattern-form") do |f| %>
+<%= form_with(model: @pattern, url: @pattern.id.present? ? update_pattern_path(@pattern.id) : create_pattern_path, id: "pattern-form") do |f| %>
   <div class="form-row">
     <%= f.label :name, class: "col-2 col-form-label col-form-label-lg", value: "名前" %>
     <div class="form-group">
@@ -41,7 +41,7 @@
     </div>
   </div>
   <% if @pattern.id.present? %>
-    <a href="/admin/setting#nav-label-pattern"><div class="btn btn-primary btn-lg">編集をやめる</div></a>
+    <a href="/admin/setting#nav-label-pattern"><div class="btn btn-secondary btn-lg">編集をやめる</div></a>
   <% end %>
 <% end %>
 

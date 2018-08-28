@@ -1,7 +1,10 @@
 $("#contents .alert").remove();
 <% if @work_pattern.errors.any? %>
-  $("#contents").prepend('<p class="alert alert-danger"><%= @message %></p>');
+  <% @work_pattern.errors.full_messages.each do |message| %>
+    $("#contents").prepend('<p class="alert alert-danger"><%= message %></p>');
+  <% end %>
 <% else %>
-  $("#pattern-<%= @id %>").fadeOut();
+  $("#pattern-<%= @work_pattern.id %>").fadeOut();
+  $(".select-pattern option[value='<%= @work_pattern.id %>']").remove();
   $("#contents").prepend('<p class="alert alert-primary"><%= @message %></p>');
 <% end %>
