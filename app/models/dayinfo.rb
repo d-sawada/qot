@@ -61,12 +61,12 @@ class Dayinfo < ApplicationRecord
 
   def daily_data
     [
-      self.pre_start.to_hm,
-      self.pre_end.to_hm,
+      #self.pre_start.to_hm,
+      #self.pre_end.to_hm,
       self.start.to_hm,
-      self.end.to_hm,
-      self.rest_start.to_hm,
-      self.rest_end.to_hm
+      self.end.to_hm#,
+      #self.rest_start.to_hm,
+      #self.rest_end.to_hm
     ]
   end
   def monthly_data

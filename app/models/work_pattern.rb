@@ -27,4 +27,12 @@ class WorkPattern < ApplicationRecord
           title: "パターン[#{self.name}]を削除しますか？", confirm: "削除しても[#{self.name}]が適用されたスケジュールは変更されません", cancel: "やめる", commit: "削除する"})
     ]
   end
+  def to_daily_data
+    [
+      self.start.to_hm,
+      self.end.to_hm,
+      self.rest_start_day.present? ? self.rest_start.to_hm : "",
+      self.rest_end_day.present? ? self.rest_end.to_hm : ""
+    ]
+  end
 end

@@ -15,11 +15,11 @@ class EmployeesController < ApplicationController
 
     if @list == "day"
       dayinfos = Hash[@company.dayinfos.where(dayinfos: {date: @date}).map{|d| [d.employee_id, d]}]
-      table_csv_keys, table_opt_keys= employee_daily_keys + dayinfo_daily_keys, ["詳細"]
+      table_csv_keys, table_opt_keys= employee_daily_keys + pattern_daily_keys + dayinfo_daily_keys, ["詳細"]
       table_csv_rows, table_opt_rows = [], []
       employees.each do |emp|
         dayinfo = dayinfos[emp.id] || Dayinfo.new
-        table_csv_rows << emp.data_array + dayinfo.daily_data
+        table_csv_rows << emp.data_array + emp.emp_status.work_template.pattern_of(@date).to_daily_data + dayinfo.daily_data
         table_opt_rows << [content_tag(:a, "詳細", href: "/admin/employees/#{emp.id}?day=#{@tday}&list=day")]
       end
     elsif @list == "month"
@@ -69,8 +69,8 @@ class EmployeesController < ApplicationController
 
     if @list == "day"
       dayinfo = @employee.dayinfos.where("date = ?", @tday).first || Dayinfo.new
-      table_csv_keys, table_opt_keys = dayinfo_daily_keys, ["申請登録"]
-      table_csv_rows = [dayinfo.daily_data]
+      table_csv_keys, table_opt_keys = pattern_daily_keys + dayinfo_daily_keys, ["申請登録"]
+      table_csv_rows = [@employee.emp_status.work_template.pattern_of(@date).to_daily_data + dayinfo.daily_data]
       table_opt_rows = [[content_tag(:a, "打刻修正を登録", href: new_request_url(id: @employee.id, day: @tday))]]
     elsif @list == "month"
       sum_dayinfo =  @employee.dayinfos.where("dayinfos.date between ? and ?", @date.beginning_of_month, @date.end_of_month)
@@ -89,11 +89,11 @@ class EmployeesController < ApplicationController
 
       dayinfos = Hash[@employee.dayinfos.where("date between ? and ?", @tday.month_begin, @tday.month_end)
           .map{|d| [d.date.day, d] }]
-      table_csv_keys, table_opt_keys = ["日付"] + dayinfo_daily_keys, %w(詳細 申請登録)
+      table_csv_keys, table_opt_keys = ["日付"] + pattern_daily_keys + dayinfo_daily_keys, %w(詳細 申請登録)
       table_csv_rows, table_opt_rows = [], []
       (1..day_num).each do |i|
         dayinfo = dayinfos[i] || Dayinfo.new
-        table_csv_rows << [i] + dayinfo.daily_data
+        table_csv_rows << [i] + @employee.emp_status.work_template.pattern_of(@date.change(day: i)).to_daily_data + dayinfo.daily_data
         table_opt_rows << [
           content_tag(:a, "詳細", href: employee_url(id: @employee.id, day: @date.change(day: i))),
           content_tag(:a, "打刻修正を登録", href: new_request_url(id: @employee.id, day: @date.change(day: i)))
