@@ -42,6 +42,7 @@ Rails.application.routes.draw do
     post 'create_admin' => 'companies#create_admin', as: 'create_admin'
     patch 'update_admin/:id' => 'companies#update_admin', as: 'update_admin'
     delete 'destroy_admin/:id' => 'companies#destroy_admin', as: 'destroy_admin'
+
     patch 'update_company_config' => 'companies#update_company_config', as: 'update_company_config'
     
     resources :admins, only: [:index]
@@ -66,7 +67,7 @@ Rails.application.routes.draw do
   get 'top' => 'companies#top', as: 'top'
   post 'top' => 'companies#check_company', as: 'check_company'
   post 'create_company' => 'companies#create_company', as: 'create_company'
-  get 'after_create_company/:id' => 'companies#after_create_company', as: 'after_create_company'
+  get 'after_create_company' => 'companies#after_create_company', as: 'after_create_company'
 
   get 'timecard' => 'dayinfos#new', as: 'timecard'
   put 'timecard' => 'dayinfos#put'

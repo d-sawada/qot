@@ -59,14 +59,13 @@ class CompaniesController < ApplicationController
     @admin = Admin.new({company_code: code, is_super: true, name: params[:admin][:name], email: params[:admin][:email], password: "password", password_confirmation: "password"})
     if @admin.save
       TrialMailer.start_trial_mail(@admin).deliver
-      redirect_to after_create_company_path(id: @admin.id)
+      redirect_to after_create_company_path
     else
       @company.destroy
       render :top
     end
   end
   def after_create_company
-    @admin = Admin.find(params[:id])
     render layout: 'top_layout'
   end
 
