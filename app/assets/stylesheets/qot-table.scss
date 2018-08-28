@@ -28,6 +28,9 @@ th.headerSortDown span:after {
 td {
   text-align: right;
 }
+.dataTables_empty {
+  display: none;
+}
 
 #employee-monthly-table_filter {
   display: none;

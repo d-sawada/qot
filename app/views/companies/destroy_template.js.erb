@@ -1,8 +1,8 @@
 $("#contents .alert").remove();
-<% if @work_pattern.errors.any? %>
+<% if @work_template.errors.any? %>
   $("#contents").prepend('<p class="alert alert-danger"><%= @message %></p>');
 <% else %>
   $("#template-<%= @work_template.id %>").fadeOut();
+  $(".select-template option[value='<%= @work_template.id %>']").remove();
   $("#contents").prepend('<p class="alert alert-primary"><%= @message %></p>');
-  $(".select-template option[value=<%= @work_pattern.id %>]").remove();
 <% end %>

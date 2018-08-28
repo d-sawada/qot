@@ -18,18 +18,25 @@
           <% end %>
         </div>
       <% end %>
+      <% if @company.errors.any? %>
+        <div id="error_explanation">
+          <% @company.errors.full_messages.each do |message| %>
+            <div class="alert alert-danger" role="alert"><%= message %></div>
+          <% end %>
+        </div>
+      <% end %>
       <h2 class="text-center">30日間無料トライアルに申し込む</h2>
       <div class="form-group">
         <label class="col-form-label col-form-label-lg">企業名</label>
-        <input type="text" name="company[name]" class="form-control form-control-lg col" placeholder="（株）勤怠クラウド" />
+        <input type="text" name="company[name]" class="form-control form-control-lg col" placeholder="（株）勤怠クラウド" required>
       </div>
       <div class="form-group">
         <label class="col-form-label col-form-label-lg">管理者様お名前</label>
-        <input type="text" name="admin[name]" class="form-control form-control-lg col" placeholder="鈴木　太郎" />
+        <input type="text" name="admin[name]" class="form-control form-control-lg col" placeholder="鈴木　太郎" required>
       </div>
       <div class="form-group">
         <label class="col-form-label col-form-label-lg">管理者様メールアドレス</label>
-        <input type="email" name="admin[email]" class="form-control form-control-lg col" placeholder="email@example.com" />
+        <input type="email" name="admin[email]" class="form-control form-control-lg col" placeholder="email@example.com" required>
       </div>
       <div class="actions form-row justify-content-center">
         <%= f.submit "トライアルに申し込む", class: "btn btn-warning btn-lg col-6" %>

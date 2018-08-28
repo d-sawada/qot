@@ -12,7 +12,7 @@
   <body>
     <header class="clearfix">
       <div class="header-left clearfix">
-        <div class="app-logo d-none d-sm-block">Queen of Time</div>
+        <a class="app-logo" href="/top">Queen of Time</a>
         <ul class="header-list">
           <% if admin_signed_in? || sys_admin_signed_in? %>
             <li><%= link_to image_tag("dayly.png"), employees_path(list: "day"), title: "日データ" %></li>
@@ -33,7 +33,7 @@
       </div>
       <div class="header-right">
         <div class="header-user">
-          <p><%= @user_kind %></p>
+          <p><%= @company.name + " : " + @user_kind %></p>
           <p><%= @user_identifer %></p>
         </div>
         <% if signed_in? %>

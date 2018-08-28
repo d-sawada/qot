@@ -11,14 +11,18 @@ class Employee < ApplicationRecord
   has_many :holidays, through: :emp_status, primary_key: :id, foreign_key: :emp_status_id
   has_many :emp_status_historys, dependent: :destroy
   belongs_to :company, primary_key: :code, foreign_key: :company_code
+  accepts_nested_attributes_for :emp_emp_status
 
   validates :no, presence: true
   validates :no, length: { is: 4 }, if: ->(u) { u.no.present? }
   validates :name, presence: true
+  validate :no_uniqu_in_company?
 
-  accepts_nested_attributes_for :emp_emp_status
-
-  
+  def no_uniqu_in_company?
+    if self.company.employees.find_by_no(self.no).present?
+      errors.add(:no, "#{self.no}はすでに使われている社員番号です")
+    end
+  end
   def email_reqired?
     false
   end

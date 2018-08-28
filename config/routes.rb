@@ -26,16 +26,23 @@ Rails.application.routes.draw do
 
   scope :admin do
     get 'setting' => 'companies#setting', as: 'setting'
+
     post 'create_pattern' => 'companies#create_pattern', as: 'create_pattern'
+    patch 'update_pattern/:id' => 'companies#update_pattern', as: 'update_pattern'
     delete 'destroy_pattern/:id' => 'companies#destroy_pattern', as: 'destroy_pattern'
+
     post 'create_template' => 'companies#create_template', as: 'create_template'
+    patch 'update_template/:id' => 'companies#update_template', as: 'update_template'
     delete 'destroy_template/:id' => 'companies#destroy_template', as: 'destroy_template'
-    patch 'update_company_config' => 'companies#update_company_config', as: 'update_company_config'
+    
+    post 'create_status' => 'companies#create_status', as: 'create_status'
+    patch 'update_status/:id' => 'companies#update_status', as: 'update_status'
+    delete 'destroy_status/:id' => 'companies#destroy_status', as: 'destroy_status'
+
     post 'create_admin' => 'companies#create_admin', as: 'create_admin'
     patch 'update_admin/:id' => 'companies#update_admin', as: 'update_admin'
     delete 'destroy_admin/:id' => 'companies#destroy_admin', as: 'destroy_admin'
-    post 'create_status' => 'companies#create_status', as: 'create_status'
-    delete 'destroy_status/:id' => 'companies#destroy_status', as: 'destroy_status'
+    patch 'update_company_config' => 'companies#update_company_config', as: 'update_company_config'
     
     resources :admins, only: [:index]
     resources :employees

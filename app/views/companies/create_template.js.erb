@@ -1,6 +1,8 @@
 $("#contents .alert").remove();
 <% if @work_template.errors.any? %>
-  $("#contents").prepend('<p class="alert alert-danger"><%= @message %></p>');
+  <% @work_template.errors.full_messages.each do |message| %>
+    $("#contents").prepend('<p class="alert alert-danger"><%= message %></p>');
+  <% end %>
 <% else %>
   $("#templates-table tbody").append('<%= j(render "table_row", {row_id: @row_id, row: @row}) %>');
   $(".select-template").append('<option value="<%= @work_template.id %>"><%= @work_template.name %></option>');

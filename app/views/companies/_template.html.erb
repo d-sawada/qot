@@ -1,6 +1,6 @@
 <% if @pattern_options.present? %>
   <div class="float-left">
-    <%= form_with(model: @work_template, url: create_template_path, id: "template-form") do |f| %>
+    <%= form_with(model: @work_template, url: @work_template.id.present? ? update_template_path(@work_template.id) : create_template_path, id: "template-form") do |f| %>
       <div class="form-row">
         <%= f.label :name, class: "col-2 col-form-label col-form-label-lg", value: "名前" %>
         <div class="form-group">
@@ -13,8 +13,8 @@
       <div class="form-group">
         <%= f.submit @work_template_submit, class: "btn btn-primary btn-lg" %>
       </div>
-      <% if @template.id.present? %>
-        <a href="/admin/setting#nav-label-template"><div class="btn btn-primary btn-lg">編集をやめる</div></a>
+      <% if @work_template.id.present? %>
+        <a href="/admin/setting#nav-label-template"><div class="btn btn-secondary btn-lg">編集をやめる</div></a>
       <% end %>
     <% end %>
   </div>
