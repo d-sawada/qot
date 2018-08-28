@@ -27,7 +27,17 @@ $('.nav-tabs a').on('shown.bs.tab', function (e) {
     window.location.hash = e.target.hash;
 });
 
-// Mail config
+// Tab requires
+<% if @pattern_options.blank? %>
+  $("#setting-template-content").addClass("d-none");
+  $("#setting-template-require").removeClass("d-none");
+<% end %>
+<% if @template_options.blank? %>
+  $("#setting-status-content").addClass("d-none");
+  $("#setting-status-require").removeClass("d-none");
+<% end %>
+
+// Other configs
 $("input[name='send_mail_request_processed']").val(['<%= @configs["send_mail_request_processed"] %>']);
 $("input[name='send_mail_request_processed']").change(function() {
   $.ajax({

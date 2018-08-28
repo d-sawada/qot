@@ -1,10 +1,12 @@
-<% if @pattern_options.present? %>
+<div id="setting-template-require" class="alert alert-danger d-none" role="alert">パターンを作成する必要があります</div>
+
+<div id="setting-template-content">
   <div class="float-left">
     <%= form_with(model: @work_template, url: @work_template.id.present? ? update_template_path(@work_template.id) : create_template_path, id: "template-form") do |f| %>
       <div class="form-row">
         <%= f.label :name, class: "col-2 col-form-label col-form-label-lg", value: "名前" %>
         <div class="form-group">
-          <%= f.text_field  :name, class: "col form-control form-control-lg", placeholder: "パターン名", autofocus: true %>
+          <%= f.text_field  :name, class: "col form-control form-control-lg", placeholder: "パターン名", autofocus: true, required: true %>
         </div>
       </div>
       <% %w(月 火 水 木 金 土 日).zip([:mon, :tue, :wed, :thu, :fri, :sat, :sun]).each do |label, sym| %>
@@ -22,6 +24,4 @@
   <div class="float-left">
     <%= render "qot_table", {table_keys: @template_keys, table_rows: @template_rows , table_id: "templates-table", table_class: nil, row_ids: @template_ids } %>
   </div>
-<% else %>
-  <div class="alert alert-danger" role="alert">パターンを作成する必要があります</div>
-<% end %>
+</div>

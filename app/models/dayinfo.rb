@@ -9,16 +9,8 @@ class Dayinfo < ApplicationRecord
   before_update :times_trunc_sec, :apply_template, :aggregate
 
   def times_trunc_sec
-    [:pre_start, :pre_end, :start, :end].each do |sym|
-      self[sym] = Time.at(self[sym].to_i / 60 * 60) if self[sym].present?
-    end
-  end
-  def calc_days_and_times(start_sym, end_sym, days_sym, times_sym)
-    if self[start_sym].present? && self[end_sym].present?
-      self[days_sym] = 1
-      self[times_sym] = (self[end_sym] - self[start_sym]).to_i / 60
-      apply_rest(tymes_sym)
-    end
+    self.start = Time.at(self.start.to_i / 60 * 60) if self.start.present?
+    self.end = Time.at(self.end.to_i / 60 * 60 + 1) if self.end.present?
   end
   def apply_template
     pattern = WorkPattern.find(self.employee.emp_status.work_template[[:sun, :mon, :tue, :wed, :thu, :fri, :sat][self.date.wday]])

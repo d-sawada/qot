@@ -46,6 +46,8 @@ class Integer
       self - 60
     elsif self >= 360
       self - 45
+    else
+      self
     end
   end
 end
