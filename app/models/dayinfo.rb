@@ -13,7 +13,7 @@ class Dayinfo < ApplicationRecord
     self.end = Time.at(self.end.to_i / 60 * 60 + 1) if self.end.present?
   end
   def apply_template
-    pattern = WorkPattern.find(self.employee.emp_status.work_template[[:sun, :mon, :tue, :wed, :thu, :fri, :sat][self.date.wday]])
+    pattern = WorkPattern.find_by_id(self.employee.emp_status.work_template[[:sun, :mon, :tue, :wed, :thu, :fri, :sat][self.date.wday]])
     if pattern.present?
       self.pre_start = pattern.start.change(year: self.date.year, month: self.date.month, day: self.date.day) if pattern.start.present?
       self.pre_end = pattern.end.change(year: self.date.year, month: self.date.month, day: self.date.day) if pattern.end.present?
@@ -33,10 +33,6 @@ class Dayinfo < ApplicationRecord
     self.pre_workdays,  self.workdays,  self.holiday_workdays  = 0, 0, 0
     self.pre_worktimes, self.worktimes, self.holiday_worktimes = 0, 0, 0
 
-    if self.pre_start.present? && self.pre_end.present?
-      self.pre_workdays = 1
-      self.pre_worktimes = ((self.pre_end - self.pre_start).to_i / 60).apply_rest
-    end
     if self.start.present? && self.end.present?
       self.workdays = 1
       if self.pre_start.present? && self.pre_end.present?
@@ -45,7 +41,10 @@ class Dayinfo < ApplicationRecord
         self.worktimes = ((self.end - self.start).to_i / 60).apply_rest
       end
     end
-    if self.employee.holidays.find_by_date(self.date).present?
+    if self.pre_start.present? && self.pre_end.present?
+      self.pre_workdays = 1
+      self.pre_worktimes = ((self.pre_end - self.pre_start).to_i / 60).apply_rest
+    else #if self.employee.holidays.find_by_date(self.date).present?
       self.holiday_workdays,  self.workdays  = self.workdays,  0
       self.holiday_worktimes, self.worktimes = self.worktimes, 0
     end
