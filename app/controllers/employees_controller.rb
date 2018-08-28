@@ -11,7 +11,8 @@ class EmployeesController < ApplicationController
     @list = params[:list] || "day"
     @tday = params[:day] || Date.current.to_s
     @date = Date.parse(@tday)
-    employees = @company.employees.preload(:emp_status).order(:no)
+    employees = @company.employees.preload(:emp_status, :work_template).order(:no)
+    work_patterns = Hash[@company.work_patterns.map{|pattern| [pattern.id, pattern]}]
 
     if @list == "day"
       dayinfos = Hash[@company.dayinfos.where(dayinfos: {date: @date}).map{|d| [d.employee_id, d]}]
@@ -19,7 +20,7 @@ class EmployeesController < ApplicationController
       table_csv_rows, table_opt_rows = [], []
       employees.each do |emp|
         dayinfo = dayinfos[emp.id] || Dayinfo.new
-        table_csv_rows << emp.data_array + emp.emp_status.work_template.pattern_of(@date).to_daily_data + dayinfo.daily_data
+        table_csv_rows << emp.data_array + work_patterns[emp.work_template.pattern_id_of(@date)].to_daily_data + dayinfo.daily_data
         table_opt_rows << [content_tag(:a, "詳細", href: "/admin/employees/#{emp.id}?day=#{@tday}&list=day")]
       end
     elsif @list == "month"
@@ -70,7 +71,7 @@ class EmployeesController < ApplicationController
     if @list == "day"
       dayinfo = @employee.dayinfos.where("date = ?", @tday).first || Dayinfo.new
       table_csv_keys, table_opt_keys = pattern_daily_keys + dayinfo_daily_keys, ["申請登録"]
-      table_csv_rows = [@employee.emp_status.work_template.pattern_of(@date).to_daily_data + dayinfo.daily_data]
+      table_csv_rows = [WorkPattern.find(@employee.work_template.pattern_id_of(@date)).to_daily_data + dayinfo.daily_data]
       table_opt_rows = [[content_tag(:a, "打刻修正を登録", href: new_request_url(id: @employee.id, day: @tday))]]
     elsif @list == "month"
       sum_dayinfo =  @employee.dayinfos.where("dayinfos.date between ? and ?", @date.beginning_of_month, @date.end_of_month)

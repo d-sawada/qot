@@ -22,7 +22,7 @@ class WorkTemplate < ApplicationRecord
         title: "テンプレート[#{self.name}]を削除しますか？", confirm: "削除しても[#{self.name}]が適用されたスケジュールは変更されません", cancel: "やめる", commit: "削除する" }
       )
   end
-  def pattern_of(date)
-    WorkPattern.find_by_id(self[[:san, :mon, :tue, :wed, :thu, :fri, :sat][date.wday]]) || WorkPattern.new
+  def pattern_id_of(date)
+    self[[:san, :mon, :tue, :wed, :thu, :fri, :sat][date.wday]]
   end
 end
