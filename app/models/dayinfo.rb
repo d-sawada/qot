@@ -2,12 +2,22 @@ class Dayinfo < ApplicationRecord
   include ApplicationHelper
   belongs_to :employee
   belongs_to :work_pattern, required: false
-
   validates :date, presence: true
   validates :employee_id, presence: true
-
   before_create :times_trunc_sec, :apply_template, :aggregate
   before_update :times_trunc_sec, :apply_template, :aggregate
+  scope :monthly, -> (date) {
+    where(date: (date.beginning_of_month)..(date.end_of_month) )
+      .select(<<-SELECT).group(:employee_id)
+        employee_id,
+        sum(pre_workdays)      as sum_pre_workdays,
+        sum(pre_worktimes)     as sum_pre_worktimes,
+        sum(workdays)          as sum_workdays,
+        sum(worktimes)         as sum_worktimes,
+        sum(holiday_workdays)  as sum_holiday_workdays,
+        sum(holiday_worktimes) as sum_holiday_worktimes
+      SELECT
+  }
 
   def times_trunc_sec
     self.start = Time.at(self.start.to_i / 60 * 60) if self.start.present?
@@ -55,17 +65,13 @@ class Dayinfo < ApplicationRecord
     end
   end
 
-  def daily_data
+  def daily_index_row
     [
-      #self.pre_start.to_hm,
-      #self.pre_end.to_hm,
       self.start.to_hm,
-      self.end.to_hm#,
-      #self.rest_start.to_hm,
-      #self.rest_end.to_hm
+      self.end.to_hm
     ]
   end
-  def monthly_data
+  def monthly_index_row
     [
       self.try(:sum_pre_workdays),
       self.try(:sum_pre_worktimes).min_to_times,
@@ -74,5 +80,13 @@ class Dayinfo < ApplicationRecord
       self.try(:sum_holiday_workdays),
       self.try(:sum_holiday_worktimes).min_to_times
     ]
+  end
+
+  #不要
+  def daily_data
+    daily_index_row
+  end
+  def monthly_data
+    monthly_index_row
   end
 end

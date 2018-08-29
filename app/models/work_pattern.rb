@@ -16,6 +16,18 @@ class WorkPattern < ApplicationRecord
     self.rest_start_day = nil if self.rest_start.blank?
     self.rest_end_day = nil if self.rest_end.blank?
   end
+
+  def daily_index_row
+    [
+      self.name,
+      self.start.to_hm,
+      self.end.to_hm,
+      self.rest_start_day.present? ? self.rest_start.to_hm : "",
+      self.rest_end_day.present? ? self.rest_end.to_hm : ""
+    ]
+  end
+
+  #不要
   def to_table_row
     [
       self.name,
@@ -29,12 +41,6 @@ class WorkPattern < ApplicationRecord
     ]
   end
   def to_daily_data
-    [
-      self.name,
-      self.start.to_hm,
-      self.end.to_hm,
-      self.rest_start_day.present? ? self.rest_start.to_hm : "",
-      self.rest_end_day.present? ? self.rest_end.to_hm : ""
-    ]
+    daily_index_row
   end
 end

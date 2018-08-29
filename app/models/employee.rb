@@ -31,10 +31,15 @@ class Employee < ApplicationRecord
   def email_changed?
     false
   end
+  def daily_index_row
+    [self.no, self.emp_emp_status.emp_status.name, self.name]
+  end
+  def monthly_index_row
+    daily_index_row
+  end
+
+  #不要
   def data_array
-    [
-      #content_tag(:div, content_tag(:input, nil, class: "form-check-input position-static", type: "checkbox", value: self.id, name: "employee[][id]"), class: "form-check"),
-      self.no, self.emp_emp_status.emp_status.name, self.name
-    ]
+    [self.no, self.emp_emp_status.emp_status.name, self.name]
   end
 end

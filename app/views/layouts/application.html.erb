@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>QueenOfTime</title>
+    <title>Queen of Time</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -15,8 +15,8 @@
         <a class="app-logo" href="/top">Queen of Time</a>
         <ul class="header-list">
           <% if admin_signed_in? || sys_admin_signed_in? %>
-            <li><%= link_to image_tag("dayly.png"), employees_path(list: "day"), title: "日データ" %></li>
-            <li><%= link_to image_tag("monthly.png"), employees_path(list: "month"), title: "月データ" %></li>
+            <li><%= link_to image_tag("dayly.png"), daily_index_path, title: "日データ" %></li>
+            <li><%= link_to image_tag("monthly.png"), monthly_index_path, title: "月データ" %></li>
             <li><%= link_to image_tag("requests.png"), requests_path, title: "申請一覧" %></li>
             <li><%= link_to image_tag("add_employee.png"), new_employee_url, title: "社員追加" %></li>
             <li><%= link_to image_tag("setting.png"), setting_path, title: "設定" %></li>

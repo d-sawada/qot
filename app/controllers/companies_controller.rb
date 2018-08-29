@@ -5,7 +5,7 @@ class CompaniesController < ApplicationController
 
   def top
     if admins_signed_in?
-      redirect_to employees_path
+      redirect_to daily_index_path
     elsif employee_signed_in?
       redirect_to timecard_path
     else

@@ -49,6 +49,10 @@ Rails.application.routes.draw do
     resources :employees do
       post :update_employees, as: 'update', on: :collection
     end
+    get 'daily' => 'employees#daily_index', as: 'daily_index'
+    get 'daily/:id'=> 'employees#daily_show', as: 'daily_show'
+    get 'monthly'=> 'employees#monthly_index', as: 'monthly_index'
+    get 'monthly:id'=> 'employees#monthly_show', as: 'monthly_show'
   end
 
   devise_scope :employee do
