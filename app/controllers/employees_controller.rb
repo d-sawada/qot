@@ -1,16 +1,62 @@
 class EmployeesController < ApplicationController
   include ApplicationHelper
-  include DayinfosHelper
-  include EmployeesHelper
   include ActionView::Helpers::TagHelper
   before_action :authenticate_admins_company, only: [:index, :new, :edit, :create, :update, :destroy]
   before_action :authenticate_company, only: [:show]
   before_action :set_employee, only: [:edit, :update, :destroy]
+  before_action :set_data, only: [:daily_index, :monthly_index]
+
+  def daily_index
+    @pattern_by_id = Hash[@company.work_patterns.map{|pattern| [pattern.id, pattern]}]
+    dayinfo_by_emp_id = Hash[@company.dayinfos.where(dayinfos: {date: @date}).map{|d| [d.employee_id, d]}]
+    csv_keys = employee_daily_index_keys + pattern_daily_index_keys + dayinfo_daily_index_keys
+    @table_keys = %w(✔︎) + csv_keys + %w(詳細)
+    csv_rows, @table_rows = [], []
+    @employees.each do |emp|
+      dayinfo = dayinfo_by_emp_id[emp.id] || Dayinfo.new
+      pattern = @pattern_by_id[dayinfo.work_pattern_id || emp.work_template.pattern_id_of(@date)] || WorkPattern.new
+      csv_row = emp.daily_index_row + pattern.daily_index_row + dayinfo.daily_index_row
+      csv_rows << csv_row
+      @table_rows << [checkbox(:employee, emp.id)] + csv_row + [content_tag(:a, "詳細", href: employee_path(id: emp.id, day: @tday, list: "day"))]
+    end
+    respond_to do |format|
+      format.csv do
+        csv_data = CSV.generate do |csv|
+          csv << csv_keys
+          csv_rows.each{|row| csv << row }
+        end
+        send_data(csv_data, filename: @date.strftime("Qot%Y-%m-%-d.csv"))
+      end
+      format.html
+    end
+  end
+  def monthly_index
+    dayinfo_by_emp_id = Hash[@company.dayinfos.monthly(@date).map{|d| [d.employee_id, d]}]
+    csv_keys = employee_monthly_keys + dayinfo_monthly_keys
+    @table_keys = %w(✔︎) + csv_keys + %w(詳細)
+    csv_rows, @table_rows = [], []
+    @employees.each do |emp|
+      dayinfo = dayinfo_by_emp_id[emp.id] || Dayinfo.new
+      csv_row = emp.monthly_index_row + dayinfo.monthly_index_row
+      csv_rows << csv_row
+      @table_rows << [checkbox(:employee, emp.id)] + csv_row + [content_tag(:a, "詳細", href: employee_path(id: emp.id, day: @tday, list: "month"))]
+    end
+    respond_to do |format|
+      format.csv do
+        csv_data = CSV.generate do |csv|
+          csv << csv_keys
+          csv_rows.each{|row| csv << row }
+        end
+        send_data(csv_data, filename: @date.strftime("Qot%Y-%m.csv"))
+      end
+      format.html
+    end
+  end
 
   def index
     @list = params[:list] || "day"
-    @tday = params[:day] || Date.current.to_s
-    @date = Date.parse(@tday)
+    @tday = params[:day] || (@date = Date.current).to_s
+    @date ||= Date.parse(@tday)
     employees = @company.employees.preload(:emp_status, :work_template).order(:no)
     @work_pattern_names = @company.work_patterns
     work_patterns = Hash[@work_pattern_names.map{|pattern| [pattern.id, pattern]}]
@@ -18,25 +64,18 @@ class EmployeesController < ApplicationController
 
     if @list == "day"
       dayinfos = Hash[@company.dayinfos.where(dayinfos: {date: @date}).map{|d| [d.employee_id, d]}]
+
       table_csv_keys, table_opt_keys= employee_daily_keys + pattern_daily_keys + dayinfo_daily_keys, ["詳細"]
       table_csv_rows, table_opt_rows = [], []
       employees.each do |emp|
         dayinfo = dayinfos[emp.id] || Dayinfo.new
-        pattern = work_patterns[dayinfo.work_pattern_id || emp.work_template.pattern_id_of(@date)]
+        pattern_id = dayinfo.work_pattern_id || emp.work_template.pattern_id_of(@date)
+        pattern = work_patterns[pattern_id] || WorkPattern.new
         table_csv_rows << emp.data_array + pattern.to_daily_data + dayinfo.daily_data
         table_opt_rows << [content_tag(:a, "詳細", href: "/admin/employees/#{emp.id}?day=#{@tday}&list=day")]
       end
     elsif @list == "month"
-      dayinfos = Hash[@company.dayinfos.where("dayinfos.date between ? and ?", @date.beginning_of_month, @date.end_of_month)
-          .select(<<-SELECT).group(:employee_id).map{|d| [d.employee_id, d]}]
-            employee_id,
-            sum(pre_workdays)      as sum_pre_workdays,
-            sum(pre_worktimes)     as sum_pre_worktimes,
-            sum(workdays)          as sum_workdays,
-            sum(worktimes)         as sum_worktimes,
-            sum(holiday_workdays)  as sum_holiday_workdays,
-            sum(holiday_worktimes) as sum_holiday_worktimes
-          SELECT
+      dayinfos = Hash[@company.dayinfos.monthly(@date).map{|d| [d.employee_id, d]}]
       table_csv_keys, table_opt_keys = employee_monthly_keys + dayinfo_monthly_keys, ["詳細"]
       table_csv_rows, table_opt_rows = [], []
       employees.each do |emp|
@@ -78,16 +117,7 @@ class EmployeesController < ApplicationController
       table_csv_rows = [(WorkPattern.find_by_id(@employee.work_template.pattern_id_of(@date)) || WorkPattern.new).to_daily_data + dayinfo.daily_data]
       table_opt_rows = [[content_tag(:a, "打刻修正を登録", href: new_request_url(id: @employee.id, day: @tday))]]
     elsif @list == "month"
-      sum_dayinfo =  @employee.dayinfos.where("dayinfos.date between ? and ?", @date.beginning_of_month, @date.end_of_month)
-          .select(<<-SELECT).group(:employee_id)[0]
-            employee_id,
-            sum(pre_workdays)      as sum_pre_workdays,
-            sum(pre_worktimes)     as sum_pre_worktimes,
-            sum(workdays)          as sum_workdays,
-            sum(worktimes)         as sum_worktimes,
-            sum(holiday_workdays)  as sum_holiday_workdays,
-            sum(holiday_worktimes) as sum_holiday_worktimes
-          SELECT
+      sum_dayinfo =  @employee.dayinfos.monthly(@date)[0]
       sum_dayinfo ||= Dayinfo.new
       @sum_dayinfo_keys = dayinfo_monthly_keys
       @sum_dayinfo_rows = [sum_dayinfo.monthly_data]
@@ -99,7 +129,7 @@ class EmployeesController < ApplicationController
       (1..day_num).each do |i|
         dayinfo = dayinfos[i] || Dayinfo.new
         pattern_id = dayinfo.work_pattern_id || @employee.work_template.pattern_id_of(@date.change(day: i))
-        pattern = pattern_id.present? ? work_patterns[pattern_id] : WorkPattern.new
+        pattern = work_patterns[pattern_id] || WorkPattern.new
         table_csv_rows << [i] + pattern.to_daily_data + dayinfo.daily_data
         table_opt_rows << [
           content_tag(:a, "詳細", href: employee_url(id: @employee.id, day: @date.change(day: i))),
@@ -169,9 +199,7 @@ class EmployeesController < ApplicationController
 
   def update_employees
     if params[:employee].present?
-      emp_params = params[:employee]
-      ids = emp_params.pop[:id]
-      emp_params.each{|emp| ids += ", #{emp[:id]}" }
+      ids = params[:employee].pluck(:id).join(", ")
       if params[:bulk_action] == "bulk_change_pattern"
         employees = Employee.where("id in (#{ids})").preload(:dayinfos)
         employees.each do |emp|
@@ -190,10 +218,14 @@ class EmployeesController < ApplicationController
   end
 
   private
+    def set_data
+      @tday = params[:day] || (@date = Date.current).to_s
+      @date ||= Date.parse(@tday)
+      @employees = @company.employees.preload(:emp_status, :work_template).order(:no)
+    end
     def set_employee
       @employee = Employee.find(params[:id])
     end
-
     def employee_params
       params.require(:employee).permit(:company_code, :no, :name, :email, :password, :password_confirmation, emp_emp_status_attributes: [:company_id, :employee_id, :emp_status_id])
     end

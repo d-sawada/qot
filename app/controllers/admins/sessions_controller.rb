@@ -28,7 +28,7 @@ class Admins::SessionsController < Devise::SessionsController
   # end
 
   def after_sign_in_path_for(resource)
-    employees_path
+    daily_index_path
   end
 
   def after_sign_out_path_for(resource)
@@ -36,6 +36,6 @@ class Admins::SessionsController < Devise::SessionsController
   end
 
   def sys_admin_redirect
-    redirect_to employees_path if sys_admin_signed_in?
+    redirect_to daily_index_path if sys_admin_signed_in?
   end
 end

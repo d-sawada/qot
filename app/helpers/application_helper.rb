@@ -1,4 +1,6 @@
 module ApplicationHelper
+  include ActionView::Helpers::TagHelper
+
   def signed_in?
     sys_admin_signed_in? || admin_signed_in? || employee_signed_in?
   end
@@ -24,6 +26,49 @@ module ApplicationHelper
   end
   def authenticate_company
     redirect_to top_url, alert: "会社コードを入力してください" unless signed_in?
+  end
+
+  def employee_daily_index_keys
+    %w(社員No 雇用形態 名前)
+  end
+  def employee_monthly_index_keys
+    %w(社員No 雇用形態 名前)
+  end
+  def pattern_daily_index_keys
+    %w(パターン名 所定出勤 所定退勤 所定休始 所定休終)
+  end
+  def dayinfo_daily_index_keys
+    %w(出勤打刻 退勤打刻)
+  end
+
+  #不要
+  def dayinfo_daily_keys
+    %w(出勤打刻 退勤打刻)
+  end
+  def dayinfo_monthly_keys
+    %w(勤務日数 所定時間 出勤日数 所定内 休出日数 休出時間)
+  end
+  def employee_daily_keys
+    %w(社員No 雇用形態 名前)
+  end
+  def employee_monthly_keys
+    %w(社員No 雇用形態 名前)
+  end
+  def pattern_daily_keys
+    %w(パターン名 所定出勤 所定退勤 所定休始 所定休終)
+  end
+
+  def checkbox(resource, id)
+    content_tag(:div,
+      content_tag(:input,
+        nil,
+        class: "form-check-input position-static",
+        type: "checkbox",
+        value: id,
+        name: "#{resource.to_s}[][id]"
+      ),
+      class: "form-check"
+    )
   end
 end
 
