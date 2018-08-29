@@ -46,7 +46,9 @@ Rails.application.routes.draw do
     patch 'update_company_config' => 'companies#update_company_config', as: 'update_company_config'
     
     resources :admins, only: [:index]
-    resources :employees
+    resources :employees do
+      post :update_employees, as: 'update', on: :collection
+    end
   end
 
   devise_scope :employee do

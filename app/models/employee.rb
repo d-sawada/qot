@@ -1,6 +1,7 @@
 class Employee < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
+  include ActionView::Helpers::TagHelper
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
@@ -31,6 +32,9 @@ class Employee < ApplicationRecord
     false
   end
   def data_array
-    [self.no, self.emp_emp_status.emp_status.name, self.name]
+    [
+      #content_tag(:div, content_tag(:input, nil, class: "form-check-input position-static", type: "checkbox", value: self.id, name: "employee[][id]"), class: "form-check"),
+      self.no, self.emp_emp_status.emp_status.name, self.name
+    ]
   end
 end

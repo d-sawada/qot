@@ -6,23 +6,35 @@
   <% end %>
 </div>
 
-<ul class="table-util clearfix">
-  <li><%= link_to "csv出力", employees_path(list: @list, day: @tday, format: :csv), class: "btn btn-primary btn-lg" %></li>
-  <li>
-    <% if @list == "day" %>
-      <div class="change-date">
-        <%= link_to("◀︎", employees_path(list: "day", day: @date.yesterday.to_s)) %>
-        <%= link_to("本日", employees_path(list: "day", day: Date.current)) %>
-        <%= link_to("▶︎", employees_path(list: "day", day: @date.tomorrow.to_s)) %>
+<%= form_with(local: true, url: update_employees_path) do |f| %>
+  <ul class="table-util clearfix">
+    <li>
+      <div class="dropdown">
+        <button type="button" id="pattern-drop", class="btn btn-primary btn-lg dropdown-toggle", data-toggle="dropdown" aria-haspopup="true", aria-expanded="false">選択社員操作</button>
+        <div class="dropdown-menu" aria-labelledby="pattern-drop">
+          <% @work_pattern_names.each do |id, name| %>
+            
+          <% end %>
+        </div>
       </div>
-    <% elsif @list == "month" %>
-      <div class="change-date">
-        <%= link_to("◀︎", employees_path(list: "month", day: @date.prev_month.to_s)) %>
-        <%= link_to("今月", employees_path(list: "month", day: Date.current)) %>
-        <%= link_to("▶︎", employees_path(list: "month", day: @date.next_month.to_s)) %>
-      </div>
-    <% end %>
-  </li>
-</ul>
+    </li>
+    <li><%= link_to "csv出力", employees_path(list: @list, day: @tday, format: :csv), class: "btn btn-primary btn-lg" %></li>
+    <li>
+      <% if @list == "day" %>
+        <div class="change-date">
+          <%= link_to("◀︎", employees_path(list: "day", day: @date.yesterday.to_s)) %>
+          <%= link_to("本日", employees_path(list: "day", day: Date.current)) %>
+          <%= link_to("▶︎", employees_path(list: "day", day: @date.tomorrow.to_s)) %>
+        </div>
+      <% elsif @list == "month" %>
+        <div class="change-date">
+          <%= link_to("◀︎", employees_path(list: "month", day: @date.prev_month.to_s)) %>
+          <%= link_to("今月", employees_path(list: "month", day: Date.current)) %>
+          <%= link_to("▶︎", employees_path(list: "month", day: @date.next_month.to_s)) %>
+        </div>
+      <% end %>
+    </li>
+  </ul>
 
-<%= render "qot_table", { table_keys: @table_keys, table_rows: @table_rows } %>
+  <%= render "qot_table", { table_keys: @table_keys, table_rows: @table_rows } %>
+<% end %>

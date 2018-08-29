@@ -12,7 +12,9 @@ class EmployeesController < ApplicationController
     @tday = params[:day] || Date.current.to_s
     @date = Date.parse(@tday)
     employees = @company.employees.preload(:emp_status, :work_template).order(:no)
-    work_patterns = Hash[@company.work_patterns.map{|pattern| [pattern.id, pattern]}]
+    @work_pattern_names = @company.work_patterns
+    work_patterns = Hash[@work_pattern_names.map{|pattern| [pattern.id, pattern]}]
+    @work_pattern_names = @work_pattern_names.map{|pattern| [pattern.id, pattern.name]}
 
     if @list == "day"
       dayinfos = Hash[@company.dayinfos.where(dayinfos: {date: @date}).map{|d| [d.employee_id, d]}]
@@ -41,8 +43,6 @@ class EmployeesController < ApplicationController
         table_csv_rows << emp.data_array + dayinfo.monthly_data
         table_opt_rows << [content_tag(:a, "詳細", href: employee_path(id: emp.id, day: @tday, list: "month"))]
       end
-    elsif @list == "schedule"
-
     end
 
     @table_keys = table_csv_keys + table_opt_keys
@@ -159,6 +159,11 @@ class EmployeesController < ApplicationController
         format.json { render json: @employee.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def update_employees
+    p params
+    raise
   end
 
   def destroy
