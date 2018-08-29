@@ -2,6 +2,7 @@ class CreateDayinfos < ActiveRecord::Migration[5.2]
   def change
     create_table :dayinfos do |t|
       t.integer :employee_id
+      t.integer :work_pattern_id
       t.date :date
       t.datetime :pre_start
       t.datetime :pre_end

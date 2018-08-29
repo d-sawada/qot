@@ -53,6 +53,7 @@ ActiveRecord::Schema.define(version: 2018_08_26_141204) do
 
   create_table "dayinfos", force: :cascade do |t|
     t.integer "employee_id"
+    t.integer "work_pattern_id"
     t.date "date"
     t.datetime "pre_start"
     t.datetime "pre_end"
