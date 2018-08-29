@@ -3,7 +3,7 @@
     <%= form_with(model: @new_admin, url: @new_admin.id.present? ? update_admin_path(@new_admin.id) : create_admin_path, id: "create-admin-form", class: "needs-validation") do |f| %>
       <%= f.hidden_field :company_code %>
       <div class="form-group">
-        <%= f.select :is_super, [['通常管理者', false], ['総合管理者', true]], {}, {class: "col form-control form-control-lg"} %>
+        <%= f.select :is_super, [['通常管理者', false], ['総合管理者', true]], {}, {class: "col form-control form-control-lg", disabled: @new_admin.id == @admin.id} %>
       </div>
       <div class="form-group">
         <%= f.text_field  :name,  class: "form-control form-control-lg", autocomplete: "name",  placeholder: "名前", required: true %>

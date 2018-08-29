@@ -29,6 +29,7 @@ class WorkPattern < ApplicationRecord
   end
   def to_daily_data
     [
+      self.name,
       self.start.to_hm,
       self.end.to_hm,
       self.rest_start_day.present? ? self.rest_start.to_hm : "",
