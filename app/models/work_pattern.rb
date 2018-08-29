@@ -1,6 +1,7 @@
 class WorkPattern < ApplicationRecord
   include ActionView::Helpers::TagHelper
   include Rails.application.routes.url_helpers
+  has_one :dayinfo
   belongs_to :company
   validates :company_id, presence: true
   validates :name,  presence: true

@@ -1,6 +1,7 @@
 class Dayinfo < ApplicationRecord
   include ApplicationHelper
   belongs_to :employee
+  belongs_to :work_pattern, required: false
 
   validates :date, presence: true
   validates :employee_id, presence: true
@@ -13,7 +14,11 @@ class Dayinfo < ApplicationRecord
     self.end = Time.at(self.end.to_i / 60 * 60 + 1) if self.end.present?
   end
   def apply_template
-    pattern = WorkPattern.find_by_id(self.employee.emp_status.work_template[[:sun, :mon, :tue, :wed, :thu, :fri, :sat][self.date.wday]])
+    if self.work_pattern_id.present?
+      pattern = self.work_pattern
+    else
+      pattern = WorkPattern.find_by_id(self.employee.emp_status.work_template[[:sun, :mon, :tue, :wed, :thu, :fri, :sat][self.date.wday]])
+    end
     if pattern.present?
       self.pre_start = pattern.start.change(year: self.date.year, month: self.date.month, day: self.date.day) if pattern.start.present?
       self.pre_end = pattern.end.change(year: self.date.year, month: self.date.month, day: self.date.day) if pattern.end.present?

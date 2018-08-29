@@ -6,18 +6,22 @@
   <% end %>
 </div>
 
-<%= form_with(local: true, url: update_employees_path) do |f| %>
+<%= form_with(local: true, url: update_employees_path(day: @tday, list: @list), id: "bulk_form") do |f| %>
+  <%= f.hidden_field :bulk_action, id: "bulk_action" %>
+  <%= f.hidden_field :pattern_id, id: "pattern_id" %>
   <ul class="table-util clearfix">
-    <li>
-      <div class="dropdown">
-        <button type="button" id="pattern-drop", class="btn btn-primary btn-lg dropdown-toggle", data-toggle="dropdown" aria-haspopup="true", aria-expanded="false">選択社員操作</button>
-        <div class="dropdown-menu" aria-labelledby="pattern-drop">
-          <% @work_pattern_names.each do |id, name| %>
-            
-          <% end %>
+    <% if @list == "day" %>
+      <li>
+        <div class="dropdown">
+          <button type="button" id="pattern-drop", class="btn btn-primary btn-lg dropdown-toggle", data-toggle="dropdown" aria-haspopup="true", aria-expanded="false">パターン一括変更</button>
+          <div class="dropdown-menu" aria-labelledby="pattern-drop">
+            <% @work_pattern_names.each do |id, name| %>
+              <a class="dropdown-item" href="#" onclick="jQuery('#bulk_action').val('bulk_change_pattern'); jQuery('#pattern_id').val('<%= id %>'); jQuery('#bulk_form').submit(); return false;"><%= name %></a>
+            <% end %>
+          </div>
         </div>
-      </div>
-    </li>
+      </li>
+    <% end %>
     <li><%= link_to "csv出力", employees_path(list: @list, day: @tday, format: :csv), class: "btn btn-primary btn-lg" %></li>
     <li>
       <% if @list == "day" %>
