@@ -1,5 +1,5 @@
 $("#contents .alert").remove();
-<% if @new_admin.errors.any? %>
+<% if @new_admin.errors.any? || @is_myself %>
   $("#contents").prepend('<p class="alert alert-danger"><%= @message %></p>');
 <% else %>
   $("#admin-<%= @new_admin.id %>").fadeOut();

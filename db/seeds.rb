@@ -47,12 +47,14 @@ ga.employees.each do |emp|
   (1..31).each do |i|
     wd = DateTime.new(2018,8,i).wday
     if wd != 6 && wd != 0
+      sr = rand(21) - 10
+      er = rand(21) - 10
       if wd == 1
-        s = DateTime.new(2018,8,i,8,45,0,0.375)
-        e = DateTime.new(2018,8,i,18,15,0,0.375)
+        s = DateTime.new(2018,8,i,8,45+sr,0,0.375)
+        e = DateTime.new(2018,8,i,18,15+er,0,0.375)
       elsif
-        s = DateTime.new(2018,8,i,9,45,0,0.375)
-        e = DateTime.new(2018,8,i,19,15,0,0.375)
+        s = DateTime.new(2018,8,i,9,45+sr,0,0.375)
+        e = DateTime.new(2018,8,i,19,15+er,0,0.375)
       end
       emp.dayinfos.create({date: "2018-08-" + i.to_s, start: s, end: e})
     end

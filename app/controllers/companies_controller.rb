@@ -96,7 +96,7 @@ class CompaniesController < ApplicationController
     admins = @company.admins
     @admin_ids = admins.map{|admin| "admin-#{admin.id}"}
     @admin_keys = %w(総合管理者 名前 メールアドレス 編集 削除)
-    @admin_rows = admins.map{|admin| admin.to_table_row }
+    @admin_rows = admins.map{|admin| admin.to_table_row(@admin.id) }
 
     # ========== メール設定 ==========
     @configs = Hash[@company.company_configs.map{|config| [config.key, config.value]}]
@@ -222,16 +222,24 @@ class CompaniesController < ApplicationController
   end
   def update_admin
     @new_admin = Admin.find(params[:id])
-    if @new_admin.update(admin_params)
-      redirect_to "/admin/setting#nav-label-template", notice: "管理者[#{@new_admin.name}]を更新しました"
+    if @new_admin.update_with_password(admin_params)
+      if @new_admin.id == @admin.id && admin_params[:password].present?
+        redirect_to "/#{@company_code}/admin/sign_in", notice: "もう一度ログインしてください"
+      else
+        redirect_to "/admin/setting#nav-label-admins", notice: "管理者[#{@new_admin.name}]を更新しました"
+      end
     end
   end
   def destroy_admin
-    @new_admin = Admin.find(params[:id])
-    if @new_admin.destroy
-      @message = "管理者を削除しました"
+    if @is_myself = (params[:id].to_i == @admin.id)
+      @message = "ログイン中のアカウントを削除しようとしています"
     else
-      @message = "管理者の削除に失敗しました"
+      @new_admin = Admin.find(params[:id])
+      if @new_admin.destroy
+        @message = "管理者を削除しました"
+      else
+        @message = "管理者の削除に失敗しました"
+      end
     end
   end
   def update_company_config
@@ -256,6 +264,6 @@ class CompaniesController < ApplicationController
     params.require(:company_config).permit(:key, :value)
   end
   def admin_params
-    params.require(:admin).permit(:is_super, :name, :email, :password, :password_confirmation)
+    params.require(:admin).permit(:company_code, :is_super, :name, :email, :password, :password_confirmation)
   end
 end
