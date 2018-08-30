@@ -2,7 +2,7 @@
   <h1><%= @tday.to_daily %></h1>
 </div>
 
-<%= form_with(local: true, url: bulk_action_path(day: @tday, list: "day"), id: "bulk_form") do |f| %>
+<%= form_with(local: true, url: bulk_action_employees_path(day: @tday, list: "day"), id: "bulk_form") do |f| %>
   <%= f.hidden_field :bulk_action, id: "bulk_action" %>
   <%= f.hidden_field :pattern_id, id: "pattern_id" %>
   <ul class="table-util clearfix">
@@ -17,7 +17,7 @@
       </div>
     </li>
     <li>
-      <button type="button" class="btn btn-primary btn-lg" onclick="jQuery('#bulk_action').val('bulk_request'); jQuery('#bulk_form').submit(); return false;">申請一括登録</button>
+      <button type="button" class="btn btn-primary btn-lg" title=" 選択した社員に同一打刻修正を付与し自動で承認します" onclick="jQuery('#bulk_action').val('bulk_request'); jQuery('#bulk_form').submit(); return false;">打刻一括修正</button>
     </li>
     <li>
       <%= link_to "csv出力", daily_index_path(day: @tday, format: :csv), class: "btn btn-primary btn-lg" %>
