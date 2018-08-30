@@ -1,27 +1,26 @@
 <div id="setting-template-require" class="alert alert-danger d-none" role="alert">パターンを作成する必要があります</div>
 
+<h5>曜日ごとの勤務パターンを定めて雇用区分ごとの出勤予定のテンプレートを作成します。パターンを指定しない曜日は休日扱いになります</h5><br>
 <div id="setting-template-content">
-  <div class="float-left">
-    <%= form_with(model: @work_template, url: @work_template.id.present? ? update_template_path(@work_template.id) : create_template_path, id: "template-form") do |f| %>
-      <div class="form-row">
-        <%= f.label :name, class: "col-2 col-form-label col-form-label-lg", value: "名前" %>
-        <div class="form-group">
-          <%= f.text_field  :name, class: "col form-control form-control-lg", placeholder: "パターン名", autofocus: true, required: true %>
-        </div>
+  <%= form_with(model: @work_template, url: @work_template.id.present? ? update_template_path(@work_template.id) : create_template_path, id: "template-form") do |f| %>
+    <div class="form-row">
+      <%= f.label :name, class: "col-1 col-form-label col-form-label-lg", value: "名前" %>
+      <div class="form-group">
+        <%= f.text_field  :name, class: "col form-control form-control-lg", placeholder: "パターン名", autofocus: true, required: true %>
       </div>
+    </div>
+    <div class="form-row">
       <% %w(月 火 水 木 金 土 日).zip([:mon, :tue, :wed, :thu, :fri, :sat, :sun]).each do |label, sym| %>
         <%= render "select_pattern", {form: f, label: label, sym: sym, pattern_options: @pattern_options} %>
       <% end %>
-      <div class="form-group">
-        <%= f.submit @work_template_submit, class: "btn btn-primary btn-lg" %>
-      </div>
+    </div>
+    <div class="form-row">
+      <%= f.submit @work_template_submit, class: "btn btn-primary btn-lg" %>
       <% if @work_template.id.present? %>
-        <a href="/admin/setting#nav-label-template"><div class="btn btn-secondary btn-lg">編集をやめる</div></a>
+        <a class="btn btn-secondary btn-lg ml-3" href="/admin/setting#nav-label-template">編集をやめる</a>
       <% end %>
-    <% end %>
-  </div>
+    </div>
+  <% end %>
 
-  <div class="float-left">
-    <%= render "qot_table", {table_keys: @template_keys, table_rows: @template_rows , table_id: "templates-table", table_class: nil, row_ids: @template_ids } %>
-  </div>
+  <%= render "qot_table", { table_id: "templates-table", table_keys: @template_keys, table_rows: @template_rows, row_ids: @template_ids } %>
 </div>
