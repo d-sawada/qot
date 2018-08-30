@@ -35,9 +35,31 @@ td {
 #employee-monthly-table_filter {
   display: none;
 }
-#patterns-table-wrapper {
+
+#patterns-table_wrapper {
   width: 500px;
 }
-#statuses-table-wrapper {
+#patterns-table_filter {
+  display: none;
+}
+
+#templates-table_wrapper {
+  width: 500px;
+}
+#templates-table_filter {
+  display: none;
+}
+
+#statuses-table_wrapper {
   width: 300px;
+}
+#statuses-table_filter {
+  display: none;
+}
+
+#admins-table_wrapper {
+  width: 700px;
+}
+#admins-table_filter {
+  display: none;
 }

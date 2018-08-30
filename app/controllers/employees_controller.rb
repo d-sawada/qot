@@ -1,7 +1,7 @@
 class EmployeesController < ApplicationController
   include ApplicationHelper
   include ActionView::Helpers::TagHelper
-  before_action :authenticate_admins_company, only: [:index, :new, :edit, :create, :update, :destroy]
+  before_action :authenticate_admins_company, only: [:daily_index, :monthly_index, :index, :new, :edit, :create, :update, :destroy]
   before_action :authenticate_company, only: [:show]
   before_action :set_employee, only: [:edit, :update, :destroy]
   before_action :set_data, only: [:daily_index, :monthly_index]
@@ -14,6 +14,7 @@ class EmployeesController < ApplicationController
     csv_rows, @table_rows = [], []
     @employees.each do |emp|
       dayinfo = dayinfo_by_emp_id[emp.id] || Dayinfo.new
+      p dayinfo
       pattern = @pattern_by_id[dayinfo.work_pattern_id || emp.work_template.pattern_id_of(@date)] || WorkPattern.new
       csv_row = emp.daily_index_row + pattern.daily_index_row + dayinfo.daily_index_row
       csv_rows << csv_row

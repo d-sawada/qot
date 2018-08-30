@@ -1,21 +1,26 @@
 <div id="setting-status-require" class="alert alert-danger d-none" role="alert">テンプレートを作成する必要があります</div>
 
+<h5>作成したテンプレートを持つ雇用区分を作成します。社員を登録する際、選んだ雇用区分に設定されたテンプレートが自動で適用されます</h5><br>
 <div id="setting-status-content">
   <%= form_with(model: @status, url: @status.id.present? ? update_status_path(@status.id) : create_status_path, id: "status-form") do |f| %>
     <div class="form-row">
-      <%= f.label :name, class: "col-1 col-form-label col-form-label-lg", value: "名前" %>
+      <%= f.label :name, class: "col-2 col-form-label col-form-label-lg", value: "名前" %>
       <div class="form-group">
         <%= f.text_field  :name, class: "col form-control form-control-lg", placeholder: "雇用区分名", autofocus: true, required: true %>
       </div>
-      <label class="col-2 col-form-label col-form-label-lg ml-5">設定テンプレート</label>
+    </div>
+
+    <div class="form-row">
+      <%= f.label :work_template_id, class: "col-2 col-form-label col-form-label-lg", value: "設定テンプレート" %>
       <div class="form-group">
         <%= f.select :work_template_id, @template_options, {}, {class: "col form-control form-control-lg select-template"} %>
       </div>
-      <div class="form-group ml-5">
-        <%= f.submit @status_submit, class: "btn btn-primary btn-lg" %>
-      </div>
+    </div>
+
+    <div class="form-row">
+      <%= f.submit @status_submit, class: "btn btn-primary btn-lg" %>
       <% if @status.id.present? %>
-        <a class="ml-3" href="/admin/setting#nav-label-status"><div class="btn btn-secondary btn-lg">編集をやめる</div></a>
+        <a class="btn btn-secondary btn-lg ml-3" href="/admin/setting#nav-label-status">編集をやめる</a>
       <% end %>
     </div>
   <% end %>
