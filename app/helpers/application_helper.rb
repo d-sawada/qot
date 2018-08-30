@@ -28,11 +28,11 @@ module ApplicationHelper
     redirect_to top_url, alert: "会社コードを入力してください" unless signed_in?
   end
 
-  def employee_daily_index_keys
-    %w(社員No 雇用形態 名前)
+  def employee_daily_index_keys(ex_keys = [])
+    %w(社員No 雇用形態) + ex_keys + %w(名前)
   end
-  def employee_monthly_index_keys
-    %w(社員No 雇用形態 名前)
+  def employee_monthly_index_keys(ex_keys = [])
+    %w(社員No 雇用形態) + ex_keys + %w(名前)
   end
   def pattern_daily_index_keys
     %w(パターン名 所定出勤 所定退勤 所定休始 所定休終)

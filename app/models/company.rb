@@ -10,6 +10,7 @@ class Company < ApplicationRecord
   has_many :work_patterns, dependent: :destroy
   has_many :work_templates, dependent: :destroy
   has_many :company_configs, dependent: :destroy
+  has_many :emp_exes, dependent: :destroy
 
   after_create :create_default_configs
 

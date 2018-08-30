@@ -1,0 +1,9 @@
+$("#contents .alert").remove();
+<% if @emp_ex.errors.any? %>
+  <% @emp_ex.errors.full_messages.each do |message| %>
+    $("#contents").prepend('<p class="alert alert-danger"><%= message %></p>');
+  <% end %>
+<% else %>
+  $("#emp-ex-<%= @emp_ex.id %>").fadeOut();
+  $("#contents").prepend('<p class="alert alert-primary"><%= @message %></p>');
+<% end %>

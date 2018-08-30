@@ -1,0 +1,20 @@
+<h5>社員に登録する情報を追加できます（例：　部署など）。ここで追加した情報は新規作成画面・社員編集画面で設定できます</h5><br>
+<%= form_with(model: @emp_ex, url: @emp_ex.id.present? ? update_emp_ex_path(@emp_ex.id) : create_emp_ex_path, id: "emp-ex-form") do |f| %>
+  <div class="form-row">
+    <label class="col-1 col-form-label col-form-label-lg" for="name">名前</label>
+    <div class="form-group">
+      <input type="text" name="emp_ex[name]" value="<%= @emp_ex.name %>" class="col form-control form-control-lg" placeholder="追加情報名" autofocus="true" required="true">
+    </div>
+  </div>
+
+  <div class="form-row">
+    <%= f.submit @emp_ex_submit, class: "btn btn-primary btn-lg" %>
+    <% if @emp_ex.id.present? %>
+      <a class="btn btn-secondary btn-lg ml-3" href="/admin/setting#nav-label-emp-ex">編集をやめる</a>
+    <% end %>
+  </div>
+<% end %>
+
+<hr>
+
+<%= render "qot_table", { table_id: "emp-exes-table", table_keys: @emp_ex_keys, table_rows: @emp_ex_rows, row_ids: @emp_ex_ids } %>

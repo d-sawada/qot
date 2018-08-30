@@ -2,38 +2,7 @@
   <div id="employee_new_content">
 
     <h5>新規社員を作成します。指定した雇用区分に設定されたテンプレートによって所定労働・休憩時間が自動で設定されます</h5><br>
-    <%= form_with(model: @employee, local: true, id: "new-employee-form", class: "needs-validation") do |f| %>
-      <% if @employee.errors.any? %>
-        <div id="error_explanation">
-          <% @employee.errors.full_messages.each do |message| %>
-            <div class="alert alert-danger" role="alert"><%= message %></div>
-          <% end %>
-        </div>
-      <% end %>
-
-      <%= f.hidden_field :company_code %>
-      <%= f.hidden_field :password, value: "password" %>
-      <%= f.hidden_field :password_confirmation, value: "password" %>
-
-      <div class="form-row">
-        <%= f.fields_for :emp_emp_status, @employee.emp_emp_status ||= EmpEmpStatus.new do |f1| %>
-          <%= f1.hidden_field :company_id, value: @company.id %>
-          <div class="form-group col">
-            <%= f1.select :emp_status_id, @emp_statuses.map{|s| [s.name, s.id]}, {}, {class: "form-control form-control-lg"} %>
-          </div>
-        <% end %>
-        <div class="form-group col">
-          <%= f.text_field  :no,    class: "form-control form-control-lg", required: nil,autocomplete: "no",    placeholder: "社員番号（4文字）", autofocus: true, required: true %>
-        </div>
-      </div>
-      <div class="form-group">
-        <%= f.text_field  :name,  class: "form-control form-control-lg", autocomplete: "name",  placeholder: "名前", required: true %>
-      </div>
-      <div class="form-group">
-        <%= f.email_field :email, class: "form-control form-control-lg", autocomplete: "email", placeholder: "メールアドレス", required: true %>
-      </div>
-      <%= f.submit "新規登録", class: "form-btn btn btn-primary btn-lg" %>
-    <% end %>
+    <%= render "form", {employee: @employee, emp_statuses: @emp_statuses, emp_exes: @emp_exes, ex_vals: @ex_vals, company_id: @company.id, submit: "新規作成"} %>
   </div>
 <% else %>
   <div class="alert alert-danger" role="alert">雇用区分を作成する必要があります</div>
