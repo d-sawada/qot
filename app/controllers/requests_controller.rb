@@ -53,13 +53,13 @@ class RequestsController < ApplicationController
     @request = Request.new(request_params)
     @request.admin_id = @admin.id if @admin.present?
 
-    b = @request.start.present? || @request.end.present?
-    if b && @request.save
+    #b = @request.start.present? || @request.end.present?
+    if @request.save
       redirect_to requests_path, notice: "申請しました"
     else
       employee = @request.employee
       @employee_info = employee.no + " " + employee.emp_status.name + " " + employee.name
-      flash.now[:alert] = (params[:request][:start].empty? && params[:request][:end].empty?) ? "時刻をどちらかは入力してください" : "不正な値です"
+      #flash.now[:alert] = (params[:request][:start].empty? && params[:request][:end].empty?) ? "時刻をどちらかは入力してください" : "不正な値です"
       render :new
     end
   end
