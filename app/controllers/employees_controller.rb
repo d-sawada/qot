@@ -197,7 +197,7 @@ class EmployeesController < ApplicationController
     end
   end
 
-  def update_employees
+  def bulk_action
     if params[:employee].present?
       ids = params[:employee].pluck(:id).join(", ")
       if params[:bulk_action] == "bulk_change_pattern"
@@ -206,10 +206,12 @@ class EmployeesController < ApplicationController
           dayinfo = emp.dayinfos.where("date = ?", params[:day])
           dayinfo.update({work_pattern_id: params[:pattern_id]}) if dayinfo.present?
         end
-      else
+      elsif params[:bulk_action] == "bulk_request"
+        
       end
+    else
+      redirect_to employees_path(id: params[:id], day: params[:day], list: params[:list])
     end
-    redirect_to employees_path(id: params[:id], day: params[:day], list: params[:list])
   end
 
   def destroy

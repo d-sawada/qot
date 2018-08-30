@@ -2,19 +2,22 @@
   <h1><%= @tday.to_daily %></h1>
 </div>
 
-<%= form_with(local: true, url: update_employees_path(day: @tday, list: "day"), id: "bulk_form") do |f| %>
+<%= form_with(local: true, url: bulk_action_path(day: @tday, list: "day"), id: "bulk_form") do |f| %>
   <%= f.hidden_field :bulk_action, id: "bulk_action" %>
   <%= f.hidden_field :pattern_id, id: "pattern_id" %>
   <ul class="table-util clearfix">
     <li>
       <div class="dropdown">
-        <button type="button" id="pattern-drop", class="btn btn-primary btn-lg dropdown-toggle", data-toggle="dropdown" aria-haspopup="true", aria-expanded="false">パターン一括変更</button>
+        <button type="button" id="pattern-drop" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">パターン一括変更</button>
         <div class="dropdown-menu" aria-labelledby="pattern-drop">
           <% @pattern_by_id.to_a.each do |id, pattern| %>
             <a class="dropdown-item" href="#" onclick="jQuery('#bulk_action').val('bulk_change_pattern'); jQuery('#pattern_id').val('<%= id %>'); jQuery('#bulk_form').submit(); return false;"><%= pattern.name %></a>
           <% end %>
         </div>
       </div>
+    </li>
+    <li>
+      <button type="button" class="btn btn-primary btn-lg" onclick="jQuery('#bulk_action').val('bulk_request'); jQuery('#bulk_form').submit(); return false;">申請一括登録</button>
     </li>
     <li>
       <%= link_to "csv出力", daily_index_path(day: @tday, format: :csv), class: "btn btn-primary btn-lg" %>
