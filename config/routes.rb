@@ -48,6 +48,7 @@ Rails.application.routes.draw do
     resources :admins, only: [:index]
     resources :employees do
       post :bulk_action, as: 'bulk_action', on: :collection
+      post :bulk_create_requests, as: 'bulk_create_requests', on: :collection
     end
     get 'daily' => 'employees#daily_index', as: 'daily_index'
     get 'daily/:id'=> 'employees#daily_show', as: 'daily_show'

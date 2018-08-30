@@ -199,19 +199,42 @@ class EmployeesController < ApplicationController
 
   def bulk_action
     if params[:employee].present?
-      ids = params[:employee].pluck(:id).join(", ")
+      @ids = params[:employee].pluck(:id)
       if params[:bulk_action] == "bulk_change_pattern"
-        employees = Employee.where("id in (#{ids})").preload(:dayinfos)
+        employees = Employee.where("id in (#{@ids.join(", ")})").preload(:dayinfos)
         employees.each do |emp|
           dayinfo = emp.dayinfos.where("date = ?", params[:day])
           dayinfo.update({work_pattern_id: params[:pattern_id]}) if dayinfo.present?
         end
       elsif params[:bulk_action] == "bulk_request"
-        
+        @date = Date.parse(params[:day]) || Date.current
+        return render :bulk_create_requests
       end
-    else
-      redirect_to employees_path(id: params[:id], day: params[:day], list: params[:list])
     end
+    redirect_to daily_index_path(day: params[:day])
+  end
+
+  def bulk_create_requests
+    @ids = params[:ids]
+    return if @ids.blank?
+    @date = params[:date]
+    @start = params[:start]
+    @end = params[:end]
+    @admin_comment = params[:admin_comment]
+    emp_id_to_dayinfo = Hash[Dayinfo.left_joins(:employee).where("dayinfos.date = ? and employees.id in (#{@ids.join(', ')})", @date).select("dayinfos.id, dayinfos.employee_id, dayinfos.start, dayinfos.end")
+      .map{|result| [result.employee_id.to_i, {id: result.id, start: result.start, end: result.end}]}]
+
+    @ids.each do |id|
+      Request.create({employee_id: id, admin_id: @admin.id, state: "承認済", date: @date, start: @start, end: @end, admin_comment: @admin_comment,
+        prev_start: emp_id_to_dayinfo[id][:start], prev_end: emp_id_to_dayinfo[id][:end]})
+      dayinfo = Dayinfo.find_by_id(emp_id_to_dayinfo[id][:id])
+      if dayinfo.present?
+        dayinfo.update({start: @start, end: @end})
+      else
+        Dayinfo.create(employee_id: id, date: @date, start: @start, end: @end)
+      end
+    end
+    redirect_to daily_index_path(day: params[:day])
   end
 
   def destroy
