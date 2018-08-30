@@ -1,4 +1,5 @@
 <%= form_with(model: @sys_admin, url: session_path(@sys_admin), id: "sys_admin_login_form") do |f| %>
+  <h1 class="text-center">システム管理者ログイン</h1>
   <div class="form-group">
     <%= f.email_field :email, class: "form-control form-control-lg", placeholder: "メールアドレス", autocomplete: "email", autofocus: true %>
   </div>
@@ -14,5 +15,5 @@
     </div>
   <% end -%>
 
-  <%= f.submit "システム管理者ログイン", class: "form-btn btn btn-success btn-qot" %>
+  <%= f.submit "システム管理者ログイン", class: "form-btn btn btn-primary  btn-lg d-block m-auto" %>
 <% end %>
