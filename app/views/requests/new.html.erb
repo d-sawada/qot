@@ -6,7 +6,8 @@
       <% end %>
     </div>
   <% end %>
-  <div class="form-title">打刻修正申請</div>
+
+  <h1 class="text-center">打刻修正申請</h1>
 
   <%= f.hidden_field :employee_id %>
   <%= f.hidden_field :state %>
@@ -44,14 +45,14 @@
   <div class="form-group row">
     <%= f.label :start, class: "col-3 col-form-label col-form-label-lg", value: "出勤時刻" %>
     <div class="col-8">
-      <%= f.text_field :start, class: "form-control form-control-lg", placeholder: "hh:mm", required: true %>
+      <%= f.text_field :start, class: "form-control form-control-lg", placeholder: "hh:mm" %>
     </div>
   </div>
 
   <div class="form-group row">
     <%= f.label :end, class: "col-3 col-form-label col-form-label-lg", value: "退勤時刻" %>
     <div class="col-8">
-      <%= f.text_field :end, class: "form-control form-control-lg", placeholder: "hh:mm", required: true %>
+      <%= f.text_field :end, class: "form-control form-control-lg", placeholder: "hh:mm" %>
     </div>
   </div>
 
