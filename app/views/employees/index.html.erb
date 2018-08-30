@@ -22,19 +22,19 @@
         </div>
       </li>
     <% end %>
-    <li><%= link_to "csv出力", employees_path(list: @list, day: @tday, format: :csv), class: "btn btn-primary btn-lg" %></li>
+    <li><%= link_to "csv出力", daily_index_path(list: @list, day: @tday, format: :csv), class: "btn btn-primary btn-lg" %></li>
     <li>
       <% if @list == "day" %>
         <div class="change-date">
-          <%= link_to("◀︎", employees_path(list: "day", day: @date.yesterday.to_s)) %>
-          <%= link_to("本日", employees_path(list: "day", day: Date.current)) %>
-          <%= link_to("▶︎", employees_path(list: "day", day: @date.tomorrow.to_s)) %>
+          <%= link_to("◀︎", daily_index_path(list: "day", day: @date.yesterday.to_s)) %>
+          <%= link_to("本日", daily_index_path(list: "day", day: Date.current)) %>
+          <%= link_to("▶︎", daily_index_path(list: "day", day: @date.tomorrow.to_s)) %>
         </div>
       <% elsif @list == "month" %>
         <div class="change-date">
-          <%= link_to("◀︎", employees_path(list: "month", day: @date.prev_month.to_s)) %>
-          <%= link_to("今月", employees_path(list: "month", day: Date.current)) %>
-          <%= link_to("▶︎", employees_path(list: "month", day: @date.next_month.to_s)) %>
+          <%= link_to("◀︎", daily_index_path(list: "month", day: @date.prev_month.to_s)) %>
+          <%= link_to("今月", daily_index_path(list: "month", day: Date.current)) %>
+          <%= link_to("▶︎", daily_index_path(list: "month", day: @date.next_month.to_s)) %>
         </div>
       <% end %>
     </li>

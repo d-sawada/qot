@@ -11,9 +11,9 @@
     </li>
     <li>
       <div class="change-date">
-        <%= link_to("◀︎", employees_path(day: @date.prev_month.to_s)) %>
-        <%= link_to("今月", employees_path(day: Date.current)) %>
-        <%= link_to("▶︎", employees_path(day: @date.next_month.to_s)) %>
+        <%= link_to("◀︎", monthly_index_path(day: @date.prev_month.to_s)) %>
+        <%= link_to("今月", monthly_index_path(day: Date.current)) %>
+        <%= link_to("▶︎", monthly_index_path(day: @date.next_month.to_s)) %>
       </div>
     </li>
   </ul>

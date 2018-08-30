@@ -24,9 +24,9 @@
     </li>
     <li>
       <div class="change-date">
-        <%= link_to("◀︎", employees_path(day: @date.yesterday.to_s)) %>
-        <%= link_to("本日", employees_path(day: Date.current)) %>
-        <%= link_to("▶︎", employees_path(day: @date.tomorrow.to_s)) %>
+        <%= link_to("◀︎", daily_index_path(day: @date.yesterday.to_s)) %>
+        <%= link_to("本日", daily_index_path(day: Date.current)) %>
+        <%= link_to("▶︎", daily_index_path(day: @date.tomorrow.to_s)) %>
       </div>
     </li>
   </ul>

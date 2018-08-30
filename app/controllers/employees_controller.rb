@@ -249,7 +249,7 @@ class EmployeesController < ApplicationController
 
   def destroy
     @employee.destroy
-    redirect_to employees_path(list: params[:list]), notice: "社員を削除しました"
+    redirect_to daily_index_path(list: params[:list]), notice: "社員を削除しました"
   end
 
   private
