@@ -215,18 +215,17 @@ class EmployeesController < ApplicationController
   end
 
   def bulk_create_requests
-    @ids = params[:ids]
+    @ids = params[:ids].map{|id| id.to_i}
     return if @ids.blank?
     @date = params[:date]
     @start = params[:start]
     @end = params[:end]
     @admin_comment = params[:admin_comment]
     emp_id_to_dayinfo = Hash[Dayinfo.left_joins(:employee).where("dayinfos.date = ? and employees.id in (#{@ids.join(', ')})", @date).select("dayinfos.id, dayinfos.employee_id, dayinfos.start, dayinfos.end")
-      .map{|result| [result.employee_id.to_i, {id: result.id, start: result.start, end: result.end}]}]
+      .map{|result| [result.employee_id, {id: result.id, start: result.start, end: result.end}]}]
 
     @ids.each do |id|
-      Request.create({employee_id: id, admin_id: @admin.id, state: "承認済", date: @date, start: @start, end: @end, admin_comment: @admin_comment,
-        prev_start: emp_id_to_dayinfo[id][:start], prev_end: emp_id_to_dayinfo[id][:end]})
+      Request.create({employee_id: id, admin_id: @admin.id, state: "承認済", date: @date, start: @start, end: @end, admin_comment: @admin_comment, prev_start: emp_id_to_dayinfo[id][:start], prev_end: emp_id_to_dayinfo[id][:end]})
       dayinfo = Dayinfo.find_by_id(emp_id_to_dayinfo[id][:id])
       if dayinfo.present?
         dayinfo.update({start: @start, end: @end})
