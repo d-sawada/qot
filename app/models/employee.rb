@@ -13,7 +13,9 @@ class Employee < ApplicationRecord
   has_many :emp_status_historys, dependent: :destroy
   belongs_to :company, primary_key: :code, foreign_key: :company_code
   has_one :work_template, through: :emp_status, primary_key: :work_template_id, foreign_key: :id
+  has_many :ex_vals
   accepts_nested_attributes_for :emp_emp_status
+  accepts_nested_attributes_for :ex_vals
 
   validates :no, presence: true
   validates :no, length: { is: 4 }, if: ->(u) { u.no.present? }
@@ -31,15 +33,15 @@ class Employee < ApplicationRecord
   def email_changed?
     false
   end
-  def daily_index_row
-    [self.no, self.emp_emp_status.emp_status.name, self.name]
+  def daily_index_row(ex_vals = [])
+    [self.no, self.emp_emp_status.emp_status.name] + ex_vals + [self.name]
   end
-  def monthly_index_row
-    daily_index_row
+  def monthly_index_row(ex_vals = [])
+    [self.no, self.emp_emp_status.emp_status.name] + ex_vals + [self.name]
   end
 
   #不要
-  def data_array
-    [self.no, self.emp_emp_status.emp_status.name, self.name]
+  def data_array(ex_vals = [])
+    [self.no, self.emp_emp_status.emp_status.name] + ex_vals + [self.name]
   end
 end

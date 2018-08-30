@@ -9,13 +9,14 @@ class EmployeesController < ApplicationController
   def daily_index
     @pattern_by_id = Hash[@company.work_patterns.map{|pattern| [pattern.id, pattern]}]
     dayinfo_by_emp_id = Hash[@company.dayinfos.where(dayinfos: {date: @date}).map{|d| [d.employee_id, d]}]
-    csv_keys = employee_daily_index_keys + pattern_daily_index_keys + dayinfo_daily_index_keys
+    csv_keys = employee_daily_index_keys(@emp_exes.pluck(:name)) + pattern_daily_index_keys + dayinfo_daily_index_keys
     @table_keys = %w(✔︎) + csv_keys + %w(詳細)
     csv_rows, @table_rows = [], []
     @employees.each do |emp|
       dayinfo = dayinfo_by_emp_id[emp.id] || Dayinfo.new
       pattern = @pattern_by_id[dayinfo.work_pattern_id || emp.work_template.pattern_id_of(@date)] || WorkPattern.new
-      csv_row = emp.daily_index_row + pattern.daily_index_row + dayinfo.daily_index_row
+      id_to_ex_vals = Hash[emp.ex_vals.map{|val| [val.emp_ex_id, val.value]}]
+      csv_row = emp.daily_index_row(@emp_exes.map{|ex| id_to_ex_vals[ex.id] || ""}) + pattern.daily_index_row + dayinfo.daily_index_row
       csv_rows << csv_row
       @table_rows << [checkbox(:employee, emp.id)] + csv_row + [content_tag(:a, "詳細", href: employee_path(id: emp.id, day: @tday, list: "day"))]
     end
@@ -32,12 +33,13 @@ class EmployeesController < ApplicationController
   end
   def monthly_index
     dayinfo_by_emp_id = Hash[@company.dayinfos.monthly(@date).map{|d| [d.employee_id, d]}]
-    csv_keys = employee_monthly_keys + dayinfo_monthly_keys
+    csv_keys = employee_monthly_index_keys(@emp_exes.pluck(:name)) + dayinfo_monthly_keys
     @table_keys = %w(✔︎) + csv_keys + %w(詳細)
     csv_rows, @table_rows = [], []
     @employees.each do |emp|
       dayinfo = dayinfo_by_emp_id[emp.id] || Dayinfo.new
-      csv_row = emp.monthly_index_row + dayinfo.monthly_index_row
+      id_to_ex_vals = Hash[emp.ex_vals.map{|val| [val.emp_ex_id, val.value]}]
+      csv_row = emp.monthly_index_row(@emp_exes.map{|ex| id_to_ex_vals[ex.id] || ""}) + dayinfo.monthly_index_row
       csv_rows << csv_row
       @table_rows << [checkbox(:employee, emp.id)] + csv_row + [content_tag(:a, "詳細", href: employee_path(id: emp.id, day: @tday, list: "month"))]
     end
@@ -159,23 +161,32 @@ class EmployeesController < ApplicationController
   def new
     @employee = @company.employees.new({password: "password", password_confirmation: "password"})
     @emp_statuses = @company.emp_statuses
+    @emp_exes = @company.emp_exes
+    @ex_vals = {}
   end
 
   def edit
     @emp_statuses = @company.emp_statuses
+    @emp_exes = @company.emp_exes
+    @ex_vals = Hash[@employee.ex_vals.map{|val| [val.emp_ex_id, val.value]}]
   end
 
   def create
     @employee = Employee.new(employee_params)
+    @company.emp_exes.each do |emp_ex|
+      @employee.ex_vals.build({emp_ex_id: emp_ex.id, value: params[:emp_ex][emp_ex.name]})
+    end
 
     respond_to do |format|
       if @employee.save
-        format.html { redirect_to employees_path, notice: '社員を登録しました' }
+        format.html { redirect_to daily_index_path, notice: '社員を登録しました' }
         format.json { render :show, status: :created, location: @employee }
       else
         format.html {
           @emp_emp_status = @employee.emp_emp_status
           @emp_statuses = @company.emp_statuses
+          @emp_exes = @company.emp_exes
+          @ex_vals = Hash[@company.emp_exes.map{|ex| [ex.id, params[:emp_ex][ex.name]]}]
           render :new
         }
         format.json { render json: @employee.errors, status: :unprocessable_entity }
@@ -245,7 +256,8 @@ class EmployeesController < ApplicationController
     def set_data
       @tday = params[:day] || (@date = Date.current).to_s
       @date ||= Date.parse(@tday)
-      @employees = @company.employees.preload(:emp_status, :work_template).order(:no)
+      @employees = @company.employees.preload(:emp_status, :work_template, :ex_vals).order(:no)
+      @emp_exes = @company.emp_exes.order(:id)
     end
     def set_employee
       @employee = Employee.find(params[:id])

@@ -6,7 +6,7 @@
   <% end %>
 </div>
 
-<%= form_with(local: true, url: bulk_action_path(day: @tday, list: @list), id: "bulk_form") do |f| %>
+<%= form_with(local: true, url: bulk_action_employees_path(day: @tday, list: @list), id: "bulk_form") do |f| %>
   <%= f.hidden_field :bulk_action, id: "bulk_action" %>
   <%= f.hidden_field :pattern_id, id: "pattern_id" %>
   <ul class="table-util clearfix">

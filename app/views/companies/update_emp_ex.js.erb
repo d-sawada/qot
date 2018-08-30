@@ -1,0 +1,4 @@
+$("#contents .alert").remove();
+<% @emp_ex.errors.full_messages.each do |message| %>
+  $("#contents").prepend('<p class="alert alert-danger"><%= message %></p>');
+<% end %>

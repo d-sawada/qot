@@ -3,7 +3,10 @@ SysAdmin.create({email: "sys_admin@email.com", password: "password", password_co
 
 Company.delete_all
 CompanyConfig.delete_all
+EmpEx.delete_all
 ga = Company.create({code: "ga0001", name: "GAtechnologies" })
+busyo = ga.emp_exes.create({name: "部署"})
+syozoku = ga.emp_exes.create({name: "所属"})
 
 Admin.delete_all
 ga.admins.create({name: "管理者1", email: "admin1@email.com", password: "password", password_confirmation: "password", is_super: true })
@@ -36,9 +39,12 @@ end
 Employee.delete_all
 EmpEmpStatus.delete_all
 EmpStatusHistory.delete_all
+ExVal.delete_all
 (1..100).each do |i|
   if emp = ga.employees.create({no: "000#{i}".slice(-4,4), name: "従業員 #{i}", email: "emp#{i}@email.com", password: "password", password_confirmation: "password"})
     EmpEmpStatus.create({employee_id: emp.id, emp_status_id: regular.id + (i <= 50 ? 0 : 1), company_id: ga.id})
+    emp.ex_vals.create({emp_ex_id: busyo.id, value: "SDD"})
+    emp.ex_vals.create({emp_ex_id: syozoku.id, value: "本社"})
   end
 end
 

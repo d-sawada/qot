@@ -92,6 +92,12 @@ class CompaniesController < ApplicationController
     @status_keys = %w(雇用区分名 テンプレート名 編集 削除)
     @status_rows = statuses.map{|s| s.to_table_row(template_names) }
 
+    # ========== 社員追加情報 ==========
+    emp_exes = @company.emp_exes
+    @emp_ex_ids = emp_exes.map{|emp_ex| "emp-ex-#{emp_ex.id}"}
+    @emp_ex_keys = %w(追加情報名 編集 削除)
+    @emp_ex_rows = emp_exes.map{|emp_ex| emp_ex.to_table_row }
+
     # ========== 管理者 ==========
     admins = @company.admins
     @admin_ids = admins.map{|admin| "admin-#{admin.id}"}
@@ -125,6 +131,13 @@ class CompaniesController < ApplicationController
     else
       @status = @company.emp_statuses.build
       @status_submit = "雇用区分を作成"
+    end
+    if params[:emp_ex].present?
+      @emp_ex = EmpEx.find(params[:emp_ex].to_i)
+      @emp_ex_submit = "社員追加情報を更新"
+    else
+      @emp_ex = @companu.emp_exes.build
+      @emp_ex_submit = "社員追加情報を作成"
     end
     if params[:admin].present?
       @new_admin = Admin.find(params[:admin].to_i)
@@ -212,6 +225,28 @@ class CompaniesController < ApplicationController
     end
   end
 
+  def create_emp_ex
+    @emp_ex = @company.emp_exes.build(emp_ex_params)
+    if @emp_ex.save
+      @row_id = "emp-ex-#{@emp_ex.id}"
+      @row = @emp_ex.to_table_row
+      @message = "社員追加情報を作成しました"
+    end
+  end
+  def update_emp_ex
+    @emp_ex = EmpEx.find(params[:id])
+    prev_name = @emp_ex.name
+    if @emp_ex.update(emp_ex_params)
+      redirect_to "/admin/setting#nav-label-emp-ex", notice: "社員追加情報名[#{prev_name}]を[#{@emp_ex.name}]に変更しました"
+    end
+  end
+  def destroy_emp_ex
+    @emp_ex = EmpEx.find(params[:id])
+    if @emp_ex.destroy
+      @message = "社員追加情報を削除しました"
+    end
+  end
+
   def create_admin
     @new_admin = @company.admins.build(admin_params)
     if @new_admin.save
@@ -259,6 +294,9 @@ class CompaniesController < ApplicationController
   end
   def emp_status_params
     params.require(:emp_status).permit(:company_id, :name, :work_template_id)
+  end
+  def emp_ex_params
+    params.require(:emp_ex).permit(:company_id, :name)
   end
   def company_config_params
     params.require(:company_config).permit(:key, :value)

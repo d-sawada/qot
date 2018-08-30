@@ -1,0 +1,10 @@
+$("#contents .alert").remove();
+<% if @emp_ex.errors.any? %>
+  <% @emp_ex.errors.full_messages.each do |message| %>
+    $("#contents").prepend('<p class="alert alert-danger"><%= message %></p>');
+  <% end %>
+<% else %>
+  $("#emp-exes-table tbody").append('<%= j(render "table_row", {row_id: @row_id, row: @row}) %>');
+  $("#contents").prepend('<p class="alert alert-primary"><%= @message %></p>');
+  $("#pattern-form input[type='text']").val('');
+<% end %>

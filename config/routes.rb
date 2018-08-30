@@ -39,6 +39,10 @@ Rails.application.routes.draw do
     patch 'update_status/:id' => 'companies#update_status', as: 'update_status'
     delete 'destroy_status/:id' => 'companies#destroy_status', as: 'destroy_status'
 
+    post 'create_emp_ex' => 'companies#create_emp_ex', as: 'create_emp_ex'
+    patch 'update_emp_ex/:id' => 'companies#update_emp_ex', as: 'update_emp_ex'
+    delete 'destroy_emp_ex/:id' => 'companies#destroy_emp_ex', as: 'destroy_emp_ex'
+
     post 'create_admin' => 'companies#create_admin', as: 'create_admin'
     patch 'update_admin/:id' => 'companies#update_admin', as: 'update_admin'
     delete 'destroy_admin/:id' => 'companies#destroy_admin', as: 'destroy_admin'
