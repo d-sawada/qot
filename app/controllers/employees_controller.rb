@@ -183,7 +183,6 @@ class EmployeesController < ApplicationController
         format.json { render :show, status: :created, location: @employee }
       else
         format.html {
-          @emp_emp_status = @employee.emp_emp_status
           @emp_statuses = @company.emp_statuses
           @emp_exes = @company.emp_exes
           @ex_vals = Hash[@company.emp_exes.map{|ex| [ex.id, params[:emp_ex][ex.name]]}]
@@ -195,13 +194,17 @@ class EmployeesController < ApplicationController
   end
 
   def update
+    @company.emp_exes.each do |emp_ex|
+      @employee.ex_vals.build({emp_ex_id: emp_ex.id, value: params[:emp_ex][emp_ex.name]})
+    end
     respond_to do |format|
-      if @employee.update(employee_params) &&
-         @employee.emp_emp_status.update({employee_id: @employee.id, emp_status_id: params[:employee][:emp_emp_status_attributes][:emp_status_id]})
+      if @employee.update(employee_params)
         format.html { redirect_to @employee, notice: "社員情報を更新しました" }
         format.json { render :show, status: :ok, location: @employee }
       else
         @emp_statuses = @company.emp_statuses
+        @emp_exes = @company.emp_exes
+        @ex_vals = Hash[@company.emp_exes.map{|ex| [ex.id, params[:emp_ex][ex.name]]}]
         format.html { render :edit }
         format.json { render json: @employee.errors, status: :unprocessable_entity }
       end
@@ -249,7 +252,7 @@ class EmployeesController < ApplicationController
 
   def destroy
     @employee.destroy
-    redirect_to employees_path(list: params[:list]), notice: "社員を削除しました"
+    redirect_to daily_index_path(list: params[:list]), notice: "社員を削除しました"
   end
 
   private

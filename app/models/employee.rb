@@ -20,7 +20,7 @@ class Employee < ApplicationRecord
   validates :no, presence: true
   validates :no, length: { is: 4 }, if: ->(u) { u.no.present? }
   validates :name, presence: true
-  validate :no_uniqu_in_company?
+  validate :no_uniqu_in_company?, on: :create
 
   def no_uniqu_in_company?
     if self.company.employees.find_by_no(self.no).present?

@@ -45,6 +45,6 @@ class Employees::SessionsController < Devise::SessionsController
   end
 
   def sys_admin_redirect
-    redirect_to employees_path if sys_admin_signed_in?
+    redirect_to daily_index_path if sys_admin_signed_in?
   end
 end
