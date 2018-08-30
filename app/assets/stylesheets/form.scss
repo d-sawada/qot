@@ -1,28 +1,6 @@
-.form-block {
-  display: block;
-  margin: 0 auto;
-}
-.form-title {
-  margin-left: 6px;
-  font-size: 3rem;
-  text-align: center;
-}
-.btn-qot {
-  display: block;
-  margin: 0 auto;
-  height: 40px;
-  width: 130px;
-}
-
 #sys_admin_login_form, #admin_login_form, #employee_login_form {
   display: block;
   margin: 60px auto;
-  width: 320px;
-}
-#employee_new_content .form-block {
-  width: 320px;
-}
-#employee_edit_content .form-block {
   width: 320px;
 }
 #pattern-form {
@@ -36,4 +14,7 @@
 }
 #create-admin-form {
   width: 300px;
+}
+#new-employee-form {
+  width: 350px;
 }
