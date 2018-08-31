@@ -1,28 +1,61 @@
 class WorkTemplate < ApplicationRecord
-  include ActionView::Helpers::TagHelper
-  belongs_to :company
+  include ApplicationHelper
+  include Rails.application.routes.url_helpers
+
   has_one :emp_status
+  belongs_to :company
 
   validates :name, presence: true
   validate :least_have_one_pattern
 
   def least_have_one_pattern
-    [:mon, :tue, :wed, :thu, :fri, :sat, :sun].each do |sym|
+    week_syms.each do |sym|
       return if self[sym].present?
     end
     errors.add(:name, "にパターンを１つ以上設定してください")
   end
+
+  def edit_path
+    if self.id
+      return setting_path(template: self.id) + "#nav-label-template"
+    else
+      return nil
+    end
+  end
+
+  def edit_link
+    return content_tag(:a, EDIT_LINK, href: edit_path)
+  end
+
+  def delete_path
+    return destroy_template_path(self)
+  end
+
+  def delete_link
+    return content_tag(:a, DELETE_LINK, href: delete_path, rel: "nofollow",
+      date: {
+        remote: true, method: :delete,
+        title: "テンプレート[#{self.name}]を削除しますか？",
+        confirm: "削除しても[#{self.name}]が適用されたスケジュールは変更されません",
+        cancel: CANCEL, commit: DELETE
+      }
+    )
+  end
+  
   def to_table_row(pattern_names)
     row = [self.name]
-    [self.mon, self.tue, self.wed, self.thu, self.fri, self.sat, self.sun].each do |id|
-      row << (id.present? ? pattern_names[id] : nil)
+    week_syms.each do |sym|
+      id = self[sym]
+      if id
+        row << pattern_names[id]
+      else
+        row << nil
+      end
     end
-    row << content_tag(:a, "編集", href: self.id.nil? ? nil : "/admin/setting?template=#{self.id}#nav-label-template") <<
-      content_tag(:a, "削除", href: "/admin/destroy_template/#{self.id}", rel: "nofollow", data: { remote: true, method: :delete,
-        title: "テンプレート[#{self.name}]を削除しますか？", confirm: "削除しても[#{self.name}]が適用されたスケジュールは変更されません", cancel: "やめる", commit: "削除する" }
-      )
+    row << edit_link << delete_link
   end
+  
   def pattern_id_of(date)
-    self[[:san, :mon, :tue, :wed, :thu, :fri, :sat][date.wday]]
+    self[week_syms[date.wday]]
   end
 end

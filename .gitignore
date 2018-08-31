@@ -21,4 +21,14 @@
 
 
 # Ignore master key for decrypting credentials and more.
+
+# Ignore vscode setting.
+.vscode
+
+# Ignore windows bunary file
 /config/master.key
+js
+vendor/bundle/ruby/2.5.0/gems/ffi-1.9.25/ext/ffi_c/libffi-x86_64-linux/.libs/libffi.la
+vendor/bundle/ruby/2.5.0/gems/ffi-1.9.25/ext/ffi_c/libffi-x86_64-linux/.libs/libffi.so.7
+vendor/bundle/ruby/2.5.0/gems/ffi-1.9.25/ext/ffi_c/libffi-x86_64-linux/.libs/libffi_convenience.la
+vendor/bundle/ruby/2.5.0/gems/ffi-1.9.25/ext/ffi_c/libffi-x86_64-linux/include/ffitarget.h

@@ -1,4 +1,5 @@
 module ApplicationHelper
+  include ApplicationConstant
   include ActionView::Helpers::TagHelper
 
   def signed_in?
@@ -41,6 +42,27 @@ module ApplicationHelper
     %w(出勤打刻 退勤打刻)
   end
 
+  def checkbox(resource, id)
+    content_tag(:div,
+      content_tag(:input,
+        nil,
+        class: "form-check-input position-static",
+        type: "checkbox",
+        value: id,
+        name: "#{resource.to_s}[][id]"
+      ),
+      class: "form-check"
+    )
+  end
+
+  def calc_worktime_minute(s, e)
+    return ((e - s).to_i / 60).apply_rest
+  end
+
+  def week_syms
+    [:sun, :mon, :tue, :wed, :thu, :fri, :sat]
+  end
+
   #不要
   def dayinfo_daily_keys
     %w(出勤打刻 退勤打刻)
@@ -56,19 +78,6 @@ module ApplicationHelper
   end
   def pattern_daily_keys
     %w(パターン名 所定出勤 所定退勤 所定休始 所定休終)
-  end
-
-  def checkbox(resource, id)
-    content_tag(:div,
-      content_tag(:input,
-        nil,
-        class: "form-check-input position-static",
-        type: "checkbox",
-        value: id,
-        name: "#{resource.to_s}[][id]"
-      ),
-      class: "form-check"
-    )
   end
 end
 
@@ -107,6 +116,18 @@ end
 class DateTime
   def to_hm
     self.strftime("%h:%M")
+  end
+
+  def change!(**option)
+    self.replace(self.change(option))
+  end
+
+  def yesterday!
+    self.replace(self.yesterday)
+  end
+
+  def tommorrow!
+    self.replace(self.tommorrow!)
   end
 end
 

@@ -1,8 +1,10 @@
 class WorkPattern < ApplicationRecord
   include ActionView::Helpers::TagHelper
   include Rails.application.routes.url_helpers
+
   has_one :dayinfo
   belongs_to :company
+
   validates :company_id, presence: true
   validates :name,  presence: true
   validates :start, presence: true
@@ -10,11 +12,18 @@ class WorkPattern < ApplicationRecord
   validates :start_day, inclusion: { in: %w(前日 当日 翌日) }
   validates :end_day,   inclusion: { in: %w(前日 当日 翌日) }
 
-  before_save :erase_rest_day
+  before_save :format_rest_day
 
-  def erase_rest_day
-    self.rest_start_day = nil if self.rest_start.blank?
-    self.rest_end_day = nil if self.rest_end.blank?
+  def format_rest_day
+    if self.rest_start && self.rest_end
+      self.rest_start_day ||= "当日"
+      self.rest_end_day ||= "当日"
+    else
+      self.rest_start_day = nil
+      self.rest_start = nil
+      self.rest_end_day = nil
+      self.rest_end = nil
+    end
   end
 
   def daily_index_row
@@ -22,8 +31,8 @@ class WorkPattern < ApplicationRecord
       self.name,
       self.start.to_hm,
       self.end.to_hm,
-      self.rest_start_day.present? ? self.rest_start.to_hm : "",
-      self.rest_end_day.present? ? self.rest_end.to_hm : ""
+      self.rest_start.to_hm || "",
+      self.rest_end.to_hm || ""
     ]
   end
 
