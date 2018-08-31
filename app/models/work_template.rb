@@ -1,7 +1,8 @@
 class WorkTemplate < ApplicationRecord
   include ActionView::Helpers::TagHelper
-  belongs_to :company
+
   has_one :emp_status
+  belongs_to :company
 
   validates :name, presence: true
   validate :least_have_one_pattern
@@ -12,6 +13,7 @@ class WorkTemplate < ApplicationRecord
     end
     errors.add(:name, "にパターンを１つ以上設定してください")
   end
+  
   def to_table_row(pattern_names)
     row = [self.name]
     [self.mon, self.tue, self.wed, self.thu, self.fri, self.sat, self.sun].each do |id|

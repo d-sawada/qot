@@ -70,6 +70,14 @@ module ApplicationHelper
       class: "form-check"
     )
   end
+
+  def calc_worktime_minute(s, e)
+    return ((e - s).to_i / 60).apply_rest
+  end
+
+  def week_syms
+    [:mon, :tue, :wed, :thu, :fri, :sat, :sun]
+  end
 end
 
 class Object
@@ -107,6 +115,22 @@ end
 class DateTime
   def to_hm
     self.strftime("%h:%M")
+  end
+
+  def change!(**option)
+    self = self.change(option)
+  end
+
+  def yesterday!
+    self = self.yesterday
+  end
+
+  def tommorrow!
+    self = self.tommorrow!
+  end
+
+  def trunc_sec!
+    self = Time.at(self.to_i / 60 * 60)
   end
 end
 
