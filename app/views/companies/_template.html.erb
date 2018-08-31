@@ -1,6 +1,6 @@
 <div id="setting-template-require" class="alert alert-danger d-none" role="alert">パターンを作成する必要があります</div>
 
-<h5>曜日ごとの勤務パターンを定めて雇用区分ごとの出勤予定のテンプレートを作成します。パターンを指定しない曜日は休日扱いになります</h5><br>
+<h5>曜日ごとの勤務パターンを定めて雇用区分ごとの出勤予定のテンプレートを作成します。パターンを指定しない曜日は休日扱いになります</h5><hr>
 <div id="setting-template-content">
   <%= form_with(model: @work_template, url: @work_template.id.present? ? update_template_path(@work_template.id) : create_template_path, id: "template-form") do |f| %>
     <div class="form-row">
