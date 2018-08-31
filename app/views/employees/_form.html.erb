@@ -10,8 +10,10 @@
   <% end %>
 
   <%= f.hidden_field :company_code %>
-  <%= f.hidden_field :password, value: "password" %>
-  <%= f.hidden_field :password_confirmation, value: "password" %>
+  <% if submit == "新規作成" %>
+    <%= f.hidden_field :password, value: "password" %>
+    <%= f.hidden_field :password_confirmation, value: "password" %>
+  <% end %>
 
   <div class="form-row">
     <%= f.fields_for :emp_emp_status, employee.emp_emp_status ||= EmpEmpStatus.new do |f1| %>

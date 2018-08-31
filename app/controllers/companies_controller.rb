@@ -224,6 +224,9 @@ class CompaniesController < ApplicationController
   end
   def destroy_status
     @status = EmpStatus.find(params[:id])
+    @status.emp_emp_statuses.each do |emp_emp_status|
+      emp_emp_status.employee.destroy
+    end
     if @status.destroy
       @message = "雇用区分を削除しました"
     end

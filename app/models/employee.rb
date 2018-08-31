@@ -13,7 +13,7 @@ class Employee < ApplicationRecord
   has_many :emp_status_historys, dependent: :destroy
   belongs_to :company, primary_key: :code, foreign_key: :company_code
   has_one :work_template, through: :emp_status, primary_key: :work_template_id, foreign_key: :id
-  has_many :ex_vals
+  has_many :ex_vals, dependent: :destroy
   accepts_nested_attributes_for :emp_emp_status
   accepts_nested_attributes_for :ex_vals
 
