@@ -5,6 +5,10 @@
     <%= f.text_field :no, class: "form-control form-control-lg", placeholder: "社員番号", autocomplete: "no", autofocus: true %>
   </div>
 
+  <div class="form-group">
+    <%= f.password_field :password, class: "form-control form-control-lg", placeholder: "パスワード（設定している場合）" %>
+  </div>
+
   <% if devise_mapping.rememberable? -%>
     <div class="form-group">
       <%= f.check_box :remember_me %>

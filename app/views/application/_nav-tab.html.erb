@@ -1,0 +1,41 @@
+<% first_data = tab_datas.shift %>
+
+<nav>
+  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+    <a class="nav-item nav-link active" id="nav-tab-<%= first_data[:render] %>" href="#nav-label-<%= first_data[:render] %>"
+      aria-controls="nav-label-<%= first_data[:render] %>"  data-toggle="tab" role="tab" aria-selected="true"><%= first_data[:title] %></a>
+    <% tab_datas.each do |data| %>
+      <a class="nav-item nav-link" id="nav-tab-<%= data[:render] %>" href="#nav-label-<%= data[:render] %>"
+        aria-controls="nav-label-<%= data[:render] %>" data-toggle="tab" role="tab" aria-selected="false"><%= data[:title] %></a>
+    <% end %>
+  </div>
+</nav>
+
+<div class="tab-content mt-3" id="nav-tabContent">
+  <div class="tab-pane active" aria-labelledby="nav-tab-<%= first_data[:render] %>"  id="nav-label-<%= first_data[:render] %>"  role="tabpanel"><%= render first_data[:render] %></div>
+  <% tab_datas.each do |data| %>
+    <div class="tab-pane" aria-labelledby="nav-tab-<%= data[:render] %>" id="nav-label-<%= data[:render] %>" role="tabpanel"><%= render data[:render] %></div>
+  <% end %>
+</div>
+
+<script js>
+// Javascript to enable link to tab
+var url = document.location.toString();
+if (url.match('#')) {
+    $('.nav-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
+} 
+// Change hash for page-reload
+$('.nav-tabs a').on('shown.bs.tab', function (e) {
+    window.location.hash = e.target.hash;
+});
+
+// Tab requires
+<% if @pattern_options.blank? %>
+  $("#setting-template-content").addClass("d-none");
+  $("#setting-template-require").removeClass("d-none");
+<% end %>
+<% if @template_options.blank? %>
+  $("#setting-status-content").addClass("d-none");
+  $("#setting-status-require").removeClass("d-none");
+<% end %>
+</script>

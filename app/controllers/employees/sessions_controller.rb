@@ -12,11 +12,13 @@ class Employees::SessionsController < Devise::SessionsController
   # POST /resource/sign_in
   def create
     if signed_in?
-      redirect_to '/top'
-      return
+      return redirect_to '/top'
     end
     emp = Employee.find_by(company_code: params[:company_code], no: params[:employee][:no])
     if emp.present?
+      if emp.has_password && !emp.valid_password?(params[:employee][:password])
+        return redirect_to employee_session_path, alert: "パスワードが違います"
+      end
       sign_in(:employee, emp)
       redirect_to timecard_path, notice: "ログインしました"
     else
