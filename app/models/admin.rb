@@ -1,6 +1,5 @@
 class Admin < ApplicationRecord
-  include ApplicationConstant
-  include ActionView::Helpers::TagHelper
+  include ApplicationHelper
   include Rails.application.routes.url_helpers
 
   devise :database_authenticatable, :registerable,

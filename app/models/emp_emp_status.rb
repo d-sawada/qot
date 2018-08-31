@@ -1,7 +1,7 @@
 class EmpEmpStatus < ApplicationRecord
   belongs_to :company
-  belongs_to :emp_status
   belongs_to :employee
+  belongs_to :emp_status
   
   rails_admin do
     edit do

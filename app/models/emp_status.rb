@@ -1,5 +1,5 @@
 class EmpStatus < ApplicationRecord
-  include ActionView::Helpers::TagHelper
+  include ApplicationHelper
   include Rails.application.routes.url_helpers
 
   has_many :emp_emp_statuses
@@ -35,13 +35,13 @@ class EmpStatus < ApplicationRecord
       data: {
         remote: true, method: :destroy,
         title: "雇用区分[#{self.name}]を削除しますか？",
-        confirm: "削除すると雇用区分[#{self.name}]が関連づけられた社員が全て削除されます"
+        confirm: "削除すると雇用区分[#{self.name}]が関連づけられた社員が全て削除されます",
         cancel: CANCEL, commit: DELETE
       }
     )
   end
 
   def to_table_row(template_names)
-    [self.name, template_name[self.work_template_id], edit_link, delete_link]
+    [self.name, template_names[self.work_template_id], edit_link, delete_link]
   end
 end

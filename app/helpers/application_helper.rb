@@ -1,4 +1,5 @@
 module ApplicationHelper
+  include ApplicationConstant
   include ActionView::Helpers::TagHelper
 
   def signed_in?
@@ -41,23 +42,6 @@ module ApplicationHelper
     %w(出勤打刻 退勤打刻)
   end
 
-  #不要
-  def dayinfo_daily_keys
-    %w(出勤打刻 退勤打刻)
-  end
-  def dayinfo_monthly_keys
-    %w(勤務日数 所定時間 出勤日数 所定内 休出日数 休出時間)
-  end
-  def employee_daily_keys
-    %w(社員No 雇用形態 名前)
-  end
-  def employee_monthly_keys
-    %w(社員No 雇用形態 名前)
-  end
-  def pattern_daily_keys
-    %w(パターン名 所定出勤 所定退勤 所定休始 所定休終)
-  end
-
   def checkbox(resource, id)
     content_tag(:div,
       content_tag(:input,
@@ -76,7 +60,24 @@ module ApplicationHelper
   end
 
   def week_syms
-    [:mon, :tue, :wed, :thu, :fri, :sat, :sun]
+    [:sun, :mon, :tue, :wed, :thu, :fri, :sat]
+  end
+
+  #不要
+  def dayinfo_daily_keys
+    %w(出勤打刻 退勤打刻)
+  end
+  def dayinfo_monthly_keys
+    %w(勤務日数 所定時間 出勤日数 所定内 休出日数 休出時間)
+  end
+  def employee_daily_keys
+    %w(社員No 雇用形態 名前)
+  end
+  def employee_monthly_keys
+    %w(社員No 雇用形態 名前)
+  end
+  def pattern_daily_keys
+    %w(パターン名 所定出勤 所定退勤 所定休始 所定休終)
   end
 end
 
@@ -118,19 +119,15 @@ class DateTime
   end
 
   def change!(**option)
-    self = self.change(option)
+    self.replace(self.change(option))
   end
 
   def yesterday!
-    self = self.yesterday
+    self.replace(self.yesterday)
   end
 
   def tommorrow!
-    self = self.tommorrow!
-  end
-
-  def trunc_sec!
-    self = Time.at(self.to_i / 60 * 60)
+    self.replace(self.tommorrow!)
   end
 end
 

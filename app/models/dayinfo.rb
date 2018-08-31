@@ -24,8 +24,8 @@ class Dayinfo < ApplicationRecord
   before_update :times_trunc_sec, :apply_template, :aggregate
 
   def times_trunc_sec
-    self.start.trunc_sec! if self.start
-    self.end.trunc_sec! if self.end
+    self.start -= self.start.sec if self.start
+    self.end -= self.end.sec if self.end
   end
 
   def apply_template
@@ -35,10 +35,10 @@ class Dayinfo < ApplicationRecord
       d = self.date.day
       self.pre_start = pattern.start.change(year: y, month: m, day: d)
       self.pre_end = pattern.end.change(year: y, month: m, day: d)
-      if pattern_rest_start
+      if pattern.rest_start
         self.rest_start = pattern.rest_start.change(year: y, month: m, day: d)
       end
-      if pattern_rest_end
+      if pattern.rest_end
         self.rest_end = pattern.rest_end.change(year: y, month: m, day: d)
       end
       self.pre_start.yesterday!  if pattern.start_day == "前日"
@@ -76,7 +76,7 @@ class Dayinfo < ApplicationRecord
   end
 
   def pattern_at_template
-    id = self.employee.emp_status.work_template.pattern_id_of(self.date.wday)
+    id = self.employee.emp_status.work_template.pattern_id_of(self.date)
     return WorkPattern.find_by_id(id)
   end
 

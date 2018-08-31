@@ -1,5 +1,5 @@
 class EmpEx < ApplicationRecord
-  include ActionView::Helpers::TagHelper
+  include ApplicationHelper
   include Rails.application.routes.url_helpers
 
   has_many :ex_vals, dependent: :destroy
