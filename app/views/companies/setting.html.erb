@@ -1,44 +1,6 @@
-<nav>
-  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-    <a class="nav-item nav-link active" id="nav-tab-pattern"  href="#nav-label-pattern"  aria-controls="nav-label-pattern"  data-toggle="tab" role="tab" aria-selected="true" >パターン</a>
-    <a class="nav-item nav-link"        id="nav-tab-template" href="#nav-label-template" aria-controls="nav-label-template" data-toggle="tab" role="tab" aria-selected="false">テンプレート</a>
-    <a class="nav-item nav-link"        id="nav-tab-status"   href="#nav-label-status"   aria-controls="nav-label-status"   data-toggle="tab" role="tab" aria-selected="false">雇用区分</a>
-    <a class="nav-item nav-link"        id="nav-tab-emp-ex"   href="#nav-label-emp-ex"   aria-controls="nav-label-emp-ex"   data-toggle="tab" role="tab" aria-selected="false">社員追加情報</a>
-    <a class="nav-item nav-link"        id="nav-tab-admins"   href="#nav-label-admins"   aria-controls="nav-label-admins"   data-toggle="tab" role="tab" aria-selected="false">管理者</a>
-    <a class="nav-item nav-link"        id="nav-tab-others"   href="#nav-label-others"   aria-controls="nav-label-others"   data-toggle="tab" role="tab" aria-selected="false">その他</a>
-  </div>
-</nav>
-
-<div class="tab-content mt-3" id="nav-tabContent">
-  <div class="tab-pane active"   aria-labelledby="nav-tab-pattern"  id="nav-label-pattern"  role="tabpanel"><%= render "pattern" %></div>
-  <div class="tab-pane clearfix" aria-labelledby="nav-tab-template" id="nav-label-template" role="tabpanel"><%= render "template" %></div>
-  <div class="tab-pane"          aria-labelledby="nav-tab-status"   id="nav-label-status"   role="tabpanel"><%= render "status" %></div>
-  <div class="tab-pane"          aria-labelledby="nav-tab-emp-ex"   id="nav-label-emp-ex"   role="tabpanel"><%= render "emp-ex" %></div>
-  <div class="tab-pane"          aria-labelledby="nav-tab-admins"   id="nav-label-admins"   role="tabpanel"><%= render "admins" %></div>
-  <div class="tab-pane"          aria-labelledby="nav-tab-others"   id="nav-label-others"   role="tabpanel"><%= render "others" %></div>
-</div>
+<%= render 'nav-tab', { tab_datas: @tab_datas } %>
 
 <script js>
-// Javascript to enable link to tab
-var url = document.location.toString();
-if (url.match('#')) {
-    $('.nav-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
-} 
-// Change hash for page-reload
-$('.nav-tabs a').on('shown.bs.tab', function (e) {
-    window.location.hash = e.target.hash;
-});
-
-// Tab requires
-<% if @pattern_options.blank? %>
-  $("#setting-template-content").addClass("d-none");
-  $("#setting-template-require").removeClass("d-none");
-<% end %>
-<% if @template_options.blank? %>
-  $("#setting-status-content").addClass("d-none");
-  $("#setting-status-require").removeClass("d-none");
-<% end %>
-
 // Other configs
 $("input[name='send_mail_request_processed']").val(['<%= @configs["send_mail_request_processed"] %>']);
 $("input[name='send_mail_request_processed']").change(function() {

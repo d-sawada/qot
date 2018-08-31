@@ -70,6 +70,10 @@ class CompaniesController < ApplicationController
   end
 
   def setting
+    @tab_datas = %w(パターン テンプレート 雇用区分 社員追加情報 管理者 その他).zip(%w(pattern template status emp-ex admins others))
+      .map{|title, render| {title: title, render: render}}
+    p @tab_datas
+
     # ========== パターン ==========
     @pattern_keys = %w(パターン名 出勤 退勤 休憩開始 休憩終了 編集 削除)
     work_patterns = @company.work_patterns

@@ -1,0 +1,22 @@
+<%= render 'nav-tab', { tab_datas: @tab_datas } %>
+
+<script js>
+// Setting
+$("input[name='require_password']").val(['<%= @employee.has_password ? "入力する" : "入力しない" %>']);
+$("input[name='require_password']").change(function() {
+  $.ajax({
+    url: '/update_employee_setting',
+    method: 'PATCH',
+    data: $.param({
+      employee: {
+        'has_password': ($(this).val() == '入力する')
+      }
+    })
+  });
+});
+$("#passwrd-submit").on('click', function() {
+  //password = $("#employee_password").val();
+  //$("#employee_password_confirmation").val(password);
+  $("#password-form").submit();
+});
+</script>

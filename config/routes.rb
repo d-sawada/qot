@@ -83,5 +83,8 @@ Rails.application.routes.draw do
   get 'timecard' => 'dayinfos#new', as: 'timecard'
   put 'timecard' => 'dayinfos#put'
 
+  get 'setting' => 'employees#setting', as: 'employee_setting'
+  patch 'update_employee_setting' => 'employees#update_setting', as: 'update_employee_setting'
+
   resources :requests, only: [:index, :new, :create, :show, :update]
 end
