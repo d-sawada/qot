@@ -198,6 +198,8 @@ class EmployeesController < ApplicationController
       @employee.ex_vals.build({emp_ex_id: emp_ex.id, value: params[:emp_ex][emp_ex.name]})
     end
     respond_to do |format|
+      p @employee
+      raise
       if @employee.update(employee_params)
         format.html { redirect_to @employee, notice: "社員情報を更新しました" }
         format.json { render :show, status: :ok, location: @employee }
@@ -274,7 +276,6 @@ class EmployeesController < ApplicationController
       @employee = Employee.find(params[:id])
     end
     def employee_params
-      params.require(:employee).permit(:company_code, :no, :name, :email, :password, :password_confirmation, :has_password,
-        emp_emp_status_attributes: [:company_id, :employee_id, :emp_status_id])
+      params.require(:employee).permit(:company_code, :no, :name, :email, :password, :password_confirmation, :has_password, emp_emp_status_attributes: [:company_id, :employee_id, :emp_status_id])
     end
 end
