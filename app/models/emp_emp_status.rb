@@ -1,7 +1,7 @@
 class EmpEmpStatus < ApplicationRecord
   belongs_to :company
   belongs_to :emp_status
-  belongs_to :employee, dependent: :destroy
+  belongs_to :employee
 
   after_save :create_emp_status_history
 

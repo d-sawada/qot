@@ -198,8 +198,6 @@ class EmployeesController < ApplicationController
       @employee.ex_vals.build({emp_ex_id: emp_ex.id, value: params[:emp_ex][emp_ex.name]})
     end
     respond_to do |format|
-      p @employee
-      raise
       if @employee.update(employee_params)
         format.html { redirect_to @employee, notice: "社員情報を更新しました" }
         format.json { render :show, status: :ok, location: @employee }

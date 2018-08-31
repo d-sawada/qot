@@ -1,7 +1,7 @@
 class EmpStatus < ApplicationRecord
   include ActionView::Helpers::TagHelper
   include Rails.application.routes.url_helpers
-  has_many :emp_emp_statuses, dependent: :destroy
+  has_many :emp_emp_statuses
   has_many :employees, through: :emp_emp_statuses
   has_many :holidays, dependent: :destroy
   belongs_to :company, primary_key: :code, foreign_key: :company_code
