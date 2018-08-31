@@ -1,6 +1,6 @@
 <% if sys_admin_signed_in? || @admin.is_super %>
 
-  <h5>管理者を作成します。総合管理者のみが管理者を閲覧・作成できます</h5><br>
+  <h5>管理者を作成します。総合管理者のみが管理者を閲覧・作成できます</h5><hr>
   <%= form_with(model: @new_admin, url: @new_admin.id.present? ? update_admin_path(@new_admin.id) : create_admin_path, id: "create-admin-form", class: "needs-validation") do |f| %>
     <%= f.hidden_field :company_code %>
 

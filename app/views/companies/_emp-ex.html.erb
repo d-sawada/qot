@@ -1,4 +1,4 @@
-<h5>社員に登録する情報を追加できます（例：　部署など）。ここで追加した情報は新規作成画面・社員編集画面で設定できます</h5><br>
+<h5>社員に登録する情報を追加できます（例：　部署など）。ここで追加した情報は新規作成画面・社員編集画面で設定できます</h5><hr>
 <%= form_with(model: @emp_ex, url: @emp_ex.id.present? ? update_emp_ex_path(@emp_ex.id) : create_emp_ex_path, id: "emp-ex-form") do |f| %>
   <div class="form-row">
     <label class="col-1 col-form-label col-form-label-lg" for="name">名前</label>

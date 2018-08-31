@@ -1,6 +1,6 @@
 <div id="setting-status-require" class="alert alert-danger d-none" role="alert">テンプレートを作成する必要があります</div>
 
-<h5>作成したテンプレートを持つ雇用区分を作成します。社員を登録する際、選んだ雇用区分に設定されたテンプレートが自動で適用されます</h5><br>
+<h5>作成したテンプレートを持つ雇用区分を作成します。社員を登録する際、選んだ雇用区分に設定されたテンプレートが自動で適用されます</h5><hr>
 <div id="setting-status-content">
   <%= form_with(model: @status, url: @status.id.present? ? update_status_path(@status.id) : create_status_path, id: "status-form") do |f| %>
     <div class="form-row">
