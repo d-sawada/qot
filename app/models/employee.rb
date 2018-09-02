@@ -1,5 +1,6 @@
 class Employee < ApplicationRecord
-  include ActionView::Helpers::TagHelper
+  include ApplicationHelper
+  include Rails.application.routes.url_helpers
   
   has_one :emp_emp_status, dependent: :destroy
   has_one :emp_status, through: :emp_emp_status,
@@ -41,5 +42,15 @@ class Employee < ApplicationRecord
   
   def monthly_index_row(ex_vals = [])
     [self.no, self.emp_emp_status.emp_status.name] + ex_vals + [self.name]
+  end
+
+  def detail_link(target_day, list)
+    content_tag(:a, DETAIL_LINK,
+                href: employee_path(id: self.id, day: target_day, list: list))
+  end
+
+  def request_link(target_day)
+    content_tag(:a, REQUEST_LINK,
+                href: new_request_path(id: self.id, day: target_day))
   end
 end

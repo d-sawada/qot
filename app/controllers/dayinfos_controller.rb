@@ -1,5 +1,6 @@
 class DayinfosController < ApplicationController
   include ApplicationHelper
+
   before_action :authenticate_employees_company, only: [:new, :put]
 
   def new
@@ -7,21 +8,24 @@ class DayinfosController < ApplicationController
     @now = Time.now
     @today = Date.today.to_s
     @dayinfo = @employee.dayinfos.find_by_date(@today) || @employee.dayinfos.new
-    if @dayinfo.start.blank?
+    if @dayinfo.start
       @today_stamp = "今日はまだ出勤していません" if @dayinfo.start.blank?
-    elsif @dayinfo.end.blank?
+    elsif @dayinfo.end
       @today_stamp = "今日は#{@dayinfo.start.strftime("%H:%M")}に出勤しています"
     else
-      @today_stamp = "今日の打刻は#{@dayinfo.start.strftime("%H:%M")} - #{@dayinfo.end.strftime("%H:%M")}でした"
+      @today_stamp = "今日の打刻は#{@dayinfo.start.strftime("%H:%M")}" \
+                     "- #{@dayinfo.end.strftime("%H:%M")}でした"
     end
   end
+
   def put
     if @employee.present?
       today = Date.today.to_s
-      dayinfo = @employee.dayinfos.find_by_date(today) || @employee.dayinfos.new(date: today)
+      dayinfo = @employee.dayinfos.find_by_date(today) ||
+                @employee.dayinfos.new(date: today)
 
       if params[:commit] == "出勤"
-        if dayinfo.start.present?
+        if dayinfo.start
           alert = "すでに出勤しています"
         else
           dayinfo.start = Time.zone.now
@@ -31,7 +35,7 @@ class DayinfosController < ApplicationController
       else #退勤
         if dayinfo.start.blank?
           alert = "まだ出勤していません"
-        elsif dayinfo.end.present?
+        elsif dayinfo.end
           alert = "すでに退勤しています"
         else
           dayinfo.end = Time.zone.now

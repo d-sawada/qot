@@ -1,6 +1,5 @@
 class CompaniesController < ApplicationController
   include ApplicationHelper
-  include ActionView::Helpers::TagHelper
 
   before_action :authenticate_admins_company,
                 except: [:top, :check_company, :create_company,
