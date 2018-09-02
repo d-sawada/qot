@@ -31,10 +31,14 @@ class ApplicationController < ActionController::Base
   end
   
   private
+
   def trial_check(kind, user)
-    if (DateTime.now.to_i - @company.created_at.to_i) > 30 * 24 * 3600
+    trial_time = 30 * 24 * 3600
+    elapsed_time = DateTime.now.to_i - @company.created_at.to_i
+    if elapsed_time > trial_time
       sign_out(user)
-      redirect_to "/#{@company_code}/#{kind}/sign_in", alert: "トライアル期間が終了しました"
+      redirect_to "/#{@company_code}/#{kind}/sign_in",
+                  alert: "トライアル期間が終了しました"
     end
   end
 end
