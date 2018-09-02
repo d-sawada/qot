@@ -9,30 +9,24 @@ class WorkTemplate < ApplicationRecord
   validate :least_have_one_pattern
 
   def least_have_one_pattern
-    week_syms.each do |sym|
-      return if self[sym].present?
-    end
+    week_syms.each{ |sym| return if self[sym].present? }
     errors.add(:name, "にパターンを１つ以上設定してください")
   end
 
   def edit_path
-    if self.id
-      return setting_path(template: self.id) + "#nav-label-template"
-    else
-      return nil
-    end
+    self.id ? setting_path(template: self.id) + "#nav-label-template" : nil
   end
 
   def edit_link
-    return content_tag(:a, EDIT_LINK, href: edit_path)
+    content_tag(:a, EDIT_LINK, href: edit_path)
   end
 
   def delete_path
-    return destroy_template_path(self)
+    destroy_template_path(self)
   end
 
   def delete_link
-    return content_tag(:a, DELETE_LINK, href: delete_path, rel: "nofollow",
+    content_tag(:a, DELETE_LINK, href: delete_path, rel: "nofollow",
       date: {
         remote: true, method: :delete,
         title: "テンプレート[#{self.name}]を削除しますか？",
@@ -44,13 +38,9 @@ class WorkTemplate < ApplicationRecord
   
   def to_table_row(pattern_names)
     row = [self.name]
-    week_syms.each do |sym|
+    week_syms_mon.each do |sym|
       id = self[sym]
-      if id
-        row << pattern_names[id]
-      else
-        row << nil
-      end
+      row << (id ? pattern_names[id] : nil)
     end
     row << edit_link << delete_link
   end

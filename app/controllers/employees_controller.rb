@@ -116,13 +116,13 @@ class EmployeesController < ApplicationController
     if @list == "day"
       dayinfo = @employee.dayinfos.where("date = ?", @tday).first || Dayinfo.new
       table_csv_keys, table_opt_keys = pattern_daily_keys + dayinfo_daily_keys, ["申請登録"]
-      table_csv_rows = [(WorkPattern.find_by_id(@employee.work_template.pattern_id_of(@date)) || WorkPattern.new).to_daily_data + dayinfo.daily_data]
+      table_csv_rows = [(WorkPattern.find_by_id(@employee.work_template.pattern_id_of(@date)) || WorkPattern.new).daily_index_row + dayinfo.daily_index_row]
       table_opt_rows = [[content_tag(:a, "打刻修正を登録", href: new_request_url(id: @employee.id, day: @tday))]]
     elsif @list == "month"
       sum_dayinfo =  @employee.dayinfos.monthly(@date)[0]
       sum_dayinfo ||= Dayinfo.new
       @sum_dayinfo_keys = dayinfo_monthly_keys
-      @sum_dayinfo_rows = [sum_dayinfo.monthly_data]
+      @sum_dayinfo_rows = [sum_dayinfo.monthly_index_row]
 
       dayinfos = Hash[@employee.dayinfos.where("date between ? and ?", @tday.month_begin, @tday.month_end).map{|d| [d.date.day, d] }]
       work_patterns = Hash[@company.work_patterns.map{|pattern| [pattern.id, pattern]}]
@@ -132,7 +132,7 @@ class EmployeesController < ApplicationController
         dayinfo = dayinfos[i] || Dayinfo.new
         pattern_id = dayinfo.work_pattern_id || @employee.work_template.pattern_id_of(@date.change(day: i))
         pattern = work_patterns[pattern_id] || WorkPattern.new
-        table_csv_rows << [i] + pattern.to_daily_data + dayinfo.daily_data
+        table_csv_rows << [i] + pattern.daily_index_row + dayinfo.daily_index_row
         table_opt_rows << [
           content_tag(:a, "詳細", href: employee_url(id: @employee.id, day: @date.change(day: i))),
           content_tag(:a, "打刻修正を登録", href: new_request_url(id: @employee.id, day: @date.change(day: i)))

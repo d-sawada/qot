@@ -52,9 +52,17 @@ class Dayinfo < ApplicationRecord
     end
   end
 
+  def calc_worktime_minute(s, e)
+    ((e - s).to_i / 60).apply_rest
+  end
+
   def aggregate
-    self.pre_workdays,  self.workdays,  self.holiday_workdays  = 0, 0, 0
-    self.pre_worktimes, self.worktimes, self.holiday_worktimes = 0, 0, 0
+    self.pre_workdays = 0
+    self.workdays = 0
+    self.holiday_workdays  = 0
+    self.pre_worktimes = 0
+    self.worktimes = 0
+    self.holiday_worktimes = 0
 
     if self.start && self.end
       self.workdays = 1
@@ -70,14 +78,16 @@ class Dayinfo < ApplicationRecord
       self.pre_workdays = 1
       self.pre_worktimes = calc_worktime_minute(self.pre_start, self.pre_end)
     else
-      self.holiday_workdays,  self.workdays  = self.workdays,  0
-      self.holiday_worktimes, self.worktimes = self.worktimes, 0
+      self.holiday_workdays = self.workdays
+      self.workdays = 0
+      self.holiday_worktimes = self.worktimes
+      self.worktimes = 0
     end
   end
 
   def pattern_at_template
     id = self.employee.emp_status.work_template.pattern_id_of(self.date)
-    return WorkPattern.find_by_id(id)
+    WorkPattern.find_by_id(id)
   end
 
   def daily_index_row
@@ -93,13 +103,5 @@ class Dayinfo < ApplicationRecord
       self.try(:sum_holiday_workdays),
       self.try(:sum_holiday_worktimes).min_to_times
     ]
-  end
-
-  #不要
-  def daily_data
-    daily_index_row
-  end
-  def monthly_data
-    monthly_index_row
   end
 end

@@ -12,51 +12,41 @@ class Admin < ApplicationRecord
   def update_with_password(params, * options)
     if params[:password].blank?
       params.delete(:password)
-      if params[:password_confirmation].blank?
-        params.delete(:password_confirmation)
-      end
+      params.delete(:password_confirmation) if params[:password_confirmation]
     end
     update_attributes(params, * options)
   end
 
   def is_super_mark
-    if self.is_super
-      return "〇"
-    else
-      return ""
-    end
+    self.is_super ? "〇" : ""
   end
 
   def edit_path
-    if self.id.present?
-      return setting_path(admin: self.id) + "#nav-label-admins"
-    else
-      return nil
-    end
+    self.id ? setting_path(admin: self.id) + "#nav-label-admins" : nil
   end
 
   def edit_link
-    return content_tag(:a, EDIT_LINK, href: edit_path)
+    content_tag(:a, EDIT_LINK, href: edit_path, rel: "nofllow")
   end
 
   def delete_path
-    if self.id.present?
-      return destroy_admin_path(self)
-    else
-      return nil
-    end
+    self.id ? destroy_admin_path(self) : nil
   end
 
   def delete_link(current_admin_id)
-    return LOGED_IN if current_admin_id == self.id
-    return content_tag(:a, DELETE_LINK, href: delete_path, rel: "nofollow",
-      data: {
-        remote: true, method: :delete,
-        title: "管理者[#{self.name}]を削除しますか？",
-        cancel: CANCEL,
-        commit: DELETE
-      }
-    )
+    if current_admin_id == self.id
+      LOGED_IN
+    else
+      content_tag(
+        :a, DELETE_LINK, href: delete_path, rel: "nofollow",
+        data: {
+          remote: true, method: :delete,
+          title: "管理者[#{self.name}]を削除しますか？",
+          cancel: CANCEL,
+          commit: DELETE
+        }
+      )
+    end
   end
 
   def to_table_row(current_admin_id = nil)

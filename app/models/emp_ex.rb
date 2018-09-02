@@ -6,27 +6,19 @@ class EmpEx < ApplicationRecord
   belongs_to :company
 
   def edit_path
-    if self.id
-      return setting_path(emp_ex: self.id) + "#nav-label-emp-ex"
-    else
-      return nil
-    end
+    self.id ? setting_path(emp_ex: self.id) + "#nav-label-emp-ex" : nil
   end
 
   def edit_link
-    return content_tag(:a, EDIT_LINK, href: edit_path)
+    content_tag(:a, EDIT_LINK, href: edit_path)
   end
 
   def delete_path
-    if self.id
-      return destroy_emp_ex_path(self)
-    else
-      nil
-    end
+    self.id ?  destroy_emp_ex_path(self) : nil
   end
 
   def delete_link
-    return content_tag(:a, DELETE_LINK, href: delete_path, rel: "nofollow",
+    content_tag(:a, DELETE_LINK, href: delete_path, rel: "nofollow",
       data: {
         remote: true, method: :delete,
         title: "追加情報[#{self.name}]を削除しますか？",

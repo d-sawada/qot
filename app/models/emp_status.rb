@@ -11,27 +11,19 @@ class EmpStatus < ApplicationRecord
   validates :name, presence: true
 
   def edit_path
-    if self.id
-      return setting_path(status: self.id) + "#nav-label-status"
-    else
-      nil
-    end
+    self.id ? setting_path(status: self.id) + "#nav-label-status" : nil
   end
 
   def edit_link
-    return content_tag(:a, EDIT_LINK, href: edit_path)
+    content_tag(:a, EDIT_LINK, href: edit_path)
   end
 
   def delete_path
-    if self.id
-      return destroy_status_path(self.id)
-    else
-      nil
-    end
+    self.id ? destroy_status_path(self.id) : nil
   end
 
   def delete_link
-    return content_tag(:a, DELETE_LINK, href: delete_path, rel: "nofollow",
+    content_tag(:a, DELETE_LINK, href: delete_path, rel: "nofollow",
       data: {
         remote: true, method: :destroy,
         title: "雇用区分[#{self.name}]を削除しますか？",

@@ -55,12 +55,12 @@ module ApplicationHelper
     )
   end
 
-  def calc_worktime_minute(s, e)
-    return ((e - s).to_i / 60).apply_rest
-  end
-
   def week_syms
     [:sun, :mon, :tue, :wed, :thu, :fri, :sat]
+  end
+  
+  def week_syms_mon
+    [:mon, :tue, :wed, :thu, :fri, :sat, :sun]
   end
 
   #不要
