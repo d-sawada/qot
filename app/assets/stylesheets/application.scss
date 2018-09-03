@@ -28,7 +28,7 @@ header {
   position: fixed;
   top: 0;
   left: 0;
-  width: 600px;
+  width: 550px;
 }
 .app-logo {
   display: block;
@@ -45,6 +45,7 @@ header {
 .header-list {
   float: left;
   background-color: mediumpurple;
+  width: 400px;
 }
 .header-list li:hover {
   background-color: rgb(138, 75, 255);
