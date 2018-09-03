@@ -6,9 +6,10 @@ class CompaniesController < ApplicationController
                          :after_create_company]
 
   def top
-    if admins_signed_in?
+    case
+    when admins_signed_in?
       redirect_to daily_index_path
-    elsif employee_signed_in?
+    when employee_signed_in?
       redirect_to timecard_path
     else
       render layout: 'top_layout'
@@ -16,24 +17,28 @@ class CompaniesController < ApplicationController
   end
 
   def check_company
-    if params[:code]
-      if (company = Company.find_by_code(params[:code]))
-        if params[:commit].present?
-          if params[:commit] == "管理者様ログイン画面"
-            return redirect_to "/#{params[:code]}/admin/sign_in"
-          elsif params[:commit] == "社員ログイン画面"
-            return redirect_to "/#{params[:code]}/employee/sign_in"
-          else
-            flash.now[:alert] = "不正な値です"
-          end
-        end
+    commit = params[:commit]
+    code = params[:code]
+    error_message =
+      case
+      when !commit || !commit.in(["管理者様ログイン画面", "社員ログイン画面"])
+        "不正な操作です"
+      when !params[:code]
+        "企業コードを入力して下さい"
+      when !Company.find_by_code(params[:code])
+        "存在しない企業コードです"
       else
-        flash.now[:alert] = "存在しない企業コードです"
+        nil
       end
+    
+    if error_message
+      flash.now[:alert] = error_message
+      render :top, layout: 'top_layout'
+    elsif commit == "管理者様ログイン画面"
+      redirect_to "/#{code}}/admin/sign_in"
     else
-      flash.now[:alert] = "企業コードを入力してください"
+      redirect_to "/#{code}/employee/sign_in"
     end
-    render :top, layout: 'top_layout'
   end
 
   def create_company
@@ -67,83 +72,27 @@ class CompaniesController < ApplicationController
                    .zip(%w(pattern template status emp-ex admins others))
                    .map{ |title, render| {title: title, render: render} }
 
-    # ========== パターン ==========
-    @pattern_keys = %w(パターン名 出勤 退勤 休憩開始 休憩終了 編集 削除)
-    work_patterns = @company.work_patterns
-    @pattern_ids = work_patterns.pluck(:id).map{ |id| "pattern-#{id}" }
-    @pattern_rows = work_patterns.map(&:to_table_row)
-
-    # ========== テンプレート ==========
-    pattern_names = Hash[work_patterns.map{ |p| [p.id, p.name] }]
-    @pattern_options = work_patterns.map{ |p| [p.name, p.id] }
+    patterns = @company.work_patterns
     templates = @company.work_templates
-    @template_ids = templates.map{ |template| "template-#{template.id}" }
-    @template_keys = %w(テンプレート名 月 火 水 木 金 土 日 編集 削除)
-    @template_rows = templates.map{ |t| t.to_table_row(pattern_names) }
-
-    # ========== 雇用区分 ==========
-    template_names = Hash[templates.map{ |t| [t.id, t.name] }]
-    @template_options = templates.map{ |t| [t.name, t.id]}
     statuses = @company.emp_statuses
-    @status_ids = statuses.map{ |status| "status-#{status.id}" }
-    @status_keys = %w(雇用区分名 テンプレート名 編集 削除)
-    @status_rows = statuses.map{ |s| s.to_table_row(template_names) }
-
-    # ========== 社員追加情報 ==========
-    emp_exes = @company.emp_exes
-    @emp_ex_ids = emp_exes.map{ |emp_ex| "emp-ex-#{emp_ex.id}" }
-    @emp_ex_keys = %w(追加情報名 編集 削除)
-    @emp_ex_rows = emp_exes.map(&:to_table_row)
-
-    # ========== 管理者 ==========
     admins = @company.admins
-    @admin_ids = admins.map{ |admin| "admin-#{admin.id}" }
-    @admin_keys = %w(総合管理者 名前 メールアドレス 編集 削除)
-    @admin_rows = admins.map{ |admin| admin.to_table_row(@admin.id) }
+    emp_exes = @company.emp_exes
+
+    set_pattern_table(patterns)
+    set_template_table(templates, patterns)
+    set_status_table(statuses, templates)
+    set_emp_ex_table(emp_exes)
+    set_admin_table(admins)
+
+    set_pattern(patterns)
+    set_template(templates)
+    set_status(statuses)
+    set_emp_ex(emp_exes)
+    set_admin(admins)
 
     # ========== メール設定 ==========
     @configs =
-      Hash[@company.company_configs.map{ |config| [config.key, config.value] }]
-
-    # ========== build variable ==========
-    if params[:pattern]
-      @pattern = WorkPattern.find(params[:pattern].to_i)
-      [:start, :end, :rest_start, :rest_end].each do |sym|
-        @pattern[sym] = @pattern[sym].to_hm if @pattern[sym]
-      end
-      @pattern_submit = "パターン更新"
-    else
-      @pattern = @company.work_patterns.build
-      @pattern_submit = "パターン作成"
-    end
-    if params[:template]
-      @work_template = WorkTemplate.find(params[:template].to_i)
-      @work_template_submit = "テンプレート更新"
-    else
-      @work_template = @company.work_templates.build
-      @work_template_submit = "テンプレート作成"
-    end
-    if params[:status]
-      @status = EmpStatus.find(params[:status].to_i)
-      @status_submit = "雇用区分を更新"
-    else
-      @status = @company.emp_statuses.build
-      @status_submit = "雇用区分を作成"
-    end
-    if params[:emp_ex]
-      @emp_ex = EmpEx.find(params[:emp_ex].to_i)
-      @emp_ex_submit = "社員追加情報を更新"
-    else
-      @emp_ex = @companu.emp_exes.build
-      @emp_ex_submit = "社員追加情報を作成"
-    end
-    if params[:admin]
-      @new_admin = Admin.find(params[:admin].to_i)
-      @new_admin_submit = "管理者を更新"
-    else
-      @new_admin = @company.admins.build
-      @new_admin_submit = "管理者を作成"
-    end
+      Hash[@company.company_configs.pluck(:key, :value)]
   end
 
   def create_pattern
@@ -308,6 +257,91 @@ class CompaniesController < ApplicationController
 
   private
 
+  def set_pattern_table(patterns)
+    @pattern_ids = patterns.pluck(:id).map{ |id| "pattern-#{id}" }
+    @pattern_keys = %w(パターン名 出勤 退勤 休憩開始 休憩終了 編集 削除)
+    @pattern_rows = patterns.map(&:to_table_row)
+  end
+
+  def set_pattern(patterns)
+    if params[:pattern]
+      @pattern = patterns.find(params[:pattern].to_i)
+                   .select(%i(start end rest_start rest_end)).map(&:to_hm)
+      @pattern_submit = "パターン更新"
+    else
+      @pattern = patterns.build
+      @pattern_submit = "パターン作成"
+    end
+  end
+
+  def set_template_table(templates, patterns)
+    pattern_names = Hash[patterns.pluck(:id, :name)]
+    @pattern_options = patterns.pluck(:name, :id)
+    @template_ids = templates.pluck(:id).map{ |id| "pattern-#{id}" }
+    @template_keys = %w(テンプレート名 月 火 水 木 金 土 日 編集 削除)
+    @template_rows = templates.map{ |t| t.to_table_row(pattern_names) }
+  end
+
+  def set_template(templates)
+    if params[:template]
+      @template = templates.find(params[:template].to_i)
+      @template_submit = "テンプレート更新"
+    else
+      @template = templates.build
+      @template_submit = "テンプレート作成"
+    end
+  end
+
+  def set_status_table(statuses, templates)
+    template_names = Hash[templates.pluck(:id, :name)]
+    @template_options = templates.pluck(:name, :id)
+    @status_ids = statuses.pluck(:id).map{ |id| "status-#{id}" }
+    @status_keys = %w(雇用区分名 テンプレート名 編集 削除)
+    @status_rows = statuses.map{ |s| s.to_table_row(template_names) }
+  end
+
+  def set_status(statuses)
+    if params[:status]
+      @status = statuses.find(params[:status].to_i)
+      @status_submit = "雇用区分を更新"
+    else
+      @status = statuses.build
+      @status_submit = "雇用区分を作成"
+    end
+  end
+
+  def set_emp_ex_table(emp_exes)
+    @emp_ex_ids = emp_exes.pluck(:id).map{ |id| "emp-ex-#{id}" }
+    @emp_ex_keys = %w(追加情報名 編集 削除)
+    @emp_ex_rows = emp_exes.map(&:to_table_row)
+  end
+
+  def set_emp_ex(emp_exes)
+    if params[:emp_ex]
+      @emp_ex = emp_exes.find(params[:emp_ex].to_i)
+      @emp_ex_submit = "社員追加情報を更新"
+    else
+      @emp_ex = emp_exes.build
+      @emp_ex_submit = "社員追加情報を作成"
+    end
+  end
+
+  def set_admin_table(admins)
+    @admin_ids = admins.pluck(:id).map{ |id| "admin-#{id}" }
+    @admin_keys = %w(総合管理者 名前 メールアドレス 編集 削除)
+    @admin_rows = admins.map{ |admin| admin.to_table_row(@admin.id) }
+  end
+
+  def set_admin(admins)
+    if params[:admin]
+      @new_admin = admins.find(params[:admin].to_i)
+      @new_admin_submit = "管理者を更新"
+    else
+      @new_admin = admins.build
+      @new_admin_submit = "管理者を作成"
+    end
+  end
+
   def make_company_code(name)
     alpha = name.downcase.chars.select{|c| 'a' <= c && c <= 'z' }
     companiy_codes= Company.all.pluck(:code)
@@ -322,7 +356,7 @@ class CompaniesController < ApplicationController
     i = 1
     loop do
       code = prefix + ("000" + i.to_s).slice(-4,4)
-      break if companiy_codes.find{|company_code| comany_code == code}.nil?
+      break unless companiy_codes.find{|company_code| comany_code == code}
       i += 1
     end
     code
