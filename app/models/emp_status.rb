@@ -10,6 +10,12 @@ class EmpStatus < ApplicationRecord
 
   validates :name, presence: true
 
+  def to_table_row(template_names)
+    [self.name, template_names[self.work_template_id], edit_link, delete_link]
+  end
+
+  private
+
   def edit_path
     self.id ? setting_path(status: self.id) + "#nav-label-status" : nil
   end
@@ -31,9 +37,5 @@ class EmpStatus < ApplicationRecord
         cancel: CANCEL, commit: DELETE
       }
     )
-  end
-
-  def to_table_row(template_names)
-    [self.name, template_names[self.work_template_id], edit_link, delete_link]
   end
 end

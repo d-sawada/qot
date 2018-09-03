@@ -1,7 +1,6 @@
 class RequestsController < ApplicationController
   include ApplicationHelper
   
-
   before_action :authenticate_company, only: [:index, :show, :new, :create]
   before_action :authenticate_admins_company, only: [:update]
 

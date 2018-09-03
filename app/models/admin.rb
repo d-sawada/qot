@@ -17,6 +17,18 @@ class Admin < ApplicationRecord
     update_attributes(params, * options)
   end
 
+  def to_table_row(current_admin_id = nil)
+    [
+      is_super_mark,
+      self.name,
+      self.email,
+      edit_link,
+      delete_link(current_admin_id)
+    ]
+  end
+
+  private
+
   def is_super_mark
     self.is_super ? "〇" : ""
   end
@@ -47,15 +59,5 @@ class Admin < ApplicationRecord
         }
       )
     end
-  end
-
-  def to_table_row(current_admin_id = nil)
-    [
-      is_super_mark,
-      self.name,
-      self.email,
-      edit_link,
-      delete_link(current_admin_id)
-    ]
   end
 end

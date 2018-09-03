@@ -47,14 +47,6 @@ module ApplicationHelper
     %w(社員No 雇用形態) + ex_keys + %w(名前)
   end
 
-  def pattern_daily_index_keys
-    %w(パターン名 所定出勤 所定退勤 所定休始 所定休終)
-  end
-
-  def dayinfo_daily_index_keys
-    %w(出勤打刻 退勤打刻)
-  end
-
   def checkbox(resource, id)
     content_tag(:div,
       content_tag(:input,
@@ -66,13 +58,5 @@ module ApplicationHelper
       ),
       class: "form-check"
     )
-  end
-
-  def week_syms
-    [:sun, :mon, :tue, :wed, :thu, :fri, :sat]
-  end
-  
-  def week_syms_mon
-    [:mon, :tue, :wed, :thu, :fri, :sat, :sun]
   end
 end

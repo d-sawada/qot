@@ -5,6 +5,12 @@ class EmpEx < ApplicationRecord
   has_many :ex_vals, dependent: :destroy
   belongs_to :company
 
+  def to_table_row
+    [self.name, edit_link, delete_link]
+  end
+
+  private
+
   def edit_path
     self.id ? setting_path(emp_ex: self.id) + "#nav-label-emp-ex" : nil
   end
@@ -25,9 +31,5 @@ class EmpEx < ApplicationRecord
         cancel: CANCEL, commit: DELETE
       }
     )
-  end
-
-  def to_table_row
-    [self.name, edit_link, delete_link]
   end
 end

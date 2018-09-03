@@ -9,7 +9,7 @@ class WorkTemplate < ApplicationRecord
   validate :least_have_one_pattern
 
   def least_have_one_pattern
-    week_syms.each{ |sym| return if self[sym].present? }
+    WDAY_SYMS_FROM_SUN.each{ |sym| return if self[sym].present? }
     errors.add(:name, "にパターンを１つ以上設定してください")
   end
 
@@ -38,7 +38,7 @@ class WorkTemplate < ApplicationRecord
   
   def to_table_row(pattern_names)
     row = [self.name]
-    week_syms_mon.each do |sym|
+    WDAY_SYMS_FROM_MON.each do |sym|
       id = self[sym]
       row << (id ? pattern_names[id] : nil)
     end
@@ -46,6 +46,6 @@ class WorkTemplate < ApplicationRecord
   end
   
   def pattern_id_of(date)
-    self[week_syms[date.wday]]
+    self[WDAY_SYMS_FROM_SUN[date.wday]]
   end
 end

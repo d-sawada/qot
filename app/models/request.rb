@@ -20,10 +20,6 @@ class Request < ApplicationRecord
     self.end = self.end.change(year: y, month: m, day: d)
   end
 
-  def detail_link
-    content_tag(:a, DETAIL_LINK, href: request_path(self.id))
-  end
-
   def to_table_row(emp_names = nil, admin_names = nil)
     applier = 
       case
@@ -47,5 +43,11 @@ class Request < ApplicationRecord
     ]
     row << detail_link if emp_names
     row
+  end
+
+  private
+
+  def detail_link
+    content_tag(:a, DETAIL_LINK, href: request_path(self.id))
   end
 end

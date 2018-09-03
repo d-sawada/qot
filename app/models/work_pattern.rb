@@ -26,6 +26,18 @@ class WorkPattern < ApplicationRecord
     end
   end
 
+  def to_table_row
+    [
+      self.name,
+      self.start_day + " " + self.start.to_hm,
+      self.end_day + " " + self.end.to_hm,
+      day_prefixed_time(self.rest_start_day, self.rest_start),
+      day_prefixed_time(self.rest_end_day, self.rest_end),
+      edit_link,
+      delete_link
+    ]
+  end
+
   def daily_index_row
     [
       self.name,
@@ -35,6 +47,12 @@ class WorkPattern < ApplicationRecord
       self.rest_end.to_hm || ""
     ]
   end
+
+  alias_method :daily_show_row, :daily_index_row
+  
+  alias_method :monthly_show_row, :daily_index_row
+
+  private
 
   def edit_path
     self.id ? setting_path(pattern: self.id) + "#nav-label-pattern" : nil
@@ -62,17 +80,5 @@ class WorkPattern < ApplicationRecord
 
   def day_prefixed_time(day, time)
     day ? day + "" + time.to_hm : ""
-  end
-
-  def to_table_row
-    [
-      self.name,
-      self.start_day + " " + self.start.to_hm,
-      self.end_day + " " + self.end.to_hm,
-      day_prefixed_time(self.rest_start_day, self.rest_start),
-      day_prefixed_time(self.rest_end_day, self.rest_end),
-      edit_link,
-      delete_link
-    ]
   end
 end

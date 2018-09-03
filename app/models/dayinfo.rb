@@ -52,10 +52,6 @@ class Dayinfo < ApplicationRecord
     end
   end
 
-  def calc_worktime_minute(s, e)
-    ((e - s).to_i / 60).apply_rest
-  end
-
   def aggregate
     self.pre_workdays = 0
     self.workdays = 0
@@ -93,6 +89,8 @@ class Dayinfo < ApplicationRecord
   def daily_index_row
     [self.start.to_hm, self.end.to_hm]
   end
+
+  alias_method :daily_show_row, :daily_index_row
   
   def monthly_index_row
     [
@@ -103,5 +101,13 @@ class Dayinfo < ApplicationRecord
       self.try(:sum_holiday_workdays),
       self.try(:sum_holiday_worktimes).min_to_times
     ]
+  end
+
+  alias_method :monthly_show_row, :monthly_index_row
+
+  private
+
+  def calc_worktime_minute(s, e)
+    ((e - s).to_i / 60).apply_rest
   end
 end
