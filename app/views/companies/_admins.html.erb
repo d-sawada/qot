@@ -17,10 +17,10 @@
       <%= f.email_field :email, class: "form-control form-control-lg", autocomplete: "email", placeholder: "メールアドレス", required: true %>
     </div>
     <div class="form-group">
-      <%= f.password_field :password, class: "form-control form-control-lg", autocomplete: "password", placeholder: @new_admin.id.present? ? "パスワード（更新する場合入力）" : "パスワード", required: @new_admin.id.blank? %>
+      <%= f.password_field :password, class: "form-control form-control-lg", autocomplete: "password", placeholder: @new_admin.id.present? ? "パスワード（更新する場合入力）" : "パスワード", required: @new_admin.id.blank?, disabled: @new_admin.id && (@new_admin.id != @admin.id) %>
     </div>
     <div class="form-group">
-      <%= f.password_field :password_confirmation, class: "form-control form-control-lg", autocomplete: "password", placeholder: "パスワード（確認用）", required: @new_admin.id.blank? %>
+      <%= f.password_field :password_confirmation, class: "form-control form-control-lg", autocomplete: "password", placeholder: "パスワード（確認用）", required: @new_admin.id.blank?, disabled: @new_admin.id && (@new_admin.id != @admin.id) %>
     </div>
 
     <div class="form-row">

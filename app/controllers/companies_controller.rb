@@ -128,12 +128,12 @@ class CompaniesController < ApplicationController
   end
 
   def create_template
-    @work_template = @company.work_templates.build(work_template_params)
-    if @work_template.save
+    @template = @company.work_templates.build(work_template_params)
+    if @template.save
       pattern_names =
         Hash[@company.work_patterns.map{ |pattern| [pattern.id, pattern.name] }]
-      @row_id = "template-#{@work_template.id}"
-      @row = @work_template.to_table_row(pattern_names)
+      @row_id = "template-#{@template.id}"
+      @row = @template.to_table_row(pattern_names)
       @message = "テンプレートを作成しました"
       if @company.work_templates.count <= 1
         redirect_to "/admin/setting#nav-label-template",
@@ -143,16 +143,16 @@ class CompaniesController < ApplicationController
   end
 
   def update_template
-    @work_template = WorkTemplate.find(params[:id])
-    if @work_template.update(work_template_params)
+    @template = WorkTemplate.find(params[:id])
+    if @template.update(work_template_params)
       redirect_to "/admin/setting#nav-label-template",
-                  notice: "テンプレート[#{@work_template.name}]を更新しました"
+                  notice: "テンプレート[#{@template.name}]を更新しました"
     end
   end
 
   def destroy_template
-    @work_template = WorkTemplate.find(params[:id])
-    if @work_template.destroy
+    @template = WorkTemplate.find(params[:id])
+    if @template.destroy
       @message = "テンプレートを削除しました"
       if @company.work_templates.count <= 1
         redirect_to "/admin/setting#nav-label-template",
@@ -227,7 +227,7 @@ class CompaniesController < ApplicationController
   def update_admin
     @new_admin = Admin.find(params[:id])
     if @new_admin.update_with_password(admin_params)
-      if @new_admin.id == @admin.id && admin_params[:password]
+      if @new_admin.id == @admin.id && admin_params[:password].present?
         redirect_to "/#{@company_code}/admin/sign_in",
                     notice: "もう一度ログインしてください"
       else
@@ -266,7 +266,9 @@ class CompaniesController < ApplicationController
   def set_pattern(patterns)
     if params[:pattern]
       @pattern = patterns.find(params[:pattern].to_i)
-                   .select(%i(start end rest_start rest_end)).map(&:to_hm)
+      %i(start end rest_start rest_end).each do |sym|
+        @pattern[sym] = @pattern[sym].to_hm
+      end
       @pattern_submit = "パターン更新"
     else
       @pattern = patterns.build
@@ -277,7 +279,7 @@ class CompaniesController < ApplicationController
   def set_template_table(templates, patterns)
     pattern_names = Hash[patterns.pluck(:id, :name)]
     @pattern_options = patterns.pluck(:name, :id)
-    @template_ids = templates.pluck(:id).map{ |id| "pattern-#{id}" }
+    @template_ids = templates.pluck(:id).map{ |id| "template-#{id}" }
     @template_keys = %w(テンプレート名 月 火 水 木 金 土 日 編集 削除)
     @template_rows = templates.map{ |t| t.to_table_row(pattern_names) }
   end

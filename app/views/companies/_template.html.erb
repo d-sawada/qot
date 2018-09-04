@@ -2,7 +2,7 @@
 
 <h5>曜日ごとの勤務パターンを定めて雇用区分ごとの出勤予定のテンプレートを作成します。パターンを指定しない曜日は休日扱いになります</h5><hr>
 <div id="setting-template-content">
-  <%= form_with(model: @work_template, url: @work_template.id.present? ? update_template_path(@work_template.id) : create_template_path, id: "template-form") do |f| %>
+  <%= form_with(model: @template, url: @template.id ? update_template_path(@template.id) : create_template_path, id: "template-form") do |f| %>
     <div class="form-row">
       <%= f.label :name, class: "col-1 col-form-label col-form-label-lg", value: "名前" %>
       <div class="form-group">
@@ -15,8 +15,8 @@
       <% end %>
     </div>
     <div class="form-row">
-      <%= f.submit @work_template_submit, class: "btn btn-primary btn-lg" %>
-      <% if @work_template.id.present? %>
+      <%= f.submit @template_submit, class: "btn btn-primary btn-lg" %>
+      <% if @template.id.present? %>
         <a class="btn btn-secondary btn-lg ml-3" href="/admin/setting#nav-label-template">編集をやめる</a>
       <% end %>
     </div>

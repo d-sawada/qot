@@ -28,6 +28,8 @@ class EmpEx < ApplicationRecord
       data: {
         remote: true, method: :delete,
         title: "追加情報[#{self.name}]を削除しますか？",
+        confirm: "社員追加情報[#{self.name}]を削除すると関連する社員の追加情報が全て" +
+                 "削除されます",
         cancel: CANCEL, commit: DELETE
       }
     )

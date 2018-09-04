@@ -4,7 +4,7 @@ class EmployeesController < ApplicationController
   before_action :authenticate_admins_company,
                 only: [:daily_index, :monthly_index, :index, :new, :edit,
                        :create, :update, :destroy]
-  before_action :authenticate_company, only: [:show]
+  before_action :authenticate_employees_company, only: [:show]
   before_action :set_employee, only: [:edit, :update, :destroy]
   before_action :set_index_common_data, only: [:daily_index, :monthly_index]
 
@@ -72,7 +72,7 @@ class EmployeesController < ApplicationController
         :holiday_workdays, :holiday_worktimes
       ).transpose.map(&:sum)
 
-      dayinfo_row[1] = dayinfo_row[1].min_to_times
+      [1, 3, 5].each{ |i| dayinfo_row[i] = dayinfo_row[i].min_to_times }
       
       csv_row = emp.monthly_index_row(ex_vals) + dayinfo_row
       csv_rows << csv_row
@@ -84,7 +84,6 @@ class EmployeesController < ApplicationController
   end
 
   def show
-    @employee = Employee.find(params[:id]) if admins_signed_in?
     @list = params[:list] || "day"
     @tday = params[:day] || Date.current.to_s
     @date = Date.parse(@tday)
@@ -158,7 +157,7 @@ class EmployeesController < ApplicationController
   def edit
     @emp_statuses = @company.emp_statuses
     @emp_exes = @company.emp_exes
-    @ex_vals = Hash[@employee.ex_vals.pluck(:emp_ex_id, :vlaue)]
+    @ex_vals = Hash[@employee.ex_vals.pluck(:emp_ex_id, :value)]
   end
 
   def create
@@ -183,7 +182,7 @@ class EmployeesController < ApplicationController
       @employee.ex_vals.build(emp_ex_id: ex.id, value: params[:emp_ex][ex.name])
     end
 
-    if @employee.upudate(employee_params)
+    if @employee.update(employee_params)
       redirect_to @employee, notice: "社員情報を更新しました"
     else
       @emp_statuses = @company.emp_statuses
@@ -201,6 +200,7 @@ class EmployeesController < ApplicationController
 
   def update_setting
     @employee.update(employee_params)
+    @password_changed = params[:employee][:password].present?
   end
 
   def bulk_action
@@ -238,8 +238,9 @@ class EmployeesController < ApplicationController
     dayinfos =
       Dayinfo.left_joins(:employee)
         .where("dayinfos.date = ? and employees.id in (?)", @date, @ids)
-        .select("id, employee_id, start, end")
-        .map{ |r| [r.employee_id, {id: r.id, start: r.start, end: r.end}] }
+        .select("dayinfos.employee_id, " + 
+                "dayinfos.id, dayinfos.start, dayinfos.end")
+        .map{ |d| [d.employee_id, {id: d.id, start: d.start, end: d.end}] }
 
     emp_id_to_dayinfo = Hash[dayinfos]
 

@@ -54,8 +54,8 @@ class Admin < ApplicationRecord
         data: {
           remote: true, method: :delete,
           title: "管理者[#{self.name}]を削除しますか？",
-          cancel: CANCEL,
-          commit: DELETE
+          confirm: " ",
+          cancel: CANCEL, commit: DELETE
         }
       )
     end

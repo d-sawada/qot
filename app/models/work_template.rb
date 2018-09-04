@@ -9,7 +9,7 @@ class WorkTemplate < ApplicationRecord
   validate :least_have_one_pattern
 
   def least_have_one_pattern
-    WDAY_SYMS_FROM_SUN.each{ |sym| return if self[sym].present? }
+    WDAY_SYMS_FROM_SUN.each{ |sym| return if self[sym] }
     errors.add(:name, "にパターンを１つ以上設定してください")
   end
 
@@ -27,7 +27,7 @@ class WorkTemplate < ApplicationRecord
 
   def delete_link
     content_tag(:a, DELETE_LINK, href: delete_path, rel: "nofollow",
-      date: {
+      data: {
         remote: true, method: :delete,
         title: "テンプレート[#{self.name}]を削除しますか？",
         confirm: "削除しても[#{self.name}]が適用されたスケジュールは変更されません",

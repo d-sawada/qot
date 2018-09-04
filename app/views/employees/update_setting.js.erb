@@ -1,2 +1,5 @@
 $("#contents .alert").remove();
-$("#contents").prepend('<p class="alert alert-primary">パスワードを変更しました</p>');
+<% if @password_changed %>
+  $("#contents").prepend('<p class="alert alert-primary">パスワードを変更しました</p>');
+  $("input[type='text']").val("")
+<% end %>

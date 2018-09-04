@@ -1,4 +1,4 @@
 $("#contents .alert").remove();
-<% @work_template.errors.full_messages.each do |message| %>
+<% @template.errors.full_messages.each do |message| %>
   $("#contents").prepend('<p class="alert alert-danger"><%= message %></p>');
 <% end %>
