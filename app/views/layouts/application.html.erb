@@ -21,11 +21,15 @@
             <li><%= link_to image_tag("add_employee.png"), new_employee_url, title: "社員追加" %></li>
             <li><%= link_to image_tag("setting.png"), setting_path, title: "設定" %></li>
           <% end %>
-          <% if employees_signed_in? %>
+          <% if employee_signed_in? %>
             <li><%= link_to image_tag("timecard.png"), timecard_path, title: "タイムカード" %></li>
             <li><%= link_to image_tag("requests.png"), requests_path, title: "申請一覧" %></li>
             <li><%= link_to image_tag("dayly.png"), employee_list_url(list: "day"), title: "日データ" %></li>
             <li><%= link_to image_tag("monthly.png"), employee_list_url(list: "month"), title: "月データ" %></li>
+            <li><%= link_to image_tag("setting.png"), employee_setting_url, title: "設定" %></li>
+          <% end %>
+          <% if sys_admin_signed_in? %>
+            <li><%= link_to image_tag("timecard.png"), timecard_path, title: "タイムカード" %></li>
             <li><%= link_to image_tag("setting.png"), employee_setting_url, title: "設定" %></li>
           <% end %>
         </ul>
