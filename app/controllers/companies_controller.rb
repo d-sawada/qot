@@ -19,13 +19,14 @@ class CompaniesController < ApplicationController
   def check_company
     commit = params[:commit]
     code = params[:code]
+    p commit
     error_message =
       case
-      when !commit || !commit.in(["管理者様ログイン画面", "社員ログイン画面"])
+      when !commit || !commit.in("管理者様ログイン画面", "社員ログイン画面")
         "不正な操作です"
-      when !params[:code]
+      when code.blank?
         "企業コードを入力して下さい"
-      when !Company.find_by_code(params[:code])
+      when !Company.find_by_code(code)
         "存在しない企業コードです"
       else
         nil
@@ -46,7 +47,7 @@ class CompaniesController < ApplicationController
     @company.code = make_company_code(@company.name)
     @company.save
     @admin = Admin.new(
-      company_code: code,
+      company_code: @company.code,
       is_super: true,
       name: params[:admin][:name],
       email: params[:admin][:email],
@@ -346,7 +347,7 @@ class CompaniesController < ApplicationController
 
   def make_company_code(name)
     alpha = name.downcase.chars.select{|c| 'a' <= c && c <= 'z' }
-    companiy_codes= Company.all.pluck(:code)
+    company_codes= Company.all.pluck(:code)
     case alpha.length
     when 0
       prefix = "ja"
@@ -356,9 +357,11 @@ class CompaniesController < ApplicationController
       prefix = alpha[0] + alpha[1]
     end
     i = 1
+
+    code = ""
     loop do
       code = prefix + ("000" + i.to_s).slice(-4,4)
-      break unless companiy_codes.find{|company_code| comany_code == code}
+      break unless company_codes.find{ |company_code| company_code == code }
       i += 1
     end
     code
