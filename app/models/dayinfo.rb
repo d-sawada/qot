@@ -20,6 +20,11 @@ class Dayinfo < ApplicationRecord
       SELECT
   }
 
+  def self.new_with_pattern(employee, date)
+    d = self.new(employee_id: employee.id, date: date)
+          .apply_template.aggregate
+  end
+
   before_create :times_trunc_sec, :apply_template, :aggregate
   before_update :times_trunc_sec, :apply_template, :aggregate
 
@@ -29,7 +34,7 @@ class Dayinfo < ApplicationRecord
   end
 
   def apply_template
-    if pattern = self.work_pattern || pattern_at_template
+    if (pattern = self.work_pattern || pattern_at_template)
       y = self.date.year
       m = self.date.month
       d = self.date.day
@@ -50,6 +55,7 @@ class Dayinfo < ApplicationRecord
       self.rest_end.yesterday!   if pattern.rest_end_day == "前日"
       self.rest_end.tommorrow!   if pattern.rest_end_day == "翌日"
     end
+    self
   end
 
   def aggregate
@@ -79,6 +85,7 @@ class Dayinfo < ApplicationRecord
       self.holiday_worktimes = self.worktimes
       self.worktimes = 0
     end
+    self
   end
 
   def pattern_at_template

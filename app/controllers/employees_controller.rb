@@ -30,22 +30,51 @@ class EmployeesController < ApplicationController
   end
 
   def monthly_index
-    dayinfos = @company.dayinfos.monthly(@date)
-    dayinfo_by_emp_id = Hash[dayinfos.map{ |d| [d.employee_id, d] }]
-
     csv_keys = employee_monthly_index_keys(@emp_exes.pluck(:name)) +
                DAYINFO_MONTHLY_INDEX_KEYS
-
     @table_keys = [CHECK] + csv_keys + [DETAIL_LINK]
 
+    id_to_pattern = Hash[@company.work_patterns.map{ |p| [p.id, p] }]
+    id_to_template = Hash[@company.work_templates.map{ |t| [t.id, t] }]
+    
     csv_rows, @table_rows = [], []
-
     @employees.each do |emp|
-      dayinfo = dayinfo_by_emp_id[emp.id] || Dayinfo.new
       id_to_ex_vals = Hash[emp.ex_vals.pluck(:emp_ex_id, :value)]
       ex_vals = @emp_exes.map{ |ex| id_to_ex_vals[ex.id] || "" }
 
-      csv_row = emp.monthly_index_row(ex_vals) + dayinfo.monthly_index_row
+      day_to_dayinfo = Hash[emp.dayinfos
+                   .where("date between :start and :end", {
+                     start: @date.beginning_of_month,
+                     end:   @date.end_of_month
+                   }).map { |d| [d.date.day, d] }]
+
+      (1..@date.end_of_month.day).map do |day|
+        next if day_to_dayinfo[day]
+
+        week_sym = WDAY_SYMS_FROM_SUN[@date.change(day: day).wday]
+        pattern = id_to_pattern[emp.work_template[week_sym]]
+        next unless pattern
+
+        day_to_dayinfo[day] = 
+          Dayinfo.new(
+            pre_workdays: pattern.start && pattern.end ? 1 : 0,
+            pre_worktimes: ((pattern.end - pattern.start).to_i / 60).apply_rest,
+            workdays: 0,
+            worktimes: 0,
+            holiday_workdays: 0,
+            holiday_worktimes: 0
+          )
+      end
+
+      dayinfo_row = day_to_dayinfo.values.pluck(
+        :pre_workdays, :pre_worktimes,
+        :workdays, :worktimes,
+        :holiday_workdays, :holiday_worktimes
+      ).transpose.map(&:sum)
+
+      dayinfo_row[1] = dayinfo_row[1].min_to_times
+      
+      csv_row = emp.monthly_index_row(ex_vals) + dayinfo_row
       csv_rows << csv_row
       @table_rows << [checkbox(:employee, emp.id)] + csv_row +
                      [emp.detail_link(@tday, "month")]

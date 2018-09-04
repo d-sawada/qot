@@ -3,10 +3,8 @@ class Employee < ApplicationRecord
   include Rails.application.routes.url_helpers
   
   has_one :emp_emp_status, dependent: :destroy
-  has_one :emp_status, through: :emp_emp_status,
-          primary_key: :emp_status_id, foreign_key: :id
-  has_one :work_template, through: :emp_status,
-          primary_key: :work_template_id, foreign_key: :id
+  has_one :emp_status, through: :emp_emp_status
+  has_one :work_template, through: :emp_status
   has_many :dayinfos, dependent: :destroy
   has_many :requests, dependent: :destroy
   has_many :holidays, through: :emp_status,
