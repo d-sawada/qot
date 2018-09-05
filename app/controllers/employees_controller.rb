@@ -34,6 +34,13 @@ class EmployeesController < ApplicationController
                DAYINFO_MONTHLY_INDEX_KEYS
     @table_keys = [CHECK] + csv_keys + [DETAIL_LINK]
 
+    empid_to_dayinfos = Hash[@employees.map{ |e| [e.id, []] }]
+    Dayinfo.where("date between :start and :end", {
+              start: @date.beginning_of_month,
+              end: @date.end_of_month
+            }).where("employee_id in (?)", @company.employees.pluck(:id))
+            .each { |d| empid_to_dayinfos[d.employee_id] << d }
+
     id_to_pattern = Hash[@company.work_patterns.map{ |p| [p.id, p] }]
     id_to_template = Hash[@company.work_templates.map{ |t| [t.id, t] }]
     
@@ -43,11 +50,8 @@ class EmployeesController < ApplicationController
       id_to_ex_vals = Hash[emp.ex_vals.pluck(:emp_ex_id, :value)]
       ex_vals = @emp_exes.map{ |ex| id_to_ex_vals[ex.id] || "" }
 
-      day_to_dayinfo = Hash[emp.dayinfos
-                              .where("date between :start and :end", {
-                                start: @date.beginning_of_month,
-                                end:   @date.end_of_month
-                              }).map { |d| [d.date.day, d] }]
+      day_to_dayinfo =
+        Hash[empid_to_dayinfos[emp.id].map { |d| [d.date.day, d] }]
 
       (1..@date.end_of_month.day).map do |day|
         next if day_to_dayinfo[day]
