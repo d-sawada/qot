@@ -5,7 +5,7 @@ class EmployeesController < ApplicationController
                 only: [:daily_index, :monthly_index, :index, :new, :edit,
                        :create, :update, :destroy]
   before_action :authenticate_company, only: [:show]
-  before_action :set_employee, only: [:edit, :update, :destroy]
+  before_action :set_employee, only: [:show, :edit, :update, :destroy]
   before_action :set_index_common_data, only: [:daily_index, :monthly_index]
 
   def daily_index
