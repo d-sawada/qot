@@ -38,15 +38,16 @@ class EmployeesController < ApplicationController
     id_to_template = Hash[@company.work_templates.map{ |t| [t.id, t] }]
     
     csv_rows, @table_rows = [], []
+
     @employees.each do |emp|
       id_to_ex_vals = Hash[emp.ex_vals.pluck(:emp_ex_id, :value)]
       ex_vals = @emp_exes.map{ |ex| id_to_ex_vals[ex.id] || "" }
 
       day_to_dayinfo = Hash[emp.dayinfos
-                   .where("date between :start and :end", {
-                     start: @date.beginning_of_month,
-                     end:   @date.end_of_month
-                   }).map { |d| [d.date.day, d] }]
+                              .where("date between :start and :end", {
+                                start: @date.beginning_of_month,
+                                end:   @date.end_of_month
+                              }).map { |d| [d.date.day, d] }]
 
       (1..@date.end_of_month.day).map do |day|
         next if day_to_dayinfo[day]
@@ -67,10 +68,10 @@ class EmployeesController < ApplicationController
       end
 
       dayinfo_row = day_to_dayinfo.values.pluck(
-        :pre_workdays, :pre_worktimes,
-        :workdays, :worktimes,
-        :holiday_workdays, :holiday_worktimes
-      ).transpose.map(&:sum)
+                      :pre_workdays, :pre_worktimes,
+                      :workdays, :worktimes,
+                      :holiday_workdays, :holiday_worktimes
+                    ).transpose.map(&:sum)
 
       [1, 3, 5].each{ |i| dayinfo_row[i] = dayinfo_row[i].min_to_times }
       
@@ -102,7 +103,40 @@ class EmployeesController < ApplicationController
       sum_dayinfo =  @employee.dayinfos.monthly(@date)[0]
       sum_dayinfo ||= Dayinfo.new
       @sum_dayinfo_keys = DAYINFO_MONTHLY_SHOW_KEYS
-      @sum_dayinfo_rows = [sum_dayinfo.monthly_show_row]
+
+      id_to_pattern = Hash[@company.work_patterns.map{ |p| [p.id, p] }]
+
+      day_to_dayinfo = Hash[@employee.dayinfos
+        .where("date between :start and :end", {
+          start: @date.beginning_of_month,
+          end:   @date.end_of_month
+        }).map { |d| [d.date.day, d] }]
+
+      (1..@date.end_of_month.day).map do |day|
+        next if day_to_dayinfo[day]
+
+        week_sym = WDAY_SYMS_FROM_SUN[@date.change(day: day).wday]
+        pattern = id_to_pattern[@employee.work_template[week_sym]]
+        next unless pattern
+
+        day_to_dayinfo[day] = 
+          Dayinfo.new(
+            pre_workdays: pattern.start && pattern.end ? 1 : 0,
+            pre_worktimes: ((pattern.end - pattern.start).to_i / 60).apply_rest,
+            workdays: 0,
+            worktimes: 0,
+            holiday_workdays: 0,
+            holiday_worktimes: 0
+          )
+      end
+
+      @sum_dayinfo_rows = [day_to_dayinfo.values.pluck(
+                      :pre_workdays, :pre_worktimes,
+                      :workdays, :worktimes,
+                      :holiday_workdays, :holiday_worktimes
+                    ).transpose.map(&:sum)]
+
+      [1, 3, 5].each{ |i| @sum_dayinfo_rows[0][i] = @sum_dayinfo_rows[0][i].min_to_times }
 
       dayinfos = @employee.dayinfos.where("date between ? and ?",
                                           @tday.month_begin, @tday.month_end)
@@ -112,8 +146,8 @@ class EmployeesController < ApplicationController
       table_csv_keys = ["日付"] + PATTERN_DAILY_SHOW_KEYS +
                        DAYINFO_DAILY_SHOW_KEYS
       table_opt_keys = %w(詳細 申請登録)
-      table_csv_rows = []
-      table_opt_rows = []
+
+      table_csv_rows, table_opt_rows = [], []
       (1..day_num).each do |i|
         dayinfo = dayinfos[i] || Dayinfo.new
         pattern_id = dayinfo.work_pattern_id ||
